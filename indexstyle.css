@@ -1,3 +1,7 @@
+body {
+  background-color: black;
+}
+
 .main {
   display: grid;
   grid-template: 1fr 720px 1fr/1fr 720px 1fr;
@@ -10,7 +14,7 @@ h1, h3, button {
 
 h1 {
   grid-area: 1 / 2 / 2 / 3;
-  color: black;
+  color: rgb(228, 228, 228);
 }
 
 h3 {
@@ -19,19 +23,22 @@ h3 {
 
 
 .selection {
+  background-image: url("floor1.png");
   grid-area: 2/2/3/3;
-  display: flex;
+  display: grid;
+  grid-template: 1fr 1fr 1fr /1fr 1fr 1fr;
 }
 
 .start {
-  align-self: center;
+  width: auto;
+  height: 52px;
+  grid-row: 3/4;
+  grid-column: 3/4;
   color: floralwhite;
   background-color: crimson;
   border-color: rgb(47, 47, 47);
   border-style: ridge;
-  border: 4px;
-  border-bottom: 4px;
+  border: 2px solid rgb(217, 217, 217);
   border-bottom-right-radius: 12px;
-  border-top: 4px;
   border-top-left-radius: 12px;
 }

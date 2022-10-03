@@ -1,5 +1,10 @@
+body {
+  background-color: black;
+}
+
 h1 {
-  font-family: 'Vollkorn', serif;
+  grid-area: 1 / 2 / 2 / 3;
+  color: rgb(228, 228, 228);
 }
 
 
@@ -7,7 +12,7 @@ div.game {
   display: grid;
   margin: 0 auto;
   padding: 0;
-  background-image: url(floor1.png);
+  background-image: url(floor2.png);
   width: 720px;
   height: 720px;
   grid-template: repeat(15, 1fr)/ repeat(15, 1fr);
@@ -31,9 +36,16 @@ background-image: url(mazzy.png);
   z-index: 1;
 }
 
-.left-wall{
-  background-image: url(leftwall.png);
-  z-index: 0;
+.wcross{
+  background-image: url(wall-cross.png);
+  
+}
+.wvert{
+  background-image: url(wall-vert.png);
+}
+
+.whor {
+  background-image: url(wall-hor.png);
 }
 /* #game-space {
   grid-column: 3/14;

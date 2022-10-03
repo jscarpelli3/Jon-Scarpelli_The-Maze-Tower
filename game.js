@@ -6,6 +6,8 @@ let playerLoc = 202
 const walls = []
 let lighted = [202, 186, 187, 188, 203, 216, 217, 218, 201]
 
+///place maze
+
 ///make the board dark
 const makeDark = () => {
   tiles.forEach((tile) => {
@@ -20,10 +22,10 @@ const makeLight = () => {
   })
 }
 
-///set all walls
+///get all walls
 const makeWalls = () => {
   for (let i = 0; i < tiles.length; i++) {
-    if (tiles[i].classList.contains(`left-wall`)) {
+    if (tiles[i].classList.contains(`wall`)) {
       walls.push(i)
     }
   }
@@ -31,8 +33,8 @@ const makeWalls = () => {
 
 makeWalls()
 console.log(walls)
-makeDark()
-makeLight()
+// makeDark()
+// makeLight()
 
 ///Moving around
 window.addEventListener(`keydown`, (event) => {
@@ -87,4 +89,5 @@ window.addEventListener(`keydown`, (event) => {
     tiles[playerLoc].classList.add(`player`)
   }
 })
-// const Mazzy = {}
+
+Mazzy = {}
