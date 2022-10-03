@@ -1,15 +1,6 @@
-
-/* #t1 {
-  grid-row: 1;
-  grid-column: 13;
-  background-color: blue;
-  color: aliceblue;
+h1 {
+  font-family: 'Vollkorn', serif;
 }
-
-#t2 {
-  grid-row: 10;
-  grid-column: 13;
-  background-color: blue; */
 
 
 div.game {

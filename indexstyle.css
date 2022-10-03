@@ -1,0 +1,37 @@
+.main {
+  display: grid;
+  grid-template: 1fr 720px 1fr/1fr 720px 1fr;
+}
+
+h1, h3, button {
+  font-family: vollkorn, serif;
+  text-align: center;
+}
+
+h1 {
+  grid-area: 1 / 2 / 2 / 3;
+  color: black;
+}
+
+h3 {
+  color: rgb(255, 255, 255);
+}
+
+
+.selection {
+  grid-area: 2/2/3/3;
+  display: flex;
+}
+
+.start {
+  align-self: center;
+  color: floralwhite;
+  background-color: crimson;
+  border-color: rgb(47, 47, 47);
+  border-style: ridge;
+  border: 4px;
+  border-bottom: 4px;
+  border-bottom-right-radius: 12px;
+  border-top: 4px;
+  border-top-left-radius: 12px;
+}
