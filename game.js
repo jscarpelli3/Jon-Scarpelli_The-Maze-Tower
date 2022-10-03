@@ -6,7 +6,14 @@ let playerLoc = 202
 const walls = []
 let lighted = [202, 186, 187, 188, 203, 216, 217, 218, 201]
 
-///place maze
+class Character {
+  constructor(name, torch, ladders) {
+    this.name = name
+    this.torch = torch
+    this.ladders = ladders
+    this.steps = 0
+  }
+}
 
 ///make the board dark
 const makeDark = () => {
@@ -14,6 +21,9 @@ const makeDark = () => {
     tile.innerHTML = `<img src="ctrBlack.png">`
   })
 }
+// makeDark()
+
+///place maze
 
 ///set lighted area
 const makeLight = () => {
@@ -23,17 +33,17 @@ const makeLight = () => {
 }
 
 ///get all walls
-const makeWalls = () => {
+const getWalls = () => {
   for (let i = 0; i < tiles.length; i++) {
     if (tiles[i].classList.contains(`wall`)) {
       walls.push(i)
     }
   }
 }
+getWalls()
 
-makeWalls()
-console.log(walls)
-// makeDark()
+///// Make Mazzy, Make Light if there is any
+const mazzy = new Character(`Mazzy`, true, 0)
 // makeLight()
 
 ///Moving around
@@ -81,13 +91,12 @@ window.addEventListener(`keydown`, (event) => {
     ///setting new location
     playerLoc += tileDifference
     ///adding player to that new location
-    console.log(playerLoc)
     tiles[playerLoc].classList.add(`player`)
+    mazzy.steps += 1
+    ///you CANNOT go
   } else if (noGo === true) {
     plyr.classList.remove('player')
     playerLoc += 0
     tiles[playerLoc].classList.add(`player`)
   }
 })
-
-Mazzy = {}

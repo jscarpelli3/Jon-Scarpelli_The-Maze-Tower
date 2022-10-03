@@ -1,0 +1,17 @@
+key down ->
+  select player in the DOM
+  let lookahead=0
+
+  switch statement: if up/right/left/down
+        sets look ahead
+
+eval if lookahead is a NoGo
+ternary?
+
+
+if/else:  
+if 
+
+
+ternary is noGo 
+        
