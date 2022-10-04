@@ -7,9 +7,9 @@ const walls = []
 let lighted = [202, 186, 187, 188, 203, 216, 217, 218, 201]
 
 class Character {
-  constructor(name, torch, ladders) {
+  constructor(name, torches, ladders) {
     this.name = name
-    this.torch = torch
+    this.torches = torches
     this.ladders = ladders
     this.steps = 0
   }
@@ -43,11 +43,13 @@ const getWalls = () => {
 getWalls()
 
 ///// Make Mazzy, Make Light if there is any
-const mazzy = new Character(`Mazzy`, true, 0)
+const mazzy = new Character(`Mazzy`, 0, 0)
 // makeLight()
 
 ///Moving around
 window.addEventListener(`keydown`, (event) => {
+  ///Grab steps h2 to count steps
+  let stepCnt = document.querySelector(`.steps`)
   ///select div with player class
   let plyr = document.querySelector(`.player`)
   ///establish lookahead
@@ -93,6 +95,7 @@ window.addEventListener(`keydown`, (event) => {
     ///adding player to that new location
     tiles[playerLoc].classList.add(`player`)
     mazzy.steps += 1
+    stepCnt.innerHTML = mazzy.steps
     ///you CANNOT go
   } else if (noGo === true) {
     plyr.classList.remove('player')

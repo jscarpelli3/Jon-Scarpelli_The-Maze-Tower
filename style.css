@@ -6,16 +6,24 @@ body {
 }
 
 h1 {
-  display: inline;
+  text-align: center;
   grid-area: 1 / 2 / 2 / 3;
   color: rgb(228, 228, 228);
 }
 
 h2 {
-  display: inline;
-  text-align: right;
-  grid-area: 1 / 2 / 2 / 3;
-  color: rgb(198, 198, 198);
+  text-align: center;
+  color: rgb(175, 172, 172);
+  margin: 0 0 0 0;
+}
+
+.ui1 {
+  grid-area: 2 / 1 / 3 / 2;
+  
+}
+
+.inventory {
+  grid-area: 2 / 3 / 3 / 4;
 }
 
 div.game {
@@ -36,10 +44,24 @@ div.game {
   margin: 0;
 }
 
+.nwcorner{
+  background-image: url(nwcorner.png);
+}
+
+.necorner{
+  background-image: url(necorner.png);
+}
+
+.swcorner{
+  background-image: url(swcorner.png);
+}
+
+.secorner{
+  background-image: url(secorner.png);
+}
+
 .exit {
-  width: 48px;
-  height: 48px;
-  background-color: black;
+  background-image: url(exithor.png);
 }
 
 .player {
