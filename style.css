@@ -36,6 +36,7 @@ div.game {
   height: 720px;
   grid-template: repeat(15, 1fr)/ repeat(15, 1fr);
   place-items: center;
+  border: 1px solid white
 }
 .tile {
   width: 48px;
@@ -81,12 +82,24 @@ div.game {
   z-index: 1;
 }
 
-.inv-trch {
+.torch {
+  background-image: url(torch1.png);
+}
+
+.ladder {
+  background-image: url(ladder.png);
+}
+
+.exit {
+  background-image: url(exithor.png);
+}
+
+.inv-trch, .inv-ladder, .inv-coin {
   padding: 6px;
   margin: 12px 12px;
   border: 2px solid white;
 }
 
-.trch-count {
+.trch-count, .ldr-count, .cn-count {
   color: blanchedalmond;
 }
