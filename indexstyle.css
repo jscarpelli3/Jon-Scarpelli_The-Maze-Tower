@@ -21,6 +21,18 @@ h3 {
   color: rgb(255, 255, 255);
 }
 
+p {
+  grid-area: 1/1/2/4;
+  margin: 76px 180px;
+  padding: 24px;
+  color: rgb(0, 0, 0);
+  text-align: center;
+  font-size: 22px;
+  background-color: rgba(120, 120, 120, 0.446);
+  border-color: rgb(47, 47, 47);
+  border-style: ridge;
+  }
+
 
 .selection {
   background-image: url("floor1.png");
@@ -30,12 +42,12 @@ h3 {
 }
 
 .start {
-  width: auto;
+  width: 64;
   height: 52px;
   grid-row: 3/4;
   grid-column: 3/4;
   color: floralwhite;
-  background-color: crimson;
+  background-color: rgb(112, 1, 23);
   border-color: rgb(47, 47, 47);
   border-style: ridge;
   border: 2px solid rgb(217, 217, 217);

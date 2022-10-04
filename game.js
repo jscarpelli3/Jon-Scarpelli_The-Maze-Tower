@@ -84,8 +84,8 @@ window.addEventListener(`keydown`, (event) => {
     lighted.forEach((ntile, i) => {
       lighted[i] += tileDifference
     })
-    makeDark()
-    makeLight()
+    // makeDark()
+    // makeLight()
     ///removing player from current location
     plyr.classList.remove('player')
     ///setting new location
