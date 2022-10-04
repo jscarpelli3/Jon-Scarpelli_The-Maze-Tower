@@ -5,6 +5,11 @@ const keyListener = document.querySelector(`button`)
 const invDiv = document.querySelector(`.inventory`)
 const trchCount = document.createElement(`span`)
 const ladderCount = document.createElement(`span`)
+const outWalls = [
+  0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 29, 44, 59, 74, 89, 104, 119,
+  134, 149, 164, 179, 194, 209, 211, 212, 213, 214, 215, 216, 217, 218, 219,
+  220, 221, 222, 223, 224
+]
 let playerLoc = 202
 let exitLoc = 5
 const walls = []
@@ -14,21 +19,30 @@ const torchLoc = []
 const ladderLoc = []
 ////walls for level 1, exit is at 5
 const lvlOneWalls = [
-  0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 29, 44, 59, 64, 89, 104, 119,
-  134, 149, 164, 179, 194, 209, 211, 212, 213, 214, 215, 216, 217, 218, 219,
-  220, 221, 222, 223, 224, 15, 20, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180,
-  195, 210, 17, 19, 34, 35, 36, 37, 38, 39, 40, 41, 42, 47, 49, 62, 64, 65, 66,
+  0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 29, 30, 44, 45, 59, 60, 74,
+  75, 89, 90, 104, 105, 119, 120, 134, 135, 149, 150, 164, 165, 179, 180, 194,
+  195, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222,
+  223, 224, 17, 19, 34, 35, 36, 37, 38, 39, 40, 41, 42, 47, 49, 62, 64, 65, 66,
   68, 69, 70, 71, 72, 73, 77, 79, 92, 94, 95, 96, 97, 98, 99, 100, 107, 109,
   117, 122, 124, 126, 128, 129, 130, 131, 132, 137, 139, 143, 147, 152, 154,
-  155, 156, 157, 158, 162, 167, 182, 183, 184, 185, 186, 187, 188, 189, 190, 192
+  155, 156, 157, 158, 162, 167, 177, 182, 183, 184, 185, 186, 187, 188, 189,
+  190, 192
 ]
 ///walls for lvl 2 exit is at 5 again
 const lvlTwoWalls = [
-  0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 29, 44, 59, 64, 89, 104, 119,
-  134, 149, 164, 179, 194, 209, 211, 212, 213, 214, 215, 216, 217, 218, 219,
-  220, 221, 222, 223, 224, 15, 20, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180,
-  195, 210
+  0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 29, 30, 44, 45, 59, 60, 74,
+  75, 89, 90, 104, 105, 119, 120, 134, 135, 149, 150, 164, 165, 179, 180, 194,
+  195, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222,
+  223, 224, 21, 23, 32, 33, 34, 35, 36, 38, 39, 40, 41, 42, 53, 61, 62, 63, 64,
+  65, 66, 67, 68, 69, 79, 83, 94, 98, 109, 113, 124, 128, 139, 143, 154, 158,
+  169, 173, 184, 188, 203
 ]
+const lvlOneTorches = [140, 208]
+const lvlOneLadders = [123]
+const lvlOneExit = 5
+const lvlTwoTorches = [140, 208]
+const lvlTwoLadders = [123]
+const lvlTwoExit = 5
 
 class Character {
   constructor(name, torches, ladders) {
@@ -39,9 +53,50 @@ class Character {
   }
 }
 
+console.log(lvlOneWalls)
 const placeWalls = (levelWalls) => {
   levelWalls.forEach((wallTile, i) => {
-    tiles[wallTile].classList.toggle = `wall`
+    tiles[wallTile].classList.add(`wall`)
+  })
+  levelWalls.forEach((tile, i) => {
+    let lt = (tile -= 1)
+    let rt = (tile += 1)
+    let up = (tile -= 15)
+    let dn = (tile += 15)
+
+    if (tile % 15 === 14 || tile % 15 === 0) {
+      tiles[tile].classList.add(`wvert`)
+    } else if (
+      tiles[rt].classList.contains(`wall`) ||
+      tiles[lt].classList.contains(`wall`)
+    ) {
+      tiles[tile].classList.add(`whor`)
+    } else if (
+      tiles[dn].classList.contains(`wall`) ||
+      tiles[up].classList.contains(`wall`)
+    ) {
+      tiles[tile].classList.add('wvert')
+    } else if (
+      tiles[up].classList.contains(`wall`) &&
+      tiles[rt].classList.contains(`wall`)
+    ) {
+      tiles[tile].classList.add(`swcorner`)
+    } else if (
+      tiles[up].classList.contains(`wall`) &&
+      tiles[lt].classList.contains(`wall`)
+    ) {
+      tiles[tile].classList.add(`secorner`)
+    } else if (
+      tiles[dn].classList.contains(`wall`) &&
+      tiles[rt].classList.contains(`wall`)
+    ) {
+      tiles[tile].classList.add(`nwcorner`)
+    } else if (
+      tiles[dn].classList.contains(`wall`) &&
+      tiles[lt].classList.contains(`wall`)
+    ) {
+      tiles[tile].classList.add(`necorner`)
+    }
   })
 }
 
@@ -59,8 +114,6 @@ const makeDark = () => {
   })
 }
 
-///place maze
-
 ///set lighted area
 const makeLight = () => {
   lighted.forEach((lightTile) => {
@@ -77,9 +130,19 @@ const getWalls = () => {
       noWall.push[i]
     }
   }
+  console.log(walls)
 }
 
-const placeItems = (ldrs, trchs, exit) => {}
+////place items
+const placeItems = (ldrs, trchs, exit) => {
+  tiles[exit].classList.add(`exit`)
+  ldrs.forEach((ldr) => {
+    tiles[ldrs].classList.add(`ladder`)
+  })
+  trchs.forEach((trc) => {
+    tiles[trc].classList.add(`torch`)
+  })
+}
 
 //// get the torch locations
 const getTorches = () => {
@@ -165,8 +228,8 @@ const mazzy = new Character(`Mazzy`, 0, 0)
 // makeDark()
 // /// Make Light if there is any
 // makeLight()
-placeWalls()
-placeItems()
+placeWalls(lvlOneWalls)
+placeItems(lvlOneLadders, lvlOneTorches, lvlOneExit)
 getWalls()
 getTorches()
 getLadder()
@@ -200,6 +263,18 @@ window.addEventListener(`keydown`, (event) => {
       tileDifference = -1
       lookAhead = playerLoc + tileDifference
       break
+    case `l`:
+      let newLad = playerLoc + 15
+      let wallRmv = 0
+      walls.forEach((wall, i) => {
+        if (wall === newLad) {
+          wallRmv = i
+        }
+      })
+      tiles[newLad].innerHTML = `<img src=ladder.png>`
+      tiles[newLad].classList.remove(`wall`)
+      walls.splice(wallRmv, 1)
+      break
     default:
       break
   }
@@ -210,14 +285,14 @@ window.addEventListener(`keydown`, (event) => {
   ///IF YOU CAN GO
   if (noGo === false) {
     if (lookAhead === exitLoc) {
-      window.location.href = 'gamelvl2.html'
+      console.log(`go to level2`)
     } else {
       ///reset Lighted tiles according to the proposed new player location
       lighted.forEach((ntile, i) => {
         lighted[i] += tileDifference
       })
-      makeDark()
-      makeLight()
+      // makeDark()
+      // makeLight()
       ///removing player from current location
       plyr.classList.remove('player')
       ///setting new location
