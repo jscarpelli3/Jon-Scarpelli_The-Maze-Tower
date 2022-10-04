@@ -2,10 +2,12 @@ const gamboard = document.querySelector(`.game`)
 const tiles = document.querySelectorAll(`.tile`)
 const player = document.querySelector(`.player`)
 const keyListener = document.querySelector(`button`)
+const invDiv = document.querySelector(`.inventory`)
+const trchCount = document.createElement(`span`)
 let playerLoc = 202
 const walls = []
 let lighted = [202, 186, 187, 188, 203, 216, 217, 218, 201]
-const torchLoc = document.querySelector(`.torch`)
+const torchLoc = []
 
 class Character {
   constructor(name, torches, ladders) {
@@ -22,7 +24,6 @@ const makeDark = () => {
     tile.innerHTML = `<img src="ctrBlack.png">`
   })
 }
-// makeDark()
 
 ///place maze
 
@@ -41,10 +42,48 @@ const getWalls = () => {
     }
   }
 }
-getWalls()
 
-///// Make Mazzy, Make Light if there is any
+//// get the torch locations
+const getTorches = () => {
+  for (let i = 0; i < tiles.length; i++) {
+    if (tiles[i].classList.contains(`torch`)) {
+      torchLoc.push(i)
+    }
+  }
+}
+
+////function for checking for torches
+const checkTorch = () => {
+  let torchNow = torchLoc.includes(playerLoc)
+  if (torchNow === true) {
+    addTorch()
+  }
+}
+
+///function for adding torches
+const addTorch = () => {
+  tiles[playerLoc].innerHTML = ``
+  if (mazzy.torches === 0) {
+    let trchDiv = document.createElement(`div`)
+    // let trchCount = document.createElement(`span`)
+    trchDiv.innerHTML = `<img src=torch.png>`
+    trchDiv.classList.add(`inv-trch`)
+    trchCount.classList.add(`trch-count`)
+    trchDiv.append(trchCount)
+    invDiv.append(trchDiv)
+  }
+  mazzy.torches += 1
+  trchCount.innerText = mazzy.torches
+}
+
+/////////Starting Game
+/// Make Mazzy
 const mazzy = new Character(`Mazzy`, 0, 0)
+// makeDark()
+getWalls()
+getTorches()
+console.log(torchLoc)
+/// Make Light if there is any
 // makeLight()
 
 ///Moving around
@@ -97,11 +136,13 @@ window.addEventListener(`keydown`, (event) => {
     tiles[playerLoc].classList.add(`player`)
     mazzy.steps += 1
     stepCnt.innerHTML = mazzy.steps
+    ///if you go to a torch spot
+    console.log(playerLoc)
+    checkTorch()
     ///you CANNOT go
   } else if (noGo === true) {
     plyr.classList.remove('player')
     playerLoc += 0
     tiles[playerLoc].classList.add(`player`)
   }
-  if (playerLoc===)
 })

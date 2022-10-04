@@ -44,6 +44,18 @@ div.game {
   margin: 0;
 }
 
+.wcross{
+  background-image: url(wall-cross.png);
+  
+}
+.wvert{
+  background-image: url(wall-vert.png);
+}
+
+.whor {
+  background-image: url(wall-hor.png);
+}
+
 .nwcorner{
   background-image: url(nwcorner.png);
 }
@@ -65,18 +77,16 @@ div.game {
 }
 
 .player {
-background-image: url(mazzy.png);
+  background-image: url(mazzy.png);
   z-index: 1;
 }
 
-.wcross{
-  background-image: url(wall-cross.png);
-  
-}
-.wvert{
-  background-image: url(wall-vert.png);
+.inv-trch {
+  padding: 6px;
+  margin: 12px 12px;
+  border: 2px solid white;
 }
 
-.whor {
-  background-image: url(wall-hor.png);
+.trch-count {
+  color: blanchedalmond;
 }
