@@ -5,6 +5,7 @@ const keyListener = document.querySelector(`button`)
 let playerLoc = 202
 const walls = []
 let lighted = [202, 186, 187, 188, 203, 216, 217, 218, 201]
+const torchLoc = document.querySelector(`.torch`)
 
 class Character {
   constructor(name, torches, ladders) {
@@ -102,4 +103,5 @@ window.addEventListener(`keydown`, (event) => {
     playerLoc += 0
     tiles[playerLoc].classList.add(`player`)
   }
+  if (playerLoc===)
 })
