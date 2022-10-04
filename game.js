@@ -264,16 +264,28 @@ window.addEventListener(`keydown`, (event) => {
       lookAhead = playerLoc + tileDifference
       break
     case `l`:
-      let newLad = playerLoc + 15
-      let wallRmv = 0
-      walls.forEach((wall, i) => {
-        if (wall === newLad) {
-          wallRmv = i
-        }
-      })
-      tiles[newLad].innerHTML = `<img src=ladder.png>`
-      tiles[newLad].classList.remove(`wall`)
-      walls.splice(wallRmv, 1)
+      if (mazzy.ladders > 0) {
+        let newLad = playerLoc + 15
+        let wallRmv = 0
+        walls.forEach((wall, i) => {
+          if (wall === newLad) {
+            wallRmv = i
+          }
+        })
+        tiles[newLad].innerHTML = `<img src=ladder.png>`
+        mazzy.ladders -= 1
+        ladderCount.innerText = mazzy.ladders
+        tiles[newLad].classList.remove(`wall`)
+        walls.splice(wallRmv, 1)
+      }
+      break
+    case `t`:
+      if (mazzy.torches > 0) {
+        console.log(`Torch Used!`)
+        mazzy.torches -= 1
+        trchCount.innerText = mazzy.torches
+      }
+
       break
     default:
       break
