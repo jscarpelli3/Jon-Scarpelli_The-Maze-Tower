@@ -103,11 +103,18 @@ const placeWalls = (levelWalls) => {
     }
   })
   tiles[0].classList.add(`nwcorner`)
+  tiles[0].classList.remove(`wvert`)
   tiles[14].classList.add(`necorner`)
+  tiles[14].classList.remove(`wvert`)
   tiles[210].classList.add(`swcorner`)
+  tiles[210].classList.remove(`wvert`)
   tiles[224].classList.add(`secorner`)
+  tiles[224].classList.remove(`wvert`)
   tiles[exitLoc + 1].classList.add(`whor`)
+  tiles[exitLoc + 1].classList.remove(`wvert`)
   tiles[entLoc].classList.add(`ent`)
+  tiles[entLoc + 1].classList.add(`whor`)
+  tiles[entLoc + 1].classList.remove(`wvert`)
 }
 
 ///make the board dark
@@ -116,7 +123,9 @@ const makeDark = () => {
     if (
       tile.classList.contains(`torch`) ||
       tile.classList.contains(`ladder`) ||
-      tile.classList.contains(`exit`)
+      tile.classList.contains(`exit`) ||
+      tile.classList.contains(`ent`) ||
+      tile.classList.contains(`player`)
     ) {
     } else {
       tile.innerHTML = `<img src="ctrBlack.png">`
@@ -292,17 +301,13 @@ const clearWalls = () => {
 }
 
 const clearLdrs = () => {
-  // const rmvLdr = document.querySelectorAll(`ldr-applied`)
-  // rmvLdr.forEach((onLdr) => {
-  //   onLdr.innerHTML = ``
-  // })
   tiles.forEach((tile, i) => {
     if (tiles[i].classList.contains(`ladder`)) {
       tiles[i].classList.remove(`ladder`)
     } else if (tiles[i].classList.contains(`ldr-applied`)) {
       tiles[i].innerHTML = ``
-      lstApdLdr.push(`i`)
       tiles[i].classList.remove(`ldr-applied`)
+      lstApdLdr.push(`i`)
     }
   })
 }
