@@ -19,6 +19,7 @@ const noWall = []
 let lighted = [202, 186, 187, 188, 203, 216, 217, 218, 201]
 const torchLoc = []
 const ladderLoc = []
+const lstApdLdr = []
 ////walls for level 1, exit is at 5
 const lvlOneWalls = [
   0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 29, 30, 44, 45, 59, 60, 74,
@@ -244,11 +245,17 @@ const useLadder = (lkAhd) => {
         wallRmv = i
       }
     })
-    tiles[lkAhd].innerHTML = `<img src=ladder.png>`
+    tiles[lkAhd].innerHTML = `<img id="ladder" src=ladder.png>`
+    tiles[lkAhd].classList.add(`ldr-applied`)
     mazzy.ladders -= 1
     ladderCount.innerText = mazzy.ladders
     tiles[lkAhd].classList.remove(`wall`)
     walls.splice(wallRmv, 1)
+    if (mazzy.ladders === 0) {
+      const ldrDiv = document.querySelector(`.inv-ladder`)
+      const ldrCntTxt = document.querySelector(`.ldr-count`)
+      ldrDiv.remove()
+    }
   }
 }
 
@@ -283,7 +290,24 @@ const clearWalls = () => {
   })
 }
 
+const clearLdrs = () => {
+  // const rmvLdr = document.querySelectorAll(`ldr-applied`)
+  // rmvLdr.forEach((onLdr) => {
+  //   onLdr.innerHTML = ``
+  // })
+  tiles.forEach((tile, i) => {
+    if (tiles[i].classList.contains(`ladder`)) {
+      tiles[i].classList.remove(`ladder`)
+    } else if (tiles[i].classList.contains(`ldr-applied`)) {
+      tiles[i].innerHTML = ``
+      lstApdLdr.push(`i`)
+      tiles[i].classList.remove(`ldr-applied`)
+    }
+  })
+}
+
 const clearBoard = (wlls, lddrs, tors, ext) => {
+  clearLdrs()
   walls.length = 0
   torchLoc.length = 0
   ladderLoc.length = 0
