@@ -149,7 +149,6 @@ const getWalls = () => {
       noWall.push[i]
     }
   }
-  console.log(walls)
 }
 
 ////place items
@@ -248,7 +247,6 @@ const addLadder = () => {
 }
 
 const useLadder = (lkAhd) => {
-  console.log(lkAhd)
   if (mazzy.ladders > 0) {
     // let newLad = lkAhd
     let wallRmv = 0
@@ -272,48 +270,57 @@ const useLadder = (lkAhd) => {
 }
 
 const placePlayer = () => {
-  let curPlyr = document.querySelector(`.player`)
-  curPlyr.classList.remove(`player`)
+  // let curPlyr = document.querySelector(`.player`)
+  // curPlyr.classList.remove(`player`)
   tiles[playerLoc].classList.add(`player`)
 }
 
-const clearWalls = () => {
+const clearBrd = () => {
+  // tiles.forEach((tile, i) => {
+  //   if (tiles[i].classList.contains(`wall`)) {
+  //     tiles[i].classList.remove(`wall`)
+  //   }
+  // })
+  // tiles.forEach((tile, i) => {
+  //   if (tiles[i].classList.contains(`wvert`)) {
+  //     tiles[i].classList.remove(`wvert`)
+  //   } else if (tiles[i].classList.contains(`whor`)) {
+  //     tiles[i].classList.remove(`whor`)
+  //   } else if (tiles[i].classList.contains(`nwcorner`)) {
+  //     tiles[i].classList.remove(`nwcorner`)
+  //   } else if (tiles[i].classList.contains(`necorner`)) {
+  //     tiles[i].classList.remove(`necorner`)
+  //   } else if (tiles[i].classList.contains(`swcorner`)) {
+  //     tiles[i].classList.remove(`swcorner`)
+  //   } else if (tiles[i].classList.contains(`secorner`)) {
+  //     tiles[i].classList.remove(`secorner`)
+  //   }
+  // })
   tiles.forEach((tile, i) => {
-    if (tiles[i].classList.contains(`wall`)) {
-      tiles[i].classList.remove(`wall`)
-    }
-  })
-  tiles.forEach((tile, i) => {
-    if (tiles[i].classList.contains(`wvert`)) {
-      tiles[i].classList.remove(`wvert`)
-    } else if (tiles[i].classList.contains(`whor`)) {
-      tiles[i].classList.remove(`whor`)
-    } else if (tiles[i].classList.contains(`nwcorner`)) {
-      tiles[i].classList.remove(`nwcorner`)
-    } else if (tiles[i].classList.contains(`necorner`)) {
-      tiles[i].classList.remove(`necorner`)
-    } else if (tiles[i].classList.contains(`swcorner`)) {
-      tiles[i].classList.remove(`swcorner`)
-    } else if (tiles[i].classList.contains(`secorner`)) {
-      tiles[i].classList.remove(`secorner`)
-    }
-  })
-}
-
-const clearLdrs = () => {
-  tiles.forEach((tile, i) => {
-    if (tiles[i].classList.contains(`ladder`)) {
-      tiles[i].classList.remove(`ladder`)
-    } else if (tiles[i].classList.contains(`ldr-applied`)) {
+    if (tiles[i].classList.contains(`ldr-applied`)) {
+      tiles[i].className = `tile`
       tiles[i].innerHTML = ``
-      tiles[i].classList.remove(`ldr-applied`)
       lstApdLdr.push(`i`)
+    } else {
+      tiles[i].className = `tile`
     }
   })
 }
 
-const clearBoard = (wlls, lddrs, tors, ext) => {
-  clearLdrs()
+// const clearLdrs = () => {
+//   tiles.forEach((tile, i) => {
+//     if (tiles[i].classList.contains(`ladder`)) {
+//       tiles[i].classList.remove(`ladder`)
+//     } else if (tiles[i].classList.contains(`ldr-applied`)) {
+//       tiles[i].innerHTML = ``
+//       tiles[i].classList.remove(`ldr-applied`)
+//       lstApdLdr.push(`i`)
+//     }
+//   })
+// }
+
+const setBoard = (wlls, lddrs, tors, ext) => {
+  // clearLdrs()
   walls.length = 0
   torchLoc.length = 0
   ladderLoc.length = 0
@@ -338,13 +345,6 @@ const ending = (parachute) => {
   const endTorch = document.createElement(`li`)
   const endLadder = document.createElement(`li`)
   const endPlank = document.createElement(`li`)
-  const reStart = document.createElement(`button`)
-  // const restartButton = document.querySelector(`.restart`)
-  // ///restart button takes you to the index of the game
-  // restartButton.addEventListener(`click`, () => {
-  //   window.location.href = 'index.html'
-  // })
-  console.log(`this is an ending`)
   if (parachute === true) {
     const endGood =
       document.createTextNode(`Mazzy has reached the top of The Maze Tower!  He looks out over the landscape from the top of the massive 
@@ -353,13 +353,11 @@ const ending = (parachute) => {
   } else {
     const endBad =
       document.createTextNode(`Mazzy has reached the top of The Maze Tower!  He looks out over the landscape from the top of the massive 
-    tower(...well... it's only 2 floors up).  With the giant door to the tower closing behind him... he takes a deep breath, realzing that he 
-    has nothing to help him get down.  He decides to jump to freedom and hope he can manage a soft landing.... As he falls he realizes how dumb this all was.  
-    That he could have just walked out the door at the bottom level.  Then SPLAT!! He dies.`)
+    tower(...well... it's only 2 floors up).  With the giant door to the tower closing behind him... he takes a deep breath. He decides to jump to freedom.... As he falls he 
+    realizes that he has no parachute to aid his fall... he grimmaces. He thinks of how dumb this all was... that he could have just walked out the door at the bottom level.  Then SPLAT!! He dies.`)
     endP.append(endBad)
   }
   endDiv.append(endP)
-  reStart.innerText = `ReStart Game`
   endUl.innerText = `Ending Stats:`
   endStep.innerText = `Mazzy took ${mazzy.steps} steps`
   endCoin.innerText = `Mazzy collected ${mazzy.coins} coins`
@@ -372,8 +370,10 @@ const ending = (parachute) => {
   endUl.append(endLadder)
   endUl.append(endPlank)
   endDiv.append(endUl)
-  endDiv.append.reStart
-
+  ///restart button takes you to the index of the game
+  const reStart = document.createElement(`button`)
+  endDiv.append(reStart)
+  reStart.innerText = `Restart Game`
   reStart.addEventListener(`click`, () => {
     window.location.href = 'index.html'
   })
@@ -381,18 +381,18 @@ const ending = (parachute) => {
 
 const exit = () => {
   if (curLvl === 0) {
-    clearBoard(lvlOneWalls, lvlOneLadders, lvlOneTorches, lvlOneExit)
+    setBoard(lvlOneWalls, lvlOneLadders, lvlOneTorches, lvlOneExit)
     curLvl = 1
   } else if (curLvl === 1) {
-    clearWalls()
-    clearBoard(lvlOneWalls, lvlOneLadders, lvlOneTorches, lvlOneExit)
+    clearBrd()
+    setBoard(lvlOneWalls, lvlOneLadders, lvlOneTorches, lvlOneExit)
   } else if (curLvl === 2) {
-    clearWalls()
-    clearBoard(lvlTwoWalls, lvlTwoLadders, lvlTwoTorches, lvlTwoExit)
+    clearBrd()
+    setBoard(lvlTwoWalls, lvlTwoLadders, lvlTwoTorches, lvlTwoExit)
   } else if (curLvl === 3) {
     window.Stats = []
-    clearWalls()
-    clearLdrs()
+    clearBrd()
+    // clearLdrs()
     ending(mazzy.hasParachute)
   }
 }
@@ -425,7 +425,6 @@ window.addEventListener(`keydown`, (event) => {
     case `ArrowRight`:
       tileDifference = 1
       lookAhead = playerLoc + tileDifference
-      console.log(lookAhead)
       break
     case 'ArrowDown':
       tileDifference = 15
@@ -436,7 +435,6 @@ window.addEventListener(`keydown`, (event) => {
       lookAhead = playerLoc + tileDifference
       break
     case `l`:
-      console.log(lookAhead)
       useLadder(lookAhead)
       break
     case `t`:
@@ -455,12 +453,9 @@ window.addEventListener(`keydown`, (event) => {
     if (lookAhead === exitLoc) {
       curLvl++
       exit()
-      console.log(curLvl)
     } else if (lookAhead === entLoc) {
       curLvl--
       exit()
-      console.log(lookAhead)
-      console.log(entLoc)
     } else {
       ///reset Lighted tiles according to the proposed new player location
       lighted.forEach((ntile, i) => {
