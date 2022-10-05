@@ -51,7 +51,10 @@ class Character {
     this.name = name
     this.torches = torches
     this.ladders = ladders
+    this.planks = 0
     this.steps = 0
+    this.hasParachute = false
+    this.coins = 0
   }
 }
 
@@ -273,7 +276,6 @@ const clearWalls = () => {
   })
   tiles.forEach((tile, i) => {
     if (tiles[i].classList.contains(`wvert`)) {
-      console.log(`wverts`)
       tiles[i].classList.remove(`wvert`)
     } else if (tiles[i].classList.contains(`whor`)) {
       tiles[i].classList.remove(`whor`)
@@ -286,7 +288,6 @@ const clearWalls = () => {
     } else if (tiles[i].classList.contains(`secorner`)) {
       tiles[i].classList.remove(`secorner`)
     }
-    console.log(`where are the walls?`)
   })
 }
 
@@ -321,6 +322,58 @@ const clearBoard = (wlls, lddrs, tors, ext) => {
   placePlayer()
 }
 
+const ending = (parachute) => {
+  const endDiv = document.getElementById(`t32`)
+  endDiv.classList.add(`end-div`)
+  endDiv.classList.remove(`tile`)
+  const endP = document.createElement(`p`)
+  const endUl = document.createElement(`ul`)
+  const endStep = document.createElement(`li`)
+  const endCoin = document.createElement(`li`)
+  const endTorch = document.createElement(`li`)
+  const endLadder = document.createElement(`li`)
+  const endPlank = document.createElement(`li`)
+  const reStart = document.createElement(`button`)
+  // const restartButton = document.querySelector(`.restart`)
+  // ///restart button takes you to the index of the game
+  // restartButton.addEventListener(`click`, () => {
+  //   window.location.href = 'index.html'
+  // })
+  console.log(`this is an ending`)
+  if (parachute === true) {
+    const endGood =
+      document.createTextNode(`Mazzy has reached the top of The Maze Tower!  He looks out over the landscape from the top of the massive 
+    tower(...well...it's only 2 floors up).  With the giant door to the tower closing behind him... he takes a deep breath, throws on the parachute and jumps to freedom!`)
+    endP.append(endGood)
+  } else {
+    const endBad =
+      document.createTextNode(`Mazzy has reached the top of The Maze Tower!  He looks out over the landscape from the top of the massive 
+    tower(...well... it's only 2 floors up).  With the giant door to the tower closing behind him... he takes a deep breath, realzing that he 
+    has nothing to help him get down.  He decides to jump to freedom and hope he can manage a soft landing.... As he falls he realizes how dumb this all was.  
+    That he could have just walked out the door at the bottom level.  Then SPLAT!! He dies.`)
+    endP.append(endBad)
+  }
+  endDiv.append(endP)
+  reStart.innerText = `ReStart Game`
+  endUl.innerText = `Ending Stats:`
+  endStep.innerText = `Mazzy took ${mazzy.steps} steps`
+  endCoin.innerText = `Mazzy collected ${mazzy.coins} coins`
+  endTorch.innerText = `Mazzy has ${mazzy.torches} left`
+  endLadder.innerText = `Mazzy has ${mazzy.ladders} left`
+  endPlank.innerText = `Mazzy has ${mazzy.planks} left`
+  endUl.append(endStep)
+  endUl.append(endCoin)
+  endUl.append(endTorch)
+  endUl.append(endLadder)
+  endUl.append(endPlank)
+  endDiv.append(endUl)
+  endDiv.append.reStart
+
+  reStart.addEventListener(`click`, () => {
+    window.location.href = 'index.html'
+  })
+}
+
 const exit = () => {
   if (curLvl === 0) {
     clearBoard(lvlOneWalls, lvlOneLadders, lvlOneTorches, lvlOneExit)
@@ -331,6 +384,11 @@ const exit = () => {
   } else if (curLvl === 2) {
     clearWalls()
     clearBoard(lvlTwoWalls, lvlTwoLadders, lvlTwoTorches, lvlTwoExit)
+  } else if (curLvl === 3) {
+    window.Stats = []
+    clearWalls()
+    clearLdrs()
+    ending(mazzy.hasParachute)
   }
 }
 
@@ -392,6 +450,7 @@ window.addEventListener(`keydown`, (event) => {
     if (lookAhead === exitLoc) {
       curLvl++
       exit()
+      console.log(curLvl)
     } else if (lookAhead === entLoc) {
       curLvl--
       exit()

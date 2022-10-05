@@ -107,3 +107,22 @@ div.game {
 .trch-count, .ldr-count, .cn-count {
   color: blanchedalmond;
 }
+
+.end-div {
+  grid-area: 3/4/14/13;
+  height: 528px;
+  width: 432px;
+  color: rgb(0, 0, 0);
+  text-align: center;
+  font-size: 20px;
+  background-color: rgba(120, 120, 120, 0.446);
+  border: 1px solid white
+}
+
+ul, li {
+  color:blanchedalmond;
+  list-style: none;
+  text-align: center;
+  font-size: 18px;
+
+}
