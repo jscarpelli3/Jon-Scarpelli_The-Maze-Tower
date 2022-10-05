@@ -14,6 +14,7 @@ const outWalls = [
 let curLvl = 0
 let playerLoc = 202
 let exitLoc = 5
+let paraLoc = 27
 const walls = []
 const noWall = []
 let lighted = [202, 186, 187, 188, 203, 216, 217, 218, 201]
@@ -35,16 +36,21 @@ const lvlTwoWalls = [
   0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 29, 30, 44, 45, 59, 60, 74,
   75, 89, 90, 104, 105, 119, 120, 134, 135, 149, 150, 164, 165, 179, 180, 194,
   195, 209, 210, 211, 212, 213, 214, 215, 216, 218, 219, 220, 221, 222, 223,
-  224, 21, 23, 32, 33, 34, 35, 36, 38, 39, 40, 41, 42, 53, 61, 62, 63, 64, 65,
-  66, 67, 68, 69, 79, 83, 94, 98, 109, 113, 124, 128, 139, 143, 154, 158, 169,
-  173, 184, 188, 203
+  224, 21, 23, 32, 33, 34, 35, 36, 38, 39, 40, 41, 42, 43, 53, 61, 62, 63, 64,
+  65, 66, 67, 68, 69, 79, 83, 94, 98, 109, 113, 124, 128, 139, 143, 154, 158,
+  169, 173, 184, 188, 203
 ]
 const lvlOneTorches = [140, 208]
 const lvlOneLadders = [123]
+const lvlOneHoles = [78, 153]
+const lvlOnePlanks = [50]
 const lvlOneExit = 5
 const lvlTwoTorches = [140, 208]
-const lvlTwoLadders = [121]
+const lvlTwoLadders = [121, 122, 123, 163]
+const lvlTwoHoles = [17]
+const lvlTwoPlanks = [87]
 const lvlTwoExit = 5
+let fell = false
 
 class Character {
   constructor(name, torches, ladders) {
@@ -152,13 +158,19 @@ const getWalls = () => {
 }
 
 ////place items
-const placeItems = (ldrs, trchs, exit) => {
+const placeItems = (ldrs, trchs, exit, holes, planks) => {
   tiles[exit].classList.add(`exit`)
-  ldrs.forEach((ldr) => {
+  ldrs.forEach((ldrs) => {
     tiles[ldrs].classList.add(`ladder`)
   })
   trchs.forEach((trc) => {
     tiles[trc].classList.add(`torch`)
+  })
+  holes.forEach((hole) => {
+    tiles[hole].classList.add(`hole`)
+  })
+  planks.forEach((plank) => {
+    tiles[plank].classList.add(`plank`)
   })
 }
 
@@ -319,7 +331,7 @@ const clearBrd = () => {
 //   })
 // }
 
-const setBoard = (wlls, lddrs, tors, ext) => {
+const setBoard = (wlls, lddrs, tors, ext, hle, plk) => {
   // clearLdrs()
   walls.length = 0
   torchLoc.length = 0
@@ -327,7 +339,7 @@ const setBoard = (wlls, lddrs, tors, ext) => {
   playerLoc = 202
   entLoc = playerLoc + 15
   placeWalls(wlls)
-  placeItems(lddrs, tors, ext)
+  placeItems(lddrs, tors, ext, hle, plk)
   getWalls()
   getTorches()
   getLadder()
@@ -345,18 +357,26 @@ const ending = (parachute) => {
   const endTorch = document.createElement(`li`)
   const endLadder = document.createElement(`li`)
   const endPlank = document.createElement(`li`)
+
   if (parachute === true) {
     const endGood =
       document.createTextNode(`Mazzy has reached the top of The Maze Tower!  He looks out over the landscape from the top of the massive 
     tower(...well...it's only 2 floors up).  With the giant door to the tower closing behind him... he takes a deep breath, throws on the parachute and jumps to freedom!`)
     endP.append(endGood)
-  } else {
+  } else if (parachute === false) {
     const endBad =
       document.createTextNode(`Mazzy has reached the top of The Maze Tower!  He looks out over the landscape from the top of the massive 
     tower(...well... it's only 2 floors up).  With the giant door to the tower closing behind him... he takes a deep breath. He decides to jump to freedom.... As he falls he 
     realizes that he has no parachute to aid his fall... he grimmaces. He thinks of how dumb this all was... that he could have just walked out the door at the bottom level.  Then SPLAT!! He dies.`)
     endP.append(endBad)
+  } else if (parachute === 1) {
+    console.log(`helllllooooo??`)
+    const endFell = document.createTextNode(
+      `Mazzy fell through a hole in the floor. For a split second all he saw was darkness... then... SPLAT! He died.`
+    )
+    endP.append(endFell)
   }
+
   endDiv.append(endP)
   endUl.innerText = `Ending Stats:`
   endStep.innerText = `Mazzy took ${mazzy.steps} steps`
@@ -381,16 +401,37 @@ const ending = (parachute) => {
 
 const exit = () => {
   if (curLvl === 0) {
-    setBoard(lvlOneWalls, lvlOneLadders, lvlOneTorches, lvlOneExit)
+    setBoard(
+      lvlOneWalls,
+      lvlOneLadders,
+      lvlOneTorches,
+      lvlOneExit,
+      lvlOneHoles,
+      lvlOnePlanks
+    )
     curLvl = 1
   } else if (curLvl === 1) {
     clearBrd()
-    setBoard(lvlOneWalls, lvlOneLadders, lvlOneTorches, lvlOneExit)
+    setBoard(
+      lvlOneWalls,
+      lvlOneLadders,
+      lvlOneTorches,
+      lvlOneExit,
+      lvlOneHoles,
+      lvlOnePlanks
+    )
   } else if (curLvl === 2) {
     clearBrd()
-    setBoard(lvlTwoWalls, lvlTwoLadders, lvlTwoTorches, lvlTwoExit)
+    setBoard(
+      lvlTwoWalls,
+      lvlTwoLadders,
+      lvlTwoTorches,
+      lvlTwoExit,
+      lvlTwoHoles,
+      lvlTwoPlanks
+    )
+    tiles[paraLoc].classList.add(`para`)
   } else if (curLvl === 3) {
-    window.Stats = []
     clearBrd()
     // clearLdrs()
     ending(mazzy.hasParachute)
@@ -456,6 +497,9 @@ window.addEventListener(`keydown`, (event) => {
     } else if (lookAhead === entLoc) {
       curLvl--
       exit()
+    } else if (tiles[lookAhead].classList.contains(`hole`)) {
+      clearBrd()
+      ending(1)
     } else {
       ///reset Lighted tiles according to the proposed new player location
       lighted.forEach((ntile, i) => {

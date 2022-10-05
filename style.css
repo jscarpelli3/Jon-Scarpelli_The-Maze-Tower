@@ -90,6 +90,18 @@ div.game {
   background-image: url(ladder.png);
 }
 
+.plank {
+  background-image: url(planks.png);
+}
+
+.hole {
+  background-image: url(hole.png);
+}
+
+.para {
+  background-image: url(parachute.png);
+}
+
 .exit {
   background-image: url(exithor.png);
 }
