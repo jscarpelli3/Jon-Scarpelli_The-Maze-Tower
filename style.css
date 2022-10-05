@@ -1,5 +1,8 @@
 body {
   font-family: vollkorn, serif;
+  background-image: url("pics/sky.png");
+  background-repeat: no-repeat;
+  background-size: cover;
   background-color: black;
   display: grid;
   grid-template: 1fr 720px 1fr/1fr 720px 1fr;
@@ -110,13 +113,13 @@ div.game {
   background-image: url(entrance.png);
 }
 
-.inv-trch, .inv-ladder, .inv-coin {
+.inv-trch, .inv-ladder, .inv-coin, .inv-plank, .para-count {
   padding: 6px;
   margin: 12px 12px;
   border: 2px solid white;
 }
 
-.trch-count, .ldr-count, .cn-count {
+.trch-count, .ldr-count, .cn-count, .plk-count, .para-count {
   color: blanchedalmond;
 }
 

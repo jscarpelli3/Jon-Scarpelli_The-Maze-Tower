@@ -1,3 +1,16 @@
+// const backgroungMusic = new Audio('sound/explore.mp3')
+// backgroungMusic.play()
+// backgroungMusic.volume = 0.5
+// const stepFx = new Audio(`step.mp3`)
+// const getfx = new Audio(`get.mp3`)
+// const ladderfx = new Audio(`ladder.mp3`)
+// const plankfx = new Audio(`plank.mp3`)
+// const torchfx = new Audio(`torch.mp3`)
+// const winfx = new Audio(`win.mp3`)
+// const losefx = new Audio(`lose.mp3`)
+// const fallfx = new Audio(`fall.mp3`)
+// const exitfx = new Audio(`exit.mp3`)
+
 const gamboard = document.querySelector(`.game`)
 const tiles = document.querySelectorAll(`.tile`)
 // const player = document.querySelector(`.player`)
@@ -5,6 +18,8 @@ const keyListener = document.querySelector(`button`)
 const invDiv = document.querySelector(`.inventory`)
 const trchCount = document.createElement(`span`)
 const ladderCount = document.createElement(`span`)
+const plankCount = document.createElement(`span`)
+const paraCount = document.createElement(`span`)
 let lookAhead = 0
 let ended = 0
 const outWalls = [
@@ -21,6 +36,7 @@ const noWall = []
 
 const torchLoc = []
 const ladderLoc = []
+const plankLoc = []
 const lstApdLdr = []
 ////walls for level 1, exit is at 5
 const lvlOneWalls = [
@@ -34,7 +50,7 @@ const lvlOneWalls = [
 ]
 const lvlOneTorches = [140, 208]
 const lvlOneLadders = [123]
-const lvlOneHoles = [78, 153]
+const lvlOneHoles = [78]
 const lvlOnePlanks = [50]
 const lvlOneExit = 5
 
@@ -94,6 +110,7 @@ const setBoard = (wlls, lddrs, tors, ext, hle, plk) => {
   getWalls()
   getTorches()
   getLadder()
+  getPlanks()
   placePlayer()
 }
 
@@ -217,6 +234,14 @@ const getLadder = () => {
     }
   }
 }
+//// get the plank locations
+const getPlanks = () => {
+  for (let i = 0; i < tiles.length; i++) {
+    if (tiles[i].classList.contains(`plank`)) {
+      plankLoc.push(i)
+    }
+  }
+}
 
 ///
 ///
@@ -232,7 +257,9 @@ const makeDark = () => {
       tile.classList.contains(`ladder`) ||
       tile.classList.contains(`exit`) ||
       tile.classList.contains(`ent`) ||
-      tile.classList.contains(`player`)
+      tile.classList.contains(`player`) ||
+      tile.classList.contains(`ldr-applied`) ||
+      tile.classList.contains(`plk-applied`)
     ) {
     } else {
       tile.innerHTML = `<img src="ctrBlack.png">`
@@ -254,8 +281,19 @@ const makeLight = () => {
     playerLoc + 15,
     playerLoc + 16
   ]
-  lit.forEach((lightTile) => {
-    tiles[lightTile].innerHTML = ``
+  lit.forEach((tile) => {
+    if (
+      // lit.classList.contains(`torch`) ||
+      // lit.classList.contains(`ladder`) ||
+      // lit.classList.contains(`exit`) ||
+      // lit.classList.contains(`ent`) ||
+      // lit.classList.contains(`player`) ||
+      tiles[tile].classList.contains(`ldr-applied`) ||
+      tiles[tile].classList.contains(`plk-applied`)
+    ) {
+    } else {
+      tiles[tile].innerHTML = ``
+    }
   })
 }
 
@@ -324,6 +362,34 @@ const addLadder = () => {
     ladderCount.innerText = mazzy.ladders
   })
 }
+////function for checking for planks
+const checkPlank = () => {
+  let plankNow = plankLoc.includes(playerLoc)
+  if (plankNow === true) {
+    addPlank()
+  }
+}
+
+///function for adding plank
+const addPlank = () => {
+  tiles[playerLoc].classList.remove(`plank`)
+  plankLoc.forEach((plk, i) => {
+    if (plk === playerLoc) {
+      plankLoc.splice(i, 1)
+    }
+    if (mazzy.planks === 0) {
+      let plankDiv = document.createElement(`div`)
+      // let trchCount = document.createElement(`span`)
+      plankDiv.innerHTML = `<img src=planks.png>`
+      plankDiv.classList.add(`inv-plank`)
+      plankCount.classList.add(`plk-count`)
+      plankDiv.append(plankCount)
+      invDiv.append(plankDiv)
+    }
+    mazzy.planks += 1
+    plankCount.innerText = mazzy.planks
+  })
+}
 
 ///USING a Ladder
 const useLadder = (lkAhd) => {
@@ -347,6 +413,15 @@ const useLadder = (lkAhd) => {
       ldrDiv.remove()
     }
   }
+}
+
+///USING a Plank
+const usePlank = (lkAd) => {
+  tiles[lkAd].innerHTML = `<img id="planks" src=holeplank.png>`
+  tiles[lkAd].classList.add(`plk-applied`)
+  mazzy.planks -= 1
+  plankCount.innerText = mazzy.planks
+  tiles[lkAd].classList.remove(`hole`)
 }
 
 ///
@@ -577,8 +652,12 @@ window.addEventListener(`keydown`, (event) => {
         curLvl--
         exit()
       } else if (tiles[lookAhead].classList.contains(`hole`)) {
-        clearBrd()
-        ending(1)
+        if (mazzy.planks === 0) {
+          clearBrd()
+          ending(1)
+        } else {
+          usePlank(lookAhead)
+        }
       } else {
         ///reset Lighted tiles according to the proposed new player location
         // lighted.forEach((ntile, i) => {
@@ -597,6 +676,7 @@ window.addEventListener(`keydown`, (event) => {
         ///if you go to a torch spot
         checkTorch()
         checkLadder()
+        checkPlank()
       }
       ///you CANNOT go
     } else if (noGo === true) {
