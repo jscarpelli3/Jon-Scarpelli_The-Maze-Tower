@@ -6,6 +6,7 @@ const invDiv = document.querySelector(`.inventory`)
 const trchCount = document.createElement(`span`)
 const ladderCount = document.createElement(`span`)
 let lookAhead = 0
+let ended = 0
 const outWalls = [
   0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 29, 44, 59, 74, 89, 104, 119,
   134, 149, 164, 179, 194, 209, 211, 212, 213, 214, 215, 216, 217, 218, 219,
@@ -17,7 +18,7 @@ let exitLoc = 5
 let paraLoc = 27
 const walls = []
 const noWall = []
-let lighted = [202, 186, 187, 188, 203, 216, 217, 218, 201]
+
 const torchLoc = []
 const ladderLoc = []
 const lstApdLdr = []
@@ -31,6 +32,12 @@ const lvlOneWalls = [
   122, 124, 126, 128, 129, 130, 131, 132, 137, 139, 143, 147, 152, 154, 155,
   156, 157, 158, 162, 167, 177, 182, 183, 184, 185, 186, 187, 188, 189, 190, 192
 ]
+const lvlOneTorches = [140, 208]
+const lvlOneLadders = [123]
+const lvlOneHoles = [78, 153]
+const lvlOnePlanks = [50]
+const lvlOneExit = 5
+
 ///walls for lvl 2 exit is at 5 again
 const lvlTwoWalls = [
   0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 29, 30, 44, 45, 59, 60, 74,
@@ -40,17 +47,11 @@ const lvlTwoWalls = [
   65, 66, 67, 68, 69, 79, 83, 94, 98, 109, 113, 124, 128, 139, 143, 154, 158,
   169, 173, 184, 188, 203
 ]
-const lvlOneTorches = [140, 208]
-const lvlOneLadders = [123]
-const lvlOneHoles = [78, 153]
-const lvlOnePlanks = [50]
-const lvlOneExit = 5
 const lvlTwoTorches = [140, 208]
 const lvlTwoLadders = [121, 122, 123, 163]
 const lvlTwoHoles = [17]
 const lvlTwoPlanks = [87]
 const lvlTwoExit = 5
-let fell = false
 
 class Character {
   constructor(name, torches, ladders) {
@@ -63,6 +64,44 @@ class Character {
     this.coins = 0
   }
 }
+
+class Level {
+  constructor(level, walls, torches, ladders, holes, planks, exit) {
+    this.level = level
+    this.walls = walls
+    this.torches = torches
+    this.ladders = ladders
+    this.holes = holes
+    this.planks = planks
+    this.exit = exit
+  }
+}
+
+///
+///
+///SETUP LEVEL
+///
+///
+const setBoard = (wlls, lddrs, tors, ext, hle, plk) => {
+  // clearLdrs()
+  walls.length = 0
+  torchLoc.length = 0
+  ladderLoc.length = 0
+  playerLoc = 202
+  entLoc = playerLoc + 15
+  placeWalls(wlls)
+  placeItems(lddrs, tors, ext, hle, plk)
+  getWalls()
+  getTorches()
+  getLadder()
+  placePlayer()
+}
+
+///
+///
+///Place Everything
+///
+///
 
 const placeWalls = (levelWalls) => {
   levelWalls.forEach((wallTile, i) => {
@@ -123,6 +162,68 @@ const placeWalls = (levelWalls) => {
   tiles[entLoc + 1].classList.remove(`wvert`)
 }
 
+///place items
+const placeItems = (ldrs, trchs, exit, holes, planks) => {
+  tiles[exit].classList.add(`exit`)
+  ldrs.forEach((ldrs) => {
+    tiles[ldrs].classList.add(`ladder`)
+  })
+  trchs.forEach((trc) => {
+    tiles[trc].classList.add(`torch`)
+  })
+  holes.forEach((hole) => {
+    tiles[hole].classList.add(`hole`)
+  })
+  planks.forEach((plank) => {
+    tiles[plank].classList.add(`plank`)
+  })
+}
+
+const placePlayer = () => {
+  tiles[playerLoc].classList.add(`player`)
+}
+
+///
+///
+///Get Everything
+///
+///
+
+///get all walls
+const getWalls = () => {
+  for (let i = 0; i < tiles.length; i++) {
+    if (tiles[i].classList.contains(`wall`)) {
+      walls.push(i)
+    } else {
+      noWall.push[i]
+    }
+  }
+}
+
+//// get the torch locations
+const getTorches = () => {
+  for (let i = 0; i < tiles.length; i++) {
+    if (tiles[i].classList.contains(`torch`)) {
+      torchLoc.push(i)
+    }
+  }
+}
+
+//// get the ladder locations
+const getLadder = () => {
+  for (let i = 0; i < tiles.length; i++) {
+    if (tiles[i].classList.contains(`ladder`)) {
+      ladderLoc.push(i)
+    }
+  }
+}
+
+///
+///
+/// Active Gameplay Functions
+///
+///
+
 ///make the board dark
 const makeDark = () => {
   tiles.forEach((tile) => {
@@ -141,46 +242,21 @@ const makeDark = () => {
 
 ///set lighted area
 const makeLight = () => {
-  lighted.forEach((lightTile) => {
+  // let lighted = [202, 186, 187, 188, 203, 216, 217, 218, 201]
+  let lit = [
+    playerLoc,
+    playerLoc - 16,
+    playerLoc - 15,
+    playerLoc - 14,
+    playerLoc - 1,
+    playerLoc + 1,
+    playerLoc + 14,
+    playerLoc + 15,
+    playerLoc + 16
+  ]
+  lit.forEach((lightTile) => {
     tiles[lightTile].innerHTML = ``
   })
-}
-
-///get all walls
-const getWalls = () => {
-  for (let i = 0; i < tiles.length; i++) {
-    if (tiles[i].classList.contains(`wall`)) {
-      walls.push(i)
-    } else {
-      noWall.push[i]
-    }
-  }
-}
-
-////place items
-const placeItems = (ldrs, trchs, exit, holes, planks) => {
-  tiles[exit].classList.add(`exit`)
-  ldrs.forEach((ldrs) => {
-    tiles[ldrs].classList.add(`ladder`)
-  })
-  trchs.forEach((trc) => {
-    tiles[trc].classList.add(`torch`)
-  })
-  holes.forEach((hole) => {
-    tiles[hole].classList.add(`hole`)
-  })
-  planks.forEach((plank) => {
-    tiles[plank].classList.add(`plank`)
-  })
-}
-
-//// get the torch locations
-const getTorches = () => {
-  for (let i = 0; i < tiles.length; i++) {
-    if (tiles[i].classList.contains(`torch`)) {
-      torchLoc.push(i)
-    }
-  }
 }
 
 ////function for checking for torches
@@ -220,15 +296,6 @@ const useTorch = () => {
   }
 }
 
-//// get the ladder locations
-const getLadder = () => {
-  for (let i = 0; i < tiles.length; i++) {
-    if (tiles[i].classList.contains(`ladder`)) {
-      ladderLoc.push(i)
-    }
-  }
-}
-
 ////function for checking for ladders
 const checkLadder = () => {
   let ladderNow = ladderLoc.includes(playerLoc)
@@ -258,6 +325,7 @@ const addLadder = () => {
   })
 }
 
+///USING a Ladder
 const useLadder = (lkAhd) => {
   if (mazzy.ladders > 0) {
     // let newLad = lkAhd
@@ -281,13 +349,57 @@ const useLadder = (lkAhd) => {
   }
 }
 
-const placePlayer = () => {
-  // let curPlyr = document.querySelector(`.player`)
-  // curPlyr.classList.remove(`player`)
-  tiles[playerLoc].classList.add(`player`)
+///
+///
+/// EXITING A LEVEL AND STARTING A NEW ONE
+///
+///
+
+const exit = () => {
+  if (curLvl === 0) {
+    setBoard(
+      lvlOneWalls,
+      lvlOneLadders,
+      lvlOneTorches,
+      lvlOneExit,
+      lvlOneHoles,
+      lvlOnePlanks
+    )
+    curLvl = 1
+  } else if (curLvl === 1) {
+    clearBrd()
+    setBoard(
+      lvlOneWalls,
+      lvlOneLadders,
+      lvlOneTorches,
+      lvlOneExit,
+      lvlOneHoles,
+      lvlOnePlanks
+    )
+  } else if (curLvl === 2) {
+    clearBrd()
+    setBoard(
+      lvlTwoWalls,
+      lvlTwoLadders,
+      lvlTwoTorches,
+      lvlTwoExit,
+      lvlTwoHoles,
+      lvlTwoPlanks
+    )
+    tiles[paraLoc].classList.add(`para`)
+  } else if (curLvl === 3) {
+    clearBrd()
+    // clearLdrs()
+    ending(mazzy.hasParachute)
+  }
 }
 
-const clearBrd = () => {
+///
+///
+/// CLEAR BOARD
+///
+///
+function clearBrd() {
   // tiles.forEach((tile, i) => {
   //   if (tiles[i].classList.contains(`wall`)) {
   //     tiles[i].classList.remove(`wall`)
@@ -308,14 +420,19 @@ const clearBrd = () => {
   //     tiles[i].classList.remove(`secorner`)
   //   }
   // })
+  // tiles.forEach((tile, i) => {
+  //   if (tiles[i].classList.contains(`ldr-applied`)) {
+  //     tiles[i].className = `tile`
+  //     tiles[i].innerHTML = ``
+  //     lstApdLdr.push(`i`)
+  //   } else {
+  //     tiles[i].className = `tile`
+  //     tiles[i].innerHTML = ``
+  //   }
+  // })
   tiles.forEach((tile, i) => {
-    if (tiles[i].classList.contains(`ldr-applied`)) {
-      tiles[i].className = `tile`
-      tiles[i].innerHTML = ``
-      lstApdLdr.push(`i`)
-    } else {
-      tiles[i].className = `tile`
-    }
+    tiles[i].className = `tile`
+    tiles[i].innerHTML = ``
   })
 }
 
@@ -331,22 +448,11 @@ const clearBrd = () => {
 //   })
 // }
 
-const setBoard = (wlls, lddrs, tors, ext, hle, plk) => {
-  // clearLdrs()
-  walls.length = 0
-  torchLoc.length = 0
-  ladderLoc.length = 0
-  playerLoc = 202
-  entLoc = playerLoc + 15
-  placeWalls(wlls)
-  placeItems(lddrs, tors, ext, hle, plk)
-  getWalls()
-  getTorches()
-  getLadder()
-  placePlayer()
-}
-
+///
+///ENDINGS
+///
 const ending = (parachute) => {
+  ended = 1
   const endDiv = document.getElementById(`t32`)
   endDiv.classList.add(`end-div`)
   endDiv.classList.remove(`tile`)
@@ -395,134 +501,108 @@ const ending = (parachute) => {
   endDiv.append(reStart)
   reStart.innerText = `Restart Game`
   reStart.addEventListener(`click`, () => {
+    ended = 0
     window.location.href = 'index.html'
   })
 }
 
-const exit = () => {
-  if (curLvl === 0) {
-    setBoard(
-      lvlOneWalls,
-      lvlOneLadders,
-      lvlOneTorches,
-      lvlOneExit,
-      lvlOneHoles,
-      lvlOnePlanks
-    )
-    curLvl = 1
-  } else if (curLvl === 1) {
-    clearBrd()
-    setBoard(
-      lvlOneWalls,
-      lvlOneLadders,
-      lvlOneTorches,
-      lvlOneExit,
-      lvlOneHoles,
-      lvlOnePlanks
-    )
-  } else if (curLvl === 2) {
-    clearBrd()
-    setBoard(
-      lvlTwoWalls,
-      lvlTwoLadders,
-      lvlTwoTorches,
-      lvlTwoExit,
-      lvlTwoHoles,
-      lvlTwoPlanks
-    )
-    tiles[paraLoc].classList.add(`para`)
-  } else if (curLvl === 3) {
-    clearBrd()
-    // clearLdrs()
-    ending(mazzy.hasParachute)
-  }
-}
+///
+///
+///Starting Game
+///
+///
 
-/////////Starting Game
 /// Make Mazzy
 const mazzy = new Character(`Mazzy`, 0, 0)
 exit()
 // /// Make Dark
-// makeDark()
+makeDark()
 // /// Make Light if there is any
-// makeLight()
+makeLight()
 
+///
+///
+///GAMEPLAY
 ///Moving around
+///
+///
 window.addEventListener(`keydown`, (event) => {
-  ///Grab steps h2 to count steps
-  let stepCnt = document.querySelector(`.steps`)
-  ///select div with player class
-  let plyr = document.querySelector(`.player`)
-  ///establish lookahead
+  if (ended === 0) {
+    ///Grab steps h2 to count steps
+    let stepCnt = document.querySelector(`.steps`)
+    ///select div with player class
+    let plyr = document.querySelector(`.player`)
+    ///establish lookahead
 
-  ///establish a variable to track the difference between current location and proposed location
-  let tileDifference = 0
-  ///for which ever arrow key, set the look ahead tiles as player+=appropriate value
-  switch (event.key) {
-    case `ArrowUp`:
-      tileDifference = -15
-      lookAhead = playerLoc + tileDifference
-      break
-    case `ArrowRight`:
-      tileDifference = 1
-      lookAhead = playerLoc + tileDifference
-      break
-    case 'ArrowDown':
-      tileDifference = 15
-      lookAhead = playerLoc + tileDifference
-      break
-    case `ArrowLeft`:
-      tileDifference = -1
-      lookAhead = playerLoc + tileDifference
-      break
-    case `l`:
-      useLadder(lookAhead)
-      break
-    case `t`:
-      useTorch()
-      break
-    default:
-      break
-  }
-  ///check if the lookahead is equal to a wall
-  let noGo = walls.some((wall) => {
-    return wall === lookAhead
-  })
-  ///IF YOU CAN GO
-
-  if (noGo === false) {
-    if (lookAhead === exitLoc) {
-      curLvl++
-      exit()
-    } else if (lookAhead === entLoc) {
-      curLvl--
-      exit()
-    } else if (tiles[lookAhead].classList.contains(`hole`)) {
-      clearBrd()
-      ending(1)
-    } else {
-      ///reset Lighted tiles according to the proposed new player location
-      lighted.forEach((ntile, i) => {
-        lighted[i] += tileDifference
-      })
-      // makeDark()
-      // makeLight()
-      ///removing player from current location
-      plyr.classList.remove('player')
-      ///setting new location
-      playerLoc += tileDifference
-      ///adding player to that new location
-      tiles[playerLoc].classList.add(`player`)
-      mazzy.steps += 1
-      stepCnt.innerHTML = mazzy.steps
-      ///if you go to a torch spot
-      checkTorch()
-      checkLadder()
+    ///establish a variable to track the difference between current location and proposed location
+    let tileDifference = 0
+    ///for which ever arrow key, set the look ahead tiles as player+=appropriate value
+    switch (event.key) {
+      case `ArrowUp`:
+        tileDifference = -15
+        lookAhead = playerLoc + tileDifference
+        break
+      case `ArrowRight`:
+        tileDifference = 1
+        lookAhead = playerLoc + tileDifference
+        break
+      case 'ArrowDown':
+        tileDifference = 15
+        lookAhead = playerLoc + tileDifference
+        break
+      case `ArrowLeft`:
+        tileDifference = -1
+        lookAhead = playerLoc + tileDifference
+        break
+      case `l`:
+        useLadder(lookAhead)
+        break
+      case `t`:
+        useTorch()
+        break
+      default:
+        break
     }
-    ///you CANNOT go
-  } else if (noGo === true) {
-    plyr.classList.remove('player')
-    playerLoc += 0
-    tiles[playerLoc].classList.add(`player`)
+    ///check if the lookahead is equal to a wall
+    let noGo = walls.some((wall) => {
+      return wall === lookAhead
+    })
+    ///IF YOU CAN GO
+
+    if (noGo === false) {
+      if (lookAhead === exitLoc) {
+        curLvl++
+        exit()
+      } else if (lookAhead === entLoc) {
+        curLvl--
+        exit()
+      } else if (tiles[lookAhead].classList.contains(`hole`)) {
+        clearBrd()
+        ending(1)
+      } else {
+        ///reset Lighted tiles according to the proposed new player location
+        // lighted.forEach((ntile, i) => {
+        //   lighted[i] += tileDifference
+        // })
+        playerLoc += tileDifference
+        makeDark()
+        makeLight()
+        ///removing player from current location
+        plyr.classList.remove('player')
+        ///setting new location
+        ///adding player to that new location
+        tiles[playerLoc].classList.add(`player`)
+        mazzy.steps += 1
+        stepCnt.innerHTML = mazzy.steps
+        ///if you go to a torch spot
+        checkTorch()
+        checkLadder()
+      }
+      ///you CANNOT go
+    } else if (noGo === true) {
+      plyr.classList.remove('player')
+      playerLoc += 0
+      tiles[playerLoc].classList.add(`player`)
+    }
   }
 })

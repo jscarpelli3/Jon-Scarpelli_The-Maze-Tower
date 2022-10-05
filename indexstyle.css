@@ -63,7 +63,7 @@ p {
   grid-template: 1fr 1fr 1fr /1fr 1fr 1fr;
 }
 
-.start, .restart {
+.start {
   width: 64;
   height: 52px;
   grid-row: 3/4;
