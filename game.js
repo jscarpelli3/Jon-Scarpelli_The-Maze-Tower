@@ -1,6 +1,6 @@
 const gamboard = document.querySelector(`.game`)
 const tiles = document.querySelectorAll(`.tile`)
-const player = document.querySelector(`.player`)
+// const player = document.querySelector(`.player`)
 const keyListener = document.querySelector(`button`)
 const invDiv = document.querySelector(`.inventory`)
 const trchCount = document.createElement(`span`)
@@ -10,6 +10,7 @@ const outWalls = [
   134, 149, 164, 179, 194, 209, 211, 212, 213, 214, 215, 216, 217, 218, 219,
   220, 221, 222, 223, 224
 ]
+let curLvl = 0
 let playerLoc = 202
 let exitLoc = 5
 const walls = []
@@ -41,7 +42,7 @@ const lvlOneTorches = [140, 208]
 const lvlOneLadders = [123]
 const lvlOneExit = 5
 const lvlTwoTorches = [140, 208]
-const lvlTwoLadders = [123]
+const lvlTwoLadders = [121]
 const lvlTwoExit = 5
 
 class Character {
@@ -53,7 +54,6 @@ class Character {
   }
 }
 
-console.log(lvlOneWalls)
 const placeWalls = (levelWalls) => {
   levelWalls.forEach((wallTile, i) => {
     tiles[wallTile].classList.add(`wall`)
@@ -181,6 +181,15 @@ const addTorch = () => {
   mazzy.torches += 1
   trchCount.innerText = mazzy.torches
 }
+
+const useTorch = () => {
+  if (mazzy.torches > 0) {
+    console.log(`Torch Used!`)
+    mazzy.torches -= 1
+    trchCount.innerText = mazzy.torches
+  }
+}
+
 //// get the ladder locations
 const getLadder = () => {
   for (let i = 0; i < tiles.length; i++) {
@@ -219,21 +228,99 @@ const addLadder = () => {
   })
 }
 
-const exit = () => {}
+const useLadder = () => {
+  if (mazzy.ladders > 0) {
+    let newLad = playerLoc + 15
+    let wallRmv = 0
+    walls.forEach((wall, i) => {
+      if (wall === newLad) {
+        wallRmv = i
+      }
+    })
+    tiles[newLad].innerHTML = `<img src=ladder.png>`
+    mazzy.ladders -= 1
+    ladderCount.innerText = mazzy.ladders
+    tiles[newLad].classList.remove(`wall`)
+    walls.splice(wallRmv, 1)
+  }
+}
+
+const placePlayer = () => {
+  let curPlyr = document.querySelector(`.player`)
+  curPlyr.classList.remove(`player`)
+  tiles[playerLoc].classList.add(`player`)
+}
+
+const clearWalls = () => {
+  tiles.forEach((tile, i) => {
+    if (tiles[i].classList.contains(`wall`)) {
+      tiles[i].classList.remove(`wall`)
+    }
+  })
+  tiles.forEach((tile, i) => {
+    if (tiles[i].classList.contains(`wvert`)) {
+      console.log(`wverts`)
+      tiles[i].classList.remove(`wvert`)
+    } else if (tiles[i].classList.contains(`whor`)) {
+      tiles[i].classList.remove(`whor`)
+    } else if (tiles[i].classList.contains(`nwcorner`)) {
+      tiles[i].classList.remove(`nwcorner`)
+    } else if (tiles[i].classList.contains(`necorner`)) {
+      tiles[i].classList.remove(`necorner`)
+    } else if (tiles[i].classList.contains(`swcorner`)) {
+      tiles[i].classList.remove(`swcorner`)
+    } else if (tiles[i].classList.contains(`secorner`)) {
+      tiles[i].classList.remove(`secorner`)
+    }
+    console.log(`where are the walls?`)
+  })
+}
+
+const exit = (newLvl) => {
+  if (curLvl === 0) {
+    placeWalls(lvlOneWalls)
+    placeItems(lvlOneLadders, lvlOneTorches, lvlOneExit)
+    getWalls()
+    getTorches()
+    getLadder()
+    playerLoc = 202
+    placePlayer()
+    curLvl = 1
+  } else if (curLvl === 1) {
+    walls.length = 0
+    torchLoc.length = 0
+    ladderLoc.length = 0
+    clearWalls()
+    placeWalls(lvlOneWalls)
+    placeItems(lvlOneLadders, lvlOneTorches, lvlOneExit)
+    getWalls()
+    getTorches()
+    getLadder()
+    playerLoc = 202
+    placePlayer()
+  } else if (curLvl === 2) {
+    walls.length = 0
+    torchLoc.length = 0
+    ladderLoc.length = 0
+    clearWalls()
+    placeWalls(lvlTwoWalls)
+    placeItems(lvlTwoLadders, lvlTwoTorches, lvlTwoExit)
+    getWalls()
+    getTorches()
+    getLadder()
+    playerLoc = 196
+    placePlayer()
+  }
+}
 
 /////////Starting Game
 /// Make Mazzy
 const mazzy = new Character(`Mazzy`, 0, 0)
+exit(0)
 // /// Make Dark
 // makeDark()
 // /// Make Light if there is any
 // makeLight()
-placeWalls(lvlOneWalls)
-placeItems(lvlOneLadders, lvlOneTorches, lvlOneExit)
-getWalls()
-getTorches()
-getLadder()
-console.log(torchLoc)
 
 ///Moving around
 window.addEventListener(`keydown`, (event) => {
@@ -264,28 +351,10 @@ window.addEventListener(`keydown`, (event) => {
       lookAhead = playerLoc + tileDifference
       break
     case `l`:
-      if (mazzy.ladders > 0) {
-        let newLad = playerLoc + 15
-        let wallRmv = 0
-        walls.forEach((wall, i) => {
-          if (wall === newLad) {
-            wallRmv = i
-          }
-        })
-        tiles[newLad].innerHTML = `<img src=ladder.png>`
-        mazzy.ladders -= 1
-        ladderCount.innerText = mazzy.ladders
-        tiles[newLad].classList.remove(`wall`)
-        walls.splice(wallRmv, 1)
-      }
+      useLadder()
       break
     case `t`:
-      if (mazzy.torches > 0) {
-        console.log(`Torch Used!`)
-        mazzy.torches -= 1
-        trchCount.innerText = mazzy.torches
-      }
-
+      useTorch()
       break
     default:
       break
@@ -297,7 +366,8 @@ window.addEventListener(`keydown`, (event) => {
   ///IF YOU CAN GO
   if (noGo === false) {
     if (lookAhead === exitLoc) {
-      console.log(`go to level2`)
+      curLvl++
+      exit()
     } else {
       ///reset Lighted tiles according to the proposed new player location
       lighted.forEach((ntile, i) => {
