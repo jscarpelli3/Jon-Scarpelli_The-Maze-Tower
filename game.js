@@ -5,6 +5,7 @@ const keyListener = document.querySelector(`button`)
 const invDiv = document.querySelector(`.inventory`)
 const trchCount = document.createElement(`span`)
 const ladderCount = document.createElement(`span`)
+let lookAhead = 0
 const outWalls = [
   0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 29, 44, 59, 74, 89, 104, 119,
   134, 149, 164, 179, 194, 209, 211, 212, 213, 214, 215, 216, 217, 218, 219,
@@ -22,21 +23,20 @@ const ladderLoc = []
 const lvlOneWalls = [
   0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 29, 30, 44, 45, 59, 60, 74,
   75, 89, 90, 104, 105, 119, 120, 134, 135, 149, 150, 164, 165, 179, 180, 194,
-  195, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222,
-  223, 224, 17, 19, 34, 35, 36, 37, 38, 39, 40, 41, 42, 47, 49, 62, 64, 65, 66,
-  68, 69, 70, 71, 72, 73, 77, 79, 92, 94, 95, 96, 97, 98, 99, 100, 107, 109,
-  117, 122, 124, 126, 128, 129, 130, 131, 132, 137, 139, 143, 147, 152, 154,
-  155, 156, 157, 158, 162, 167, 177, 182, 183, 184, 185, 186, 187, 188, 189,
-  190, 192
+  195, 209, 210, 211, 212, 213, 214, 215, 216, 218, 219, 220, 221, 222, 223,
+  224, 17, 19, 34, 35, 36, 37, 38, 39, 40, 41, 42, 47, 49, 62, 64, 65, 66, 68,
+  69, 70, 71, 72, 73, 77, 79, 92, 94, 95, 96, 97, 98, 99, 100, 107, 109, 117,
+  122, 124, 126, 128, 129, 130, 131, 132, 137, 139, 143, 147, 152, 154, 155,
+  156, 157, 158, 162, 167, 177, 182, 183, 184, 185, 186, 187, 188, 189, 190, 192
 ]
 ///walls for lvl 2 exit is at 5 again
 const lvlTwoWalls = [
   0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 29, 30, 44, 45, 59, 60, 74,
   75, 89, 90, 104, 105, 119, 120, 134, 135, 149, 150, 164, 165, 179, 180, 194,
-  195, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222,
-  223, 224, 21, 23, 32, 33, 34, 35, 36, 38, 39, 40, 41, 42, 53, 61, 62, 63, 64,
-  65, 66, 67, 68, 69, 79, 83, 94, 98, 109, 113, 124, 128, 139, 143, 154, 158,
-  169, 173, 184, 188, 203
+  195, 209, 210, 211, 212, 213, 214, 215, 216, 218, 219, 220, 221, 222, 223,
+  224, 21, 23, 32, 33, 34, 35, 36, 38, 39, 40, 41, 42, 53, 61, 62, 63, 64, 65,
+  66, 67, 68, 69, 79, 83, 94, 98, 109, 113, 124, 128, 139, 143, 154, 158, 169,
+  173, 184, 188, 203
 ]
 const lvlOneTorches = [140, 208]
 const lvlOneLadders = [123]
@@ -67,7 +67,7 @@ const placeWalls = (levelWalls) => {
     if (tile % 15 === 14 || tile % 15 === 0) {
       tiles[tile].classList.add(`wvert`)
     } else if (
-      tiles[rt].classList.contains(`wall`) ||
+      tiles[rt].classList.contains(`wall`) &&
       tiles[lt].classList.contains(`wall`)
     ) {
       tiles[tile].classList.add(`whor`)
@@ -98,6 +98,12 @@ const placeWalls = (levelWalls) => {
       tiles[tile].classList.add(`necorner`)
     }
   })
+  tiles[0].classList.add(`nwcorner`)
+  tiles[14].classList.add(`necorner`)
+  tiles[210].classList.add(`swcorner`)
+  tiles[224].classList.add(`secorner`)
+  tiles[exitLoc + 1].classList.add(`whor`)
+  tiles[entLoc].classList.add(`ent`)
 }
 
 ///make the board dark
@@ -228,19 +234,20 @@ const addLadder = () => {
   })
 }
 
-const useLadder = () => {
+const useLadder = (lkAhd) => {
+  console.log(lkAhd)
   if (mazzy.ladders > 0) {
-    let newLad = playerLoc + 15
+    // let newLad = lkAhd
     let wallRmv = 0
     walls.forEach((wall, i) => {
-      if (wall === newLad) {
+      if (wall === lkAhd) {
         wallRmv = i
       }
     })
-    tiles[newLad].innerHTML = `<img src=ladder.png>`
+    tiles[lkAhd].innerHTML = `<img src=ladder.png>`
     mazzy.ladders -= 1
     ladderCount.innerText = mazzy.ladders
-    tiles[newLad].classList.remove(`wall`)
+    tiles[lkAhd].classList.remove(`wall`)
     walls.splice(wallRmv, 1)
   }
 }
@@ -276,47 +283,37 @@ const clearWalls = () => {
   })
 }
 
-const exit = (newLvl) => {
+const clearBoard = (wlls, lddrs, tors, ext) => {
+  walls.length = 0
+  torchLoc.length = 0
+  ladderLoc.length = 0
+  playerLoc = 202
+  entLoc = playerLoc + 15
+  placeWalls(wlls)
+  placeItems(lddrs, tors, ext)
+  getWalls()
+  getTorches()
+  getLadder()
+  placePlayer()
+}
+
+const exit = () => {
   if (curLvl === 0) {
-    placeWalls(lvlOneWalls)
-    placeItems(lvlOneLadders, lvlOneTorches, lvlOneExit)
-    getWalls()
-    getTorches()
-    getLadder()
-    playerLoc = 202
-    placePlayer()
+    clearBoard(lvlOneWalls, lvlOneLadders, lvlOneTorches, lvlOneExit)
     curLvl = 1
   } else if (curLvl === 1) {
-    walls.length = 0
-    torchLoc.length = 0
-    ladderLoc.length = 0
     clearWalls()
-    placeWalls(lvlOneWalls)
-    placeItems(lvlOneLadders, lvlOneTorches, lvlOneExit)
-    getWalls()
-    getTorches()
-    getLadder()
-    playerLoc = 202
-    placePlayer()
+    clearBoard(lvlOneWalls, lvlOneLadders, lvlOneTorches, lvlOneExit)
   } else if (curLvl === 2) {
-    walls.length = 0
-    torchLoc.length = 0
-    ladderLoc.length = 0
     clearWalls()
-    placeWalls(lvlTwoWalls)
-    placeItems(lvlTwoLadders, lvlTwoTorches, lvlTwoExit)
-    getWalls()
-    getTorches()
-    getLadder()
-    playerLoc = 196
-    placePlayer()
+    clearBoard(lvlTwoWalls, lvlTwoLadders, lvlTwoTorches, lvlTwoExit)
   }
 }
 
 /////////Starting Game
 /// Make Mazzy
 const mazzy = new Character(`Mazzy`, 0, 0)
-exit(0)
+exit()
 // /// Make Dark
 // makeDark()
 // /// Make Light if there is any
@@ -329,7 +326,7 @@ window.addEventListener(`keydown`, (event) => {
   ///select div with player class
   let plyr = document.querySelector(`.player`)
   ///establish lookahead
-  let lookAhead = 0
+
   ///establish a variable to track the difference between current location and proposed location
   let tileDifference = 0
   ///for which ever arrow key, set the look ahead tiles as player+=appropriate value
@@ -341,6 +338,7 @@ window.addEventListener(`keydown`, (event) => {
     case `ArrowRight`:
       tileDifference = 1
       lookAhead = playerLoc + tileDifference
+      console.log(lookAhead)
       break
     case 'ArrowDown':
       tileDifference = 15
@@ -351,7 +349,8 @@ window.addEventListener(`keydown`, (event) => {
       lookAhead = playerLoc + tileDifference
       break
     case `l`:
-      useLadder()
+      console.log(lookAhead)
+      useLadder(lookAhead)
       break
     case `t`:
       useTorch()
@@ -364,10 +363,16 @@ window.addEventListener(`keydown`, (event) => {
     return wall === lookAhead
   })
   ///IF YOU CAN GO
+
   if (noGo === false) {
     if (lookAhead === exitLoc) {
       curLvl++
       exit()
+    } else if (lookAhead === entLoc) {
+      curLvl--
+      exit()
+      console.log(lookAhead)
+      console.log(entLoc)
     } else {
       ///reset Lighted tiles according to the proposed new player location
       lighted.forEach((ntile, i) => {
@@ -384,7 +389,6 @@ window.addEventListener(`keydown`, (event) => {
       mazzy.steps += 1
       stepCnt.innerHTML = mazzy.steps
       ///if you go to a torch spot
-      console.log(playerLoc)
       checkTorch()
       checkLadder()
     }

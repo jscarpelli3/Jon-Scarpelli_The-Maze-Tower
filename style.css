@@ -94,6 +94,10 @@ div.game {
   background-image: url(exithor.png);
 }
 
+.ent {
+  background-image: url(entrance.png);
+}
+
 .inv-trch, .inv-ladder, .inv-coin {
   padding: 6px;
   margin: 12px 12px;
