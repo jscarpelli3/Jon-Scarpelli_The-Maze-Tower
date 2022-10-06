@@ -75,6 +75,22 @@ const lvlTwoPlanks = [87]
 const lvlTwoCoins = [25, 193]
 const lvlTwoExit = 5
 
+const lvlThreeWalls = [
+  0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 29, 30, 44, 45, 59, 60, 74,
+  75, 89, 90, 104, 105, 119, 120, 134, 135, 149, 150, 164, 165, 179, 180, 194,
+  195, 209, 210, 211, 212, 213, 214, 215, 216, 218, 219, 220, 221, 222, 223,
+  224, 19, 21, 34, 35, 36
+]
+
+const lvlThreeTorches = [32, 79, 197, 199, 201, 203, 205, 207]
+const lvlThreeLadders = [28]
+const lvlThreeHoles = [
+  27, 42, 54, 73, 77, 82, 114, 140, 146, 154, 108, 127, 122
+]
+const lvlThreePlanks = [96]
+const lvlThreeCoins = [98, 147]
+const lvlThreeExit = 5
+
 class Character {
   constructor(name, torches, ladders) {
     this.name = name
@@ -126,8 +142,19 @@ const setBoard = (wlls, lddrs, tors, ext, hle, plk, drk, cns) => {
   if (drk === 1) {
     darkOn = 1
     makeDark()
-  } else {
+  } else if (drk === 0) {
     darkOn = 0
+  } else {
+    const pauseDark = () => {
+      darkOn == 1
+      makeDark()
+      makeLight()
+    }
+    if (curLvl === 3) {
+      setTimeout(() => {
+        pauseDark()
+      }, 3000)
+    }
   }
 }
 
@@ -606,6 +633,18 @@ const exit = () => {
     )
     tiles[paraLoc].classList.add(`para`)
   } else if (curLvl === 3) {
+    clearBrd()
+    setBoard(
+      lvlThreeWalls,
+      lvlThreeLadders,
+      lvlThreeTorches,
+      lvlThreeExit,
+      lvlThreeHoles,
+      lvlThreePlanks,
+      3,
+      lvlThreeCoins
+    )
+  } else if (curLvl === 4) {
     curLvl++
     clearBrd()
     // clearLdrs()
