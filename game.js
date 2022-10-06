@@ -486,8 +486,8 @@ const useTorch = () => {
     torchfx.volume = 0.3
     makeLight()
     setTimeout(() => {
-      torchFail()
-    }, 4000)
+      torchFail(curLvl)
+    }, 4500)
     if (mazzy.torches === 0) {
       const trcDiv = document.querySelector(`.inv-trch`)
       const ldrCntTxt = document.querySelector(`.trch-count`)
@@ -496,10 +496,14 @@ const useTorch = () => {
   }
 }
 
-const torchFail = () => {
-  makeDark()
-  torchOn = 0
-  makeLight()
+const torchFail = (lvl) => {
+  if (curLvl === lvl) {
+    makeDark()
+    torchOn = 0
+    makeLight()
+  } else if (curLvl !== lvl) {
+    torchOn = 0
+  }
   denyFx.play()
 }
 
@@ -552,6 +556,7 @@ const usePlank = (lkAd) => {
 ///
 
 const exit = () => {
+  lookAhead = 187
   exitfx.play()
   exitfx.volume = 0.2
   if (curLvl === 0) {
