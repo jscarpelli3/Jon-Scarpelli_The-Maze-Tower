@@ -1,3 +1,5 @@
+const opening = new Audio(`sound/opening.mp3`)
+// opening.play()
 const startButton = document.querySelector(`button`)
 
 ///start button takes you to the game
