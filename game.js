@@ -1,4 +1,4 @@
-// const backgroungMusic = new Audio('sound/explore.mp3')
+const backgroundMusic = new Audio('sound/nano.mp3')
 // backgroungMusic.play()
 // backgroungMusic.volume = 0.5
 // const stepFx = new Audio(`step.mp3`)
@@ -38,6 +38,7 @@ const noWall = []
 const torchLoc = []
 const ladderLoc = []
 const plankLoc = []
+const holeLoc = []
 const lstApdLdr = []
 
 ////walls for level 1, exit is at 5
@@ -65,7 +66,7 @@ const lvlTwoWalls = [
   65, 66, 67, 68, 69, 79, 83, 94, 98, 109, 113, 124, 128, 139, 143, 154, 158,
   169, 173, 184, 188, 203
 ]
-const lvlTwoTorches = [140, 208]
+const lvlTwoTorches = [111, 24]
 const lvlTwoLadders = [121, 122, 123, 163]
 const lvlTwoHoles = [17]
 const lvlTwoPlanks = [87]
@@ -105,6 +106,8 @@ const setBoard = (wlls, lddrs, tors, ext, hle, plk) => {
   walls.length = 0
   torchLoc.length = 0
   ladderLoc.length = 0
+  holeLoc.length = 0
+  ladderLoc.length = 0
   playerLoc = 202
   entLoc = playerLoc + 15
   placeWalls(wlls)
@@ -113,6 +116,7 @@ const setBoard = (wlls, lddrs, tors, ext, hle, plk) => {
   getTorches()
   getLadder()
   getPlanks()
+  getHoles()
   placePlayer()
 }
 
@@ -244,6 +248,13 @@ const getPlanks = () => {
     }
   }
 }
+const getHoles = () => {
+  for (let i = 0; i < tiles.length; i++) {
+    if (tiles[i].classList.contains(`hole`)) {
+      holeLoc.push(i)
+    }
+  }
+}
 
 ///
 ///
@@ -272,18 +283,24 @@ const makeDark = () => {
 
 ///set lighted area
 const makeLight = () => {
-  // let lighted = [202, 186, 187, 188, 203, 216, 217, 218, 201]
-  let lit = [
-    playerLoc,
-    playerLoc - 16,
-    playerLoc - 15,
-    playerLoc - 14,
-    playerLoc - 1,
-    playerLoc + 1,
-    playerLoc + 14,
-    playerLoc + 15,
-    playerLoc + 16
-  ]
+  let lit = []
+  if (torchOn === 0) {
+    // let lighted = [202, 186, 187, 188, 203, 216, 217, 218, 201]
+    lit = [playerLoc]
+  } else {
+    lit = [
+      playerLoc,
+      playerLoc - 16,
+      playerLoc - 15,
+      playerLoc - 14,
+      playerLoc - 1,
+      playerLoc + 1,
+      playerLoc + 14,
+      playerLoc + 15,
+      playerLoc + 16
+    ]
+  }
+
   lit.forEach((tile) => {
     if (
       // lit.classList.contains(`torch`) ||
@@ -368,9 +385,9 @@ const addLadder = () => {
       ladderDiv.append(ladderCount)
       invDiv.append(ladderDiv)
     }
-    mazzy.ladders += 1
-    ladderCount.innerText = mazzy.ladders
   })
+  mazzy.ladders += 1
+  ladderCount.innerText = mazzy.ladders
 }
 
 ///function for adding plank
@@ -389,9 +406,9 @@ const addPlank = () => {
       plankDiv.append(plankCount)
       invDiv.append(plankDiv)
     }
-    mazzy.planks += 1
-    plankCount.innerText = mazzy.planks
   })
+  mazzy.planks += 1
+  plankCount.innerText = mazzy.planks
 }
 ///function for adding parachute
 const addPara = () => {
@@ -414,7 +431,19 @@ const useTorch = () => {
     console.log(`Torch Used!`)
     mazzy.torches -= 1
     trchCount.innerText = mazzy.torches
+    torchOn = 1
+    makeLight()
   }
+  setTimeout(() => {
+    torchFail()
+  }, 4000)
+}
+
+const torchFail = () => {
+  console.log(`torch faiiil`)
+  makeDark()
+  torchOn = 0
+  makeLight()
 }
 
 ///USING a Ladder
@@ -474,6 +503,7 @@ const exit = () => {
     curLvl = 1
   } else if (curLvl === 1) {
     clearBrd()
+    console.log(plankLoc)
     setBoard(
       lvlOneWalls,
       lvlOneLadders,
@@ -482,6 +512,7 @@ const exit = () => {
       lvlOneHoles,
       lvlOnePlanks
     )
+    console.log(plankLoc)
   } else if (curLvl === 2) {
     clearBrd()
     setBoard(
@@ -571,17 +602,20 @@ const ending = (parachute) => {
   const endPlank = document.createElement(`li`)
 
   if (parachute === true) {
+    backgroundMusic.pause()
     const endGood =
       document.createTextNode(`Mazzy has reached the top of The Maze Tower!  He looks out over the landscape from the top of the massive 
     tower(...well...it's only 2 floors up).  With the giant door to the tower closing behind him... he takes a deep breath, throws on the parachute and jumps to freedom!`)
     endP.append(endGood)
   } else if (parachute === false) {
+    backgroundMusic.pause()
     const endBad =
       document.createTextNode(`Mazzy has reached the top of The Maze Tower!  He looks out over the landscape from the top of the massive 
     tower(...well... it's only 2 floors up).  With the giant door to the tower closing behind him... he takes a deep breath. He decides to jump to freedom.... As he falls he 
     realizes that he has no parachute to aid his fall... he grimmaces. He thinks of how dumb this all was... that he could have just walked out the door at the bottom level.  Then SPLAT!! He dies.`)
     endP.append(endBad)
   } else if (parachute === 1) {
+    backgroundMusic.pause()
     console.log(`helllllooooo??`)
     const endFell = document.createTextNode(
       `Mazzy fell through a hole in the floor. For a split second all he saw was darkness... then... SPLAT! He died.`
@@ -622,8 +656,8 @@ const ending = (parachute) => {
 const mazzy = new Character(`Mazzy`, 0, 0)
 exit()
 // /// Make Dark
+// /// Make Light if there is any
 // makeDark()
-// // /// Make Light if there is any
 // makeLight()
 
 ///
@@ -633,6 +667,11 @@ exit()
 ///
 ///
 window.addEventListener(`keydown`, (event) => {
+  if (mazzy.steps === 0) {
+    backgroundMusic.play()
+    backgroundMusic.loop = true
+    backgroundMusic.volume = 0.2
+  }
   if (ended === 0) {
     ///Grab steps h2 to count steps
     let stepCnt = document.querySelector(`.steps`)
@@ -695,8 +734,6 @@ window.addEventListener(`keydown`, (event) => {
         //   lighted[i] += tileDifference
         // })
         playerLoc += tileDifference
-        // makeDark()
-        // makeLight()
         ///removing player from current location
         plyr.classList.remove('player')
         ///setting new location
@@ -709,6 +746,10 @@ window.addEventListener(`keydown`, (event) => {
         checkLadder()
         checkPlank()
         checkPara()
+        if (curLvl !== 1) {
+          makeDark()
+          makeLight()
+        }
       }
       ///you CANNOT go
     } else if (noGo === true) {

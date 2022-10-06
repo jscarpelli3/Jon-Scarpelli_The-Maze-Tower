@@ -86,7 +86,7 @@ div.game {
 }
 
 .torch {
-  background-image: url(torch1.png);
+  background-image: url(pics/torch3.gif);
 }
 
 .ladder {
@@ -111,6 +111,10 @@ div.game {
 
 .ent {
   background-image: url(entrance.png);
+}
+
+.coin {
+  background-image: url(pics/coin3.gif);
 }
 
 .inv-trch, .inv-ladder, .inv-coin, .inv-plank, .inv-para {
