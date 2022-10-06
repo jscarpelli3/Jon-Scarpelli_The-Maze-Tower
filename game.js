@@ -102,7 +102,7 @@ class Level {
 ///SETUP LEVEL
 ///
 ///
-const setBoard = (wlls, lddrs, tors, ext, hle, plk) => {
+const setBoard = (wlls, lddrs, tors, ext, hle, plk, drk) => {
   // clearLdrs()
   walls.length = 0
   torchLoc.length = 0
@@ -119,6 +119,12 @@ const setBoard = (wlls, lddrs, tors, ext, hle, plk) => {
   getPlanks()
   getHoles()
   placePlayer()
+  if (drk === 1) {
+    darkOn = 1
+    makeDark()
+  } else {
+    darkOn = 0
+  }
 }
 
 ///
@@ -377,6 +383,9 @@ const addLadder = () => {
   ladderLoc.forEach((lad, i) => {
     if (lad === playerLoc) {
       ladderLoc.splice(i, 1)
+      getFx.play()
+      mazzy.ladders += 1
+      ladderCount.innerText = mazzy.ladders
     }
     if (mazzy.ladders === 0) {
       let ladderDiv = document.createElement(`div`)
@@ -386,11 +395,11 @@ const addLadder = () => {
       ladderCount.classList.add(`ldr-count`)
       ladderDiv.append(ladderCount)
       invDiv.append(ladderDiv)
+      getFx.play()
+      mazzy.ladders += 1
+      ladderCount.innerText = mazzy.ladders
     }
   })
-  getFx.play()
-  mazzy.ladders += 1
-  ladderCount.innerText = mazzy.ladders
 }
 
 ///function for adding plank
@@ -432,16 +441,21 @@ const addPara = () => {
 
 ///USING a Torch
 const useTorch = () => {
-  if (mazzy.torches > 0) {
+  if (mazzy.torches > 0 && darkOn === 1) {
     console.log(`Torch Used!`)
     mazzy.torches -= 1
     trchCount.innerText = mazzy.torches
     torchOn = 1
     makeLight()
+    setTimeout(() => {
+      torchFail()
+    }, 4000)
   }
-  setTimeout(() => {
-    torchFail()
-  }, 4000)
+  if (mazzy.torches === 0) {
+    const trcDiv = document.querySelector(`.inv-trch`)
+    const ldrCntTxt = document.querySelector(`.trch-count`)
+    trcDiv.remove()
+  }
 }
 
 const torchFail = () => {
@@ -504,7 +518,8 @@ const exit = () => {
       lvlOneTorches,
       lvlOneExit,
       lvlOneHoles,
-      lvlOnePlanks
+      lvlOnePlanks,
+      0
     )
     curLvl = 1
   } else if (curLvl === 1) {
@@ -516,7 +531,8 @@ const exit = () => {
       lvlOneTorches,
       lvlOneExit,
       lvlOneHoles,
-      lvlOnePlanks
+      lvlOnePlanks,
+      0
     )
     console.log(plankLoc)
   } else if (curLvl === 2) {
@@ -527,7 +543,8 @@ const exit = () => {
       lvlTwoTorches,
       lvlTwoExit,
       lvlTwoHoles,
-      lvlTwoPlanks
+      lvlTwoPlanks,
+      1
     )
     tiles[paraLoc].classList.add(`para`)
   } else if (curLvl === 3) {
@@ -676,7 +693,7 @@ window.addEventListener(`keydown`, (event) => {
   if (mazzy.steps === 0) {
     backgroundMusic.play()
     backgroundMusic.loop = true
-    backgroundMusic.volume = 0.2
+    backgroundMusic.volume = 0.1
   }
   if (ended === 0) {
     ///Grab steps h2 to count steps

@@ -1,9 +1,10 @@
 body {
   font-family: vollkorn, serif;
-  background-image: url("pics/sky.png");
+  background-image: url("pics/dung.jpeg");
   background-repeat: no-repeat;
-  background-size: cover;
+  background-size: 100%;
   background-color: black;
+  background-position: right;
   display: grid;
   grid-template: 1fr 720px 1fr/1fr 720px 1fr;
 }
