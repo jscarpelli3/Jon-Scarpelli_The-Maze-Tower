@@ -150,14 +150,15 @@ ul, li {
 }
 
 button {
-  margin: 8px;
+  font-family: vollkorn, serif;
+  font-size: 24px;
   width: 64;
   height: 52px;
-  grid-row: 3/4;
-  grid-column: 3/4;
-  color: floralwhite;
-  background-color: rgb(56, 0, 96); 
-  border-color: rgb(47, 47, 47);
+  text-align: center;
+  color: blanchedalmond;
+  grid-area: 2/3/3/4;
+  background-color: rgb(28, 0, 47);
+  border-color: whitesmoke;
   border-style: ridge;
   border: 2px double rgb(217, 217, 217);
 }
