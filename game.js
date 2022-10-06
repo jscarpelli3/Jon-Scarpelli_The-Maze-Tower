@@ -1,14 +1,15 @@
 const backgroundMusic = new Audio('sound/nano.mp3')
 // backgroungMusic.play()
 // backgroungMusic.volume = 0.5
-// const stepFx = new Audio(`step.mp3`)
+const stepFx = new Audio(`sound/step.wav`)
 // const getfx = new Audio(`get.mp3`)
 // const ladderfx = new Audio(`ladder.mp3`)
-// const plankfx = new Audio(`plank.mp3`)
+const plankfx = new Audio(`sound/plank.mp3`)
 // const torchfx = new Audio(`torch.mp3`)
 // const winfx = new Audio(`win.mp3`)
 // const losefx = new Audio(`lose.mp3`)
-// const fallfx = new Audio(`fall.mp3`)
+const fallfx = new Audio(`sound/fall.wav`)
+const getFx = new Audio(`sound/get.wav`)
 // const exitfx = new Audio(`exit.mp3`)
 
 const gamboard = document.querySelector(`.game`)
@@ -365,6 +366,7 @@ const addTorch = () => {
     trchDiv.append(trchCount)
     invDiv.append(trchDiv)
   }
+  getFx.play()
   mazzy.torches += 1
   trchCount.innerText = mazzy.torches
 }
@@ -386,6 +388,7 @@ const addLadder = () => {
       invDiv.append(ladderDiv)
     }
   })
+  getFx.play()
   mazzy.ladders += 1
   ladderCount.innerText = mazzy.ladders
 }
@@ -407,6 +410,7 @@ const addPlank = () => {
       invDiv.append(plankDiv)
     }
   })
+  getFx.play()
   mazzy.planks += 1
   plankCount.innerText = mazzy.planks
 }
@@ -423,6 +427,7 @@ const addPara = () => {
   mazzy.parachute = true
   console.log(mazzy.parachute)
   plankCount.innerText = `1`
+  getFx.play()
 }
 
 ///USING a Torch
@@ -482,6 +487,7 @@ const usePlank = (lkAd) => {
     const ldrCntTxt = document.querySelector(`.plk-count`)
     plkDiv.remove()
   }
+  plankfx.play()
 }
 
 ///
@@ -740,6 +746,7 @@ window.addEventListener(`keydown`, (event) => {
         ///adding player to that new location
         tiles[playerLoc].classList.add(`player`)
         mazzy.steps += 1
+        stepFx.play()
         stepCnt.innerHTML = mazzy.steps
         ///if you go to a torch spot
         checkTorch()
