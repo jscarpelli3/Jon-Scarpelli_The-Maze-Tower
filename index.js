@@ -1,4 +1,4 @@
-const startButton = document.querySelector(`.start`)
+const startButton = document.querySelector(`button`)
 
 ///start button takes you to the game
 startButton.addEventListener(`click`, () => {

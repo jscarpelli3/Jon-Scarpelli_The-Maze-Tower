@@ -112,6 +112,7 @@ const setBoard = (wlls, lddrs, tors, ext, hle, plk, drk) => {
   playerLoc = 202
   entLoc = playerLoc + 15
   placeWalls(wlls)
+  console.log(lddrs)
   placeItems(lddrs, tors, ext, hle, plk)
   getWalls()
   getTorches()
@@ -194,6 +195,7 @@ const placeWalls = (levelWalls) => {
 
 ///place items
 const placeItems = (ldrs, trchs, exit, holes, planks) => {
+  console.log(ldrs)
   tiles[exit].classList.add(`exit`)
   ldrs.forEach((ldrs) => {
     tiles[ldrs].classList.add(`ladder`)
@@ -246,6 +248,7 @@ const getLadder = () => {
       ladderLoc.push(i)
     }
   }
+  console.log(ladderLoc)
 }
 //// get the plank locations
 const getPlanks = () => {
@@ -512,6 +515,7 @@ const usePlank = (lkAd) => {
 
 const exit = () => {
   if (curLvl === 0) {
+    console.log(ladderLoc)
     setBoard(
       lvlOneWalls,
       lvlOneLadders,
@@ -524,7 +528,7 @@ const exit = () => {
     curLvl = 1
   } else if (curLvl === 1) {
     clearBrd()
-    console.log(plankLoc)
+    console.log(ladderLoc)
     setBoard(
       lvlOneWalls,
       lvlOneLadders,
@@ -536,6 +540,7 @@ const exit = () => {
     )
     console.log(plankLoc)
   } else if (curLvl === 2) {
+    console.log(ladderLoc)
     clearBrd()
     setBoard(
       lvlTwoWalls,
