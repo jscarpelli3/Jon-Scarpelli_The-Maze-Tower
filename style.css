@@ -113,7 +113,7 @@ div.game {
   background-image: url(entrance.png);
 }
 
-.inv-trch, .inv-ladder, .inv-coin, .inv-plank, .para-count {
+.inv-trch, .inv-ladder, .inv-coin, .inv-plank, .inv-para {
   padding: 6px;
   margin: 12px 12px;
   border: 2px solid white;
@@ -145,12 +145,14 @@ ul, li {
 }
 
 button {
-  width: 288px;
-  height: 48px;
+  margin: 8px;
+  width: 64;
+  height: 52px;
+  grid-row: 3/4;
+  grid-column: 3/4;
   color: floralwhite;
-  background-color: rgb(112, 1, 23);
+  background-color: rgb(56, 0, 96); 
   border-color: rgb(47, 47, 47);
-  border: 2px solid rgb(217, 217, 217);
-  border-bottom-right-radius: 12px;
-  border-top-left-radius: 12px;
+  border-style: ridge;
+  border: 2px double rgb(217, 217, 217);
 }

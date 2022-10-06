@@ -67,15 +67,14 @@ p {
 }
 
 .start {
+  margin: 8px;
   width: 64;
   height: 52px;
   grid-row: 3/4;
   grid-column: 3/4;
   color: floralwhite;
-  background-color: rgb(112, 1, 23);
-  border-color: rgb(47, 47, 47);
+  background-color: rgb(56, 0, 96);
+  border-color: whitesmoke;
   border-style: ridge;
-  border: 2px solid rgb(217, 217, 217);
-  border-bottom-right-radius: 12px;
-  border-top-left-radius: 12px;
+  border: 2px double rgb(217, 217, 217);
 }

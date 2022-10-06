@@ -22,6 +22,8 @@ const plankCount = document.createElement(`span`)
 const paraCount = document.createElement(`span`)
 let lookAhead = 0
 let ended = 0
+let torchOn = 0
+let darkOn = 0
 const outWalls = [
   0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 29, 44, 59, 74, 89, 104, 119,
   134, 149, 164, 179, 194, 209, 211, 212, 213, 214, 215, 216, 217, 218, 219,
@@ -33,11 +35,11 @@ let exitLoc = 5
 let paraLoc = 27
 const walls = []
 const noWall = []
-
 const torchLoc = []
 const ladderLoc = []
 const plankLoc = []
 const lstApdLdr = []
+
 ////walls for level 1, exit is at 5
 const lvlOneWalls = [
   0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 29, 30, 44, 45, 59, 60, 74,
@@ -50,7 +52,7 @@ const lvlOneWalls = [
 ]
 const lvlOneTorches = [140, 208]
 const lvlOneLadders = [123]
-const lvlOneHoles = [78]
+const lvlOneHoles = [78, 153]
 const lvlOnePlanks = [50]
 const lvlOneExit = 5
 
@@ -258,6 +260,7 @@ const makeDark = () => {
       tile.classList.contains(`exit`) ||
       tile.classList.contains(`ent`) ||
       tile.classList.contains(`player`) ||
+      tile.classList.contains(`plank`) ||
       tile.classList.contains(`ldr-applied`) ||
       tile.classList.contains(`plk-applied`)
     ) {
@@ -305,6 +308,29 @@ const checkTorch = () => {
   }
 }
 
+////function for checking for ladders
+const checkLadder = () => {
+  let ladderNow = ladderLoc.includes(playerLoc)
+  if (ladderNow === true) {
+    addLadder()
+  }
+}
+
+////function for checking for planks
+const checkPlank = () => {
+  let plankNow = plankLoc.includes(playerLoc)
+  if (plankNow === true) {
+    addPlank()
+  }
+}
+////function for checking for parachute
+const checkPara = () => {
+  if (tiles[playerLoc].classList.contains(`para`)) {
+    addPara()
+    console.log(`HELLO`)
+  }
+}
+
 ///function for adding torches
 const addTorch = () => {
   tiles[playerLoc].classList.remove(`torch`)
@@ -324,22 +350,6 @@ const addTorch = () => {
   }
   mazzy.torches += 1
   trchCount.innerText = mazzy.torches
-}
-
-const useTorch = () => {
-  if (mazzy.torches > 0) {
-    console.log(`Torch Used!`)
-    mazzy.torches -= 1
-    trchCount.innerText = mazzy.torches
-  }
-}
-
-////function for checking for ladders
-const checkLadder = () => {
-  let ladderNow = ladderLoc.includes(playerLoc)
-  if (ladderNow === true) {
-    addLadder()
-  }
 }
 
 ///function for adding ladders
@@ -362,13 +372,6 @@ const addLadder = () => {
     ladderCount.innerText = mazzy.ladders
   })
 }
-////function for checking for planks
-const checkPlank = () => {
-  let plankNow = plankLoc.includes(playerLoc)
-  if (plankNow === true) {
-    addPlank()
-  }
-}
 
 ///function for adding plank
 const addPlank = () => {
@@ -389,6 +392,29 @@ const addPlank = () => {
     mazzy.planks += 1
     plankCount.innerText = mazzy.planks
   })
+}
+///function for adding parachute
+const addPara = () => {
+  tiles[playerLoc].classList.remove(`para`)
+  let paraDiv = document.createElement(`div`)
+  // let trchCount = document.createElement(`span`)
+  paraDiv.innerHTML = `<img src=parachute.png>`
+  paraDiv.classList.add(`inv-para`)
+  paraCount.classList.add(`para-count`)
+  paraDiv.append(paraCount)
+  invDiv.append(paraDiv)
+  mazzy.parachute = true
+  console.log(mazzy.parachute)
+  plankCount.innerText = `1`
+}
+
+///USING a Torch
+const useTorch = () => {
+  if (mazzy.torches > 0) {
+    console.log(`Torch Used!`)
+    mazzy.torches -= 1
+    trchCount.innerText = mazzy.torches
+  }
 }
 
 ///USING a Ladder
@@ -422,6 +448,11 @@ const usePlank = (lkAd) => {
   mazzy.planks -= 1
   plankCount.innerText = mazzy.planks
   tiles[lkAd].classList.remove(`hole`)
+  if (mazzy.planks === 0) {
+    const plkDiv = document.querySelector(`.inv-plank`)
+    const ldrCntTxt = document.querySelector(`.plk-count`)
+    plkDiv.remove()
+  }
 }
 
 ///
@@ -465,7 +496,7 @@ const exit = () => {
   } else if (curLvl === 3) {
     clearBrd()
     // clearLdrs()
-    ending(mazzy.hasParachute)
+    ending(mazzy.parachute)
   }
 }
 
@@ -562,9 +593,9 @@ const ending = (parachute) => {
   endUl.innerText = `Ending Stats:`
   endStep.innerText = `Mazzy took ${mazzy.steps} steps`
   endCoin.innerText = `Mazzy collected ${mazzy.coins} coins`
-  endTorch.innerText = `Mazzy has ${mazzy.torches} left`
-  endLadder.innerText = `Mazzy has ${mazzy.ladders} left`
-  endPlank.innerText = `Mazzy has ${mazzy.planks} left`
+  endTorch.innerText = `Mazzy has ${mazzy.torches} torches left`
+  endLadder.innerText = `Mazzy has ${mazzy.ladders} ladders left`
+  endPlank.innerText = `Mazzy has ${mazzy.planks} planks left`
   endUl.append(endStep)
   endUl.append(endCoin)
   endUl.append(endTorch)
@@ -591,9 +622,9 @@ const ending = (parachute) => {
 const mazzy = new Character(`Mazzy`, 0, 0)
 exit()
 // /// Make Dark
-makeDark()
-// /// Make Light if there is any
-makeLight()
+// makeDark()
+// // /// Make Light if there is any
+// makeLight()
 
 ///
 ///
@@ -664,8 +695,8 @@ window.addEventListener(`keydown`, (event) => {
         //   lighted[i] += tileDifference
         // })
         playerLoc += tileDifference
-        makeDark()
-        makeLight()
+        // makeDark()
+        // makeLight()
         ///removing player from current location
         plyr.classList.remove('player')
         ///setting new location
@@ -677,6 +708,7 @@ window.addEventListener(`keydown`, (event) => {
         checkTorch()
         checkLadder()
         checkPlank()
+        checkPara()
       }
       ///you CANNOT go
     } else if (noGo === true) {
