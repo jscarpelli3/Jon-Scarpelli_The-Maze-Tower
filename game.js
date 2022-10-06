@@ -52,7 +52,7 @@ const lvlOneWalls = [
   122, 124, 126, 128, 129, 130, 131, 132, 137, 139, 143, 147, 152, 154, 155,
   156, 157, 158, 162, 167, 177, 182, 183, 184, 185, 186, 187, 188, 189, 190, 192
 ]
-const lvlOneTorches = [140, 208]
+const lvlOneTorches = [140, 208, 108]
 const lvlOneLadders = [123]
 const lvlOneHoles = [78, 153]
 const lvlOnePlanks = [50]
@@ -68,7 +68,7 @@ const lvlTwoWalls = [
   65, 66, 67, 68, 69, 79, 83, 94, 98, 109, 113, 124, 128, 139, 143, 154, 158,
   169, 173, 184, 188, 203
 ]
-const lvlTwoTorches = [111, 24]
+const lvlTwoTorches = [111, 24, 50, 57]
 const lvlTwoLadders = [121, 122, 123, 163]
 const lvlTwoHoles = [17, 131]
 const lvlTwoPlanks = [87]
@@ -111,6 +111,7 @@ const setBoard = (wlls, lddrs, tors, ext, hle, plk, drk, cns) => {
   holeLoc.length = 0
   ladderLoc.length = 0
   plankLoc.length = 0
+  coinLoc.length = 0
   playerLoc = 202
   entLoc = playerLoc + 15
   placeWalls(wlls)
@@ -468,6 +469,12 @@ const addPara = () => {
 
 ///function for adding a coin
 const addCoin = () => {
+  coinLoc.forEach((cn, i) => {
+    if (cn === playerLoc) {
+      coinLoc.splice(i, 1)
+    }
+  })
+
   coinfx.play()
   coinfx.volume = 0.3
   tiles[playerLoc].classList.remove(`coin`)
@@ -485,8 +492,21 @@ const useTorch = () => {
     torchfx.play()
     torchfx.volume = 0.3
     makeLight()
+    let lvlNow = curLvl
+    ///function for torch turning off after an interval
+    const torchFail = (lvl) => {
+      if (curLvl === lvl) {
+        makeDark()
+        torchOn = 0
+        makeLight()
+        denyFx.play()
+      } else {
+        torchOn = 0
+      }
+    }
+    ///set interval fr torch turn off, call the above function(could i have just written the function right in there?)
     setTimeout(() => {
-      torchFail(curLvl)
+      torchFail(lvlNow)
     }, 4500)
     if (mazzy.torches === 0) {
       const trcDiv = document.querySelector(`.inv-trch`)
@@ -494,17 +514,6 @@ const useTorch = () => {
       trcDiv.remove()
     }
   }
-}
-
-const torchFail = (lvl) => {
-  if (curLvl === lvl) {
-    makeDark()
-    torchOn = 0
-    makeLight()
-  } else if (curLvl !== lvl) {
-    torchOn = 0
-  }
-  denyFx.play()
 }
 
 ///USING a Ladder
@@ -597,6 +606,7 @@ const exit = () => {
     )
     tiles[paraLoc].classList.add(`para`)
   } else if (curLvl === 3) {
+    curLvl++
     clearBrd()
     // clearLdrs()
     ending(mazzy.parachute)
@@ -805,6 +815,7 @@ window.addEventListener(`keydown`, (event) => {
         if (mazzy.planks === 0) {
           clearBrd()
           ending(1)
+          curLvl++
         } else {
           usePlank(lookAhead)
         }
