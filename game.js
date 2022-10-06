@@ -103,16 +103,15 @@ class Level {
 ///
 ///
 const setBoard = (wlls, lddrs, tors, ext, hle, plk, drk) => {
-  // clearLdrs()
   walls.length = 0
   torchLoc.length = 0
   ladderLoc.length = 0
   holeLoc.length = 0
   ladderLoc.length = 0
+  plankLoc.length = 0
   playerLoc = 202
   entLoc = playerLoc + 15
   placeWalls(wlls)
-  console.log(lddrs)
   placeItems(lddrs, tors, ext, hle, plk)
   getWalls()
   getTorches()
@@ -195,7 +194,6 @@ const placeWalls = (levelWalls) => {
 
 ///place items
 const placeItems = (ldrs, trchs, exit, holes, planks) => {
-  console.log(ldrs)
   tiles[exit].classList.add(`exit`)
   ldrs.forEach((ldrs) => {
     tiles[ldrs].classList.add(`ladder`)
@@ -248,7 +246,6 @@ const getLadder = () => {
       ladderLoc.push(i)
     }
   }
-  console.log(ladderLoc)
 }
 //// get the plank locations
 const getPlanks = () => {
@@ -354,7 +351,6 @@ const checkPlank = () => {
 const checkPara = () => {
   if (tiles[playerLoc].classList.contains(`para`)) {
     addPara()
-    console.log(`HELLO`)
   }
 }
 
@@ -386,23 +382,21 @@ const addLadder = () => {
   ladderLoc.forEach((lad, i) => {
     if (lad === playerLoc) {
       ladderLoc.splice(i, 1)
-      getFx.play()
-      mazzy.ladders += 1
-      ladderCount.innerText = mazzy.ladders
-    }
-    if (mazzy.ladders === 0) {
-      let ladderDiv = document.createElement(`div`)
-      // let trchCount = document.createElement(`span`)
-      ladderDiv.innerHTML = `<img src=ladder.png>`
-      ladderDiv.classList.add(`inv-ladder`)
-      ladderCount.classList.add(`ldr-count`)
-      ladderDiv.append(ladderCount)
-      invDiv.append(ladderDiv)
-      getFx.play()
-      mazzy.ladders += 1
-      ladderCount.innerText = mazzy.ladders
     }
   })
+  if (mazzy.ladders === 0) {
+    let ladderDiv = document.createElement(`div`)
+    // let trchCount = document.createElement(`span`)
+    ladderDiv.innerHTML = `<img src=ladder.png>`
+    ladderDiv.classList.add(`inv-ladder`)
+    ladderCount.classList.add(`ldr-count`)
+    ladderDiv.append(ladderCount)
+    invDiv.append(ladderDiv)
+    getFx.play()
+  }
+  getFx.play()
+  mazzy.ladders += 1
+  ladderCount.innerText = mazzy.ladders
 }
 
 ///function for adding plank
@@ -412,16 +406,16 @@ const addPlank = () => {
     if (plk === playerLoc) {
       plankLoc.splice(i, 1)
     }
-    if (mazzy.planks === 0) {
-      let plankDiv = document.createElement(`div`)
-      // let trchCount = document.createElement(`span`)
-      plankDiv.innerHTML = `<img src=planks.png>`
-      plankDiv.classList.add(`inv-plank`)
-      plankCount.classList.add(`plk-count`)
-      plankDiv.append(plankCount)
-      invDiv.append(plankDiv)
-    }
   })
+  if (mazzy.planks === 0) {
+    let plankDiv = document.createElement(`div`)
+    // let trchCount = document.createElement(`span`)
+    plankDiv.innerHTML = `<img src=planks.png>`
+    plankDiv.classList.add(`inv-plank`)
+    plankCount.classList.add(`plk-count`)
+    plankDiv.append(plankCount)
+    invDiv.append(plankDiv)
+  }
   getFx.play()
   mazzy.planks += 1
   plankCount.innerText = mazzy.planks
@@ -437,7 +431,6 @@ const addPara = () => {
   paraDiv.append(paraCount)
   invDiv.append(paraDiv)
   mazzy.parachute = true
-  console.log(mazzy.parachute)
   plankCount.innerText = `1`
   getFx.play()
 }
@@ -445,7 +438,6 @@ const addPara = () => {
 ///USING a Torch
 const useTorch = () => {
   if (mazzy.torches > 0 && darkOn === 1) {
-    console.log(`Torch Used!`)
     mazzy.torches -= 1
     trchCount.innerText = mazzy.torches
     torchOn = 1
@@ -462,7 +454,6 @@ const useTorch = () => {
 }
 
 const torchFail = () => {
-  console.log(`torch faiiil`)
   makeDark()
   torchOn = 0
   makeLight()
@@ -515,7 +506,6 @@ const usePlank = (lkAd) => {
 
 const exit = () => {
   if (curLvl === 0) {
-    console.log(ladderLoc)
     setBoard(
       lvlOneWalls,
       lvlOneLadders,
@@ -528,7 +518,6 @@ const exit = () => {
     curLvl = 1
   } else if (curLvl === 1) {
     clearBrd()
-    console.log(ladderLoc)
     setBoard(
       lvlOneWalls,
       lvlOneLadders,
@@ -538,9 +527,7 @@ const exit = () => {
       lvlOnePlanks,
       0
     )
-    console.log(plankLoc)
   } else if (curLvl === 2) {
-    console.log(ladderLoc)
     clearBrd()
     setBoard(
       lvlTwoWalls,
@@ -644,7 +631,6 @@ const ending = (parachute) => {
     endP.append(endBad)
   } else if (parachute === 1) {
     backgroundMusic.pause()
-    console.log(`helllllooooo??`)
     const endFell = document.createTextNode(
       `Mazzy fell through a hole in the floor. For a split second all he saw was darkness... then... SPLAT! He died.`
     )
