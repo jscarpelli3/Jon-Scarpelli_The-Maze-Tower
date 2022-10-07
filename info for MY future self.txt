@@ -1,0 +1,18 @@
+making light and dark for each level is a feature that is in flux depending on how new levels emerge.
+
+when you call a new level in the EXIT function, you set whether or not the level starts dark.  0 is light, 1 is dark...
+
+here's the flux part:
+
+right now that's it, 0 or 1.
+
+but the code is close to being able to use 3.  to do this, i would have to go up to the "setbaord" function and add an ELSE IF for the drk parameter.
+
+CURRENTLY i have mocked this up simply by choosing the specific level.  but with more levels, i would have to do it by making the ELSE IF mentioned in the previous line.   This is where I need to take this.
+
+
+ADDITIONALLY:
+
+i may have to rework this SLIGHTLY so that instead of choosing just 0,1 or 3 (for start light but then go dark).  I want to simply pass through the amount of 
+seconds that the level is light.  This would get passed in the EXIT function.  so instead of passing 0,1 etc... i'd pass 3000 for 3 seconds or 5000 for 
+5 seconds.  for levels that are meant to be all light i can just pass a huge number. so if the level takes you longer than say 60,000ms, or 60 seconds, it will go dark. which if fair and fun.

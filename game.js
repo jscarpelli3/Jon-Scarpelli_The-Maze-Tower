@@ -92,11 +92,29 @@ const lvlThreeWalls = [
 const lvlThreeTorches = [32, 79, 197, 199, 201, 203, 205, 207]
 const lvlThreeLadders = [28]
 const lvlThreeHoles = [
-  27, 42, 54, 73, 77, 82, 114, 140, 146, 154, 108, 127, 122
+  27, 42, 54, 73, 77, 82, 114, 111, 140, 146, 154, 108, 127, 122
 ]
 const lvlThreePlanks = [96]
 const lvlThreeCoins = [98, 147]
 const lvlThreeExit = 5
+
+///LEVEL 4, exit at 5
+const lvlFourWalls = [
+  0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 29, 30, 44, 45, 59, 60, 74,
+  75, 89, 90, 104, 105, 119, 120, 134, 135, 149, 150, 164, 165, 179, 180, 194,
+  195, 209, 210, 211, 212, 213, 214, 215, 216, 218, 219, 220, 221, 222, 223,
+  224, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 61, 62, 63, 64, 65, 66, 67,
+  69, 70, 71, 72, 73, 77, 82, 84, 92, 93, 95, 96, 97, 99, 101, 102, 122, 125,
+  126, 127, 128, 129, 131, 137, 138, 139, 140, 146, 163, 161, 157, 152, 167,
+  169, 170, 171, 172, 173, 174, 175, 176, 182, 184, 188, 192, 199, 201, 205
+]
+
+const lvlFourTorches = [191, 124]
+const lvlFourLadders = [196]
+const lvlFourHoles = [28, 76, 81, 117, 123, 144]
+const lvlFourPlanks = [87]
+const lvlFourCoins = [113, 147]
+const lvlFourExit = 5
 /////
 /////
 /////
@@ -150,20 +168,18 @@ const setBoard = (wlls, lddrs, tors, ext, hle, plk, drk, cns) => {
   getCoins()
   placePlayer()
   if (drk === 1) {
-    darkOn = 1
     makeDark()
   } else if (drk === 0) {
     darkOn = 0
   } else {
     const pauseDark = () => {
-      darkOn == 1
       makeDark()
       makeLight()
     }
-    if (curLvl === 3) {
+    if (curLvl === 3 || curLvl === 4) {
       setTimeout(() => {
         pauseDark()
-      }, 3000)
+      }, 3500)
     }
   }
 }
@@ -326,6 +342,7 @@ const getCoins = () => {
 
 ///make the board dark
 const makeDark = () => {
+  darkOn = 1
   tiles.forEach((tile) => {
     if (
       tile.classList.contains(`torch`) ||
@@ -652,6 +669,18 @@ const exit = () => {
       lvlThreeCoins
     )
   } else if (curLvl === 4) {
+    clearBrd()
+    setBoard(
+      lvlFourWalls,
+      lvlFourLadders,
+      lvlFourTorches,
+      lvlFourExit,
+      lvlFourHoles,
+      lvlFourPlanks,
+      0,
+      lvlThreeCoins
+    )
+  } else if (curLvl === 5) {
     curLvl++
     clearBrd()
     ending(mazzy.parachute)
@@ -839,7 +868,7 @@ window.addEventListener(`keydown`, (event) => {
         checkPlank()
         checkPara()
         checkCoin()
-        if (curLvl !== 1) {
+        if (curLvl === 2 || curLvl === 3) {
           makeDark()
           makeLight()
         }
