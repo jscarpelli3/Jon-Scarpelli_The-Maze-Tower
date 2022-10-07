@@ -172,14 +172,14 @@ const setBoard = (wlls, lddrs, tors, ext, hle, plk, drk, cns) => {
   } else if (drk === 0) {
     darkOn = 0
   } else {
-    const pauseDark = () => {
-      makeDark()
-      makeLight()
-    }
     if (curLvl === 3 || curLvl === 4) {
-      setTimeout(() => {
-        pauseDark()
-      }, 3500)
+      setTimeout(
+        (pauseDark = () => {
+          makeDark()
+          makeLight()
+        }),
+        3500
+      )
     }
   }
 }
@@ -554,9 +554,19 @@ const useTorch = () => {
       }
     }
     ///set interval fr torch turn off, call the above function(could i have just written the function right in there?)
-    setTimeout(() => {
-      torchFail(lvlNow)
-    }, 4500)
+    setTimeout(
+      (torchFail = (lvl) => {
+        if (curLvl === lvl) {
+          makeDark()
+          torchOn = 0
+          makeLight()
+          denyFx.play()
+        } else {
+          torchOn = 0
+        }
+      }),
+      4500
+    )
     if (mazzy.torches === 0) {
       const trcDiv = document.querySelector(`.inv-trch`)
       const ldrCntTxt = document.querySelector(`.trch-count`)
@@ -564,6 +574,8 @@ const useTorch = () => {
     }
   }
 }
+
+clearTimeout()
 
 ///USING a Ladder
 const useLadder = (lkAhd) => {
@@ -677,7 +689,7 @@ const exit = () => {
       lvlFourExit,
       lvlFourHoles,
       lvlFourPlanks,
-      0,
+      3,
       lvlThreeCoins
     )
   } else if (curLvl === 5) {
@@ -868,7 +880,7 @@ window.addEventListener(`keydown`, (event) => {
         checkPlank()
         checkPara()
         checkCoin()
-        if (curLvl === 2 || curLvl === 3) {
+        if (curLvl !== 1) {
           makeDark()
           makeLight()
         }
