@@ -1,3 +1,4 @@
+///declare all audio
 const backgroundMusic = new Audio('sound/nano.mp3')
 const stepFx = new Audio(`sound/step.wav`)
 const ladderfx = new Audio(`sound/ladder.mp3`)
@@ -11,9 +12,9 @@ const endSong = new Audio(`sound/ending.mp3`)
 const paraGet = new Audio(`sound/para1.mp3`)
 const denyFx = new Audio(`sound/deny.wav`)
 
+/// Global grabs & vars
 const gamboard = document.querySelector(`.game`)
 const tiles = document.querySelectorAll(`.tile`)
-// const player = document.querySelector(`.player`)
 const keyListener = document.querySelector(`button`)
 const invDiv = document.querySelector(`.inventory`)
 const trchCount = document.createElement(`span`)
@@ -42,7 +43,13 @@ const holeLoc = []
 const coinLoc = []
 const lstApdLdr = []
 
-////walls for level 1, exit is at 5
+////
+////
+//// Level Setups
+////
+////
+
+////LEVEL 1, exit is at 5
 const lvlOneWalls = [
   0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 29, 30, 44, 45, 59, 60, 74,
   75, 89, 90, 104, 105, 119, 120, 134, 135, 149, 150, 164, 165, 179, 180, 194,
@@ -59,7 +66,7 @@ const lvlOnePlanks = [50]
 const lvlOneCoins = [16, 142]
 const lvlOneExit = 5
 
-///walls for lvl 2 exit is at 5 again
+///LEVEL 2, exit is at 5
 const lvlTwoWalls = [
   0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 29, 30, 44, 45, 59, 60, 74,
   75, 89, 90, 104, 105, 119, 120, 134, 135, 149, 150, 164, 165, 179, 180, 194,
@@ -75,13 +82,13 @@ const lvlTwoPlanks = [87]
 const lvlTwoCoins = [25, 193]
 const lvlTwoExit = 5
 
+///LEVEL 3, exit at 5
 const lvlThreeWalls = [
   0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 29, 30, 44, 45, 59, 60, 74,
   75, 89, 90, 104, 105, 119, 120, 134, 135, 149, 150, 164, 165, 179, 180, 194,
   195, 209, 210, 211, 212, 213, 214, 215, 216, 218, 219, 220, 221, 222, 223,
   224, 19, 21, 34, 35, 36
 ]
-
 const lvlThreeTorches = [32, 79, 197, 199, 201, 203, 205, 207]
 const lvlThreeLadders = [28]
 const lvlThreeHoles = [
@@ -90,6 +97,9 @@ const lvlThreeHoles = [
 const lvlThreePlanks = [96]
 const lvlThreeCoins = [98, 147]
 const lvlThreeExit = 5
+/////
+/////
+/////
 
 class Character {
   constructor(name, torches, ladders) {
@@ -117,7 +127,7 @@ class Level {
 
 ///
 ///
-///SETUP LEVEL
+///SETUP GAME BOARD
 ///
 ///
 const setBoard = (wlls, lddrs, tors, ext, hle, plk, drk, cns) => {
@@ -164,6 +174,7 @@ const setBoard = (wlls, lddrs, tors, ext, hle, plk, drk, cns) => {
 ///
 ///
 
+///place walls
 const placeWalls = (levelWalls) => {
   levelWalls.forEach((wallTile, i) => {
     tiles[wallTile].classList.add(`wall`)
@@ -357,11 +368,6 @@ const makeLight = () => {
 
   lit.forEach((tile) => {
     if (
-      // lit.classList.contains(`torch`) ||
-      // lit.classList.contains(`ladder`) ||
-      // lit.classList.contains(`exit`) ||
-      // lit.classList.contains(`ent`) ||
-      // lit.classList.contains(`player`) ||
       tiles[tile].classList.contains(`ldr-applied`) ||
       tiles[tile].classList.contains(`plk-applied`)
     ) {
@@ -371,7 +377,7 @@ const makeLight = () => {
   })
 }
 
-////function for checking for torches
+////checking for torches at player
 const checkTorch = () => {
   let torchNow = torchLoc.includes(playerLoc)
   if (torchNow === true) {
@@ -379,7 +385,7 @@ const checkTorch = () => {
   }
 }
 
-////function for checking for ladders
+////for checking for ladders at player
 const checkLadder = () => {
   let ladderNow = ladderLoc.includes(playerLoc)
   if (ladderNow === true) {
@@ -387,7 +393,7 @@ const checkLadder = () => {
   }
 }
 
-////function for checking for planks
+////checking for planks at player
 const checkPlank = () => {
   let plankNow = plankLoc.includes(playerLoc)
   if (plankNow === true) {
@@ -395,7 +401,7 @@ const checkPlank = () => {
   }
 }
 
-////function for check for coins
+////checking for coins at player
 const checkCoin = () => {
   let coinNow = coinLoc.includes(playerLoc)
   if (coinNow === true) {
@@ -409,7 +415,7 @@ const checkPara = () => {
   }
 }
 
-///function for adding torches
+///adding torches to your inv
 const addTorch = () => {
   tiles[playerLoc].classList.remove(`torch`)
   torchLoc.forEach((tor, i) => {
@@ -419,7 +425,6 @@ const addTorch = () => {
   })
   if (mazzy.torches === 0) {
     let trchDiv = document.createElement(`div`)
-    // let trchCount = document.createElement(`span`)
     trchDiv.innerHTML = `<img src=pics/torch.png>`
     trchDiv.classList.add(`inv-trch`)
     trchCount.classList.add(`trch-count`)
@@ -432,7 +437,7 @@ const addTorch = () => {
   trchCount.innerText = mazzy.torches
 }
 
-///function for adding ladders
+///adding ladders to your inv
 const addLadder = () => {
   tiles[playerLoc].classList.remove(`ladder`)
   ladderLoc.forEach((lad, i) => {
@@ -456,7 +461,7 @@ const addLadder = () => {
   ladderCount.innerText = mazzy.ladders
 }
 
-///function for adding plank
+///adding plank to your inv
 const addPlank = () => {
   tiles[playerLoc].classList.remove(`plank`)
   plankLoc.forEach((plk, i) => {
@@ -479,7 +484,7 @@ const addPlank = () => {
   plankCount.innerText = mazzy.planks
 }
 
-///function for adding parachute
+///adding parachute to your inv
 const addPara = () => {
   tiles[playerLoc].classList.remove(`para`)
   let paraDiv = document.createElement(`div`)
@@ -494,7 +499,7 @@ const addPara = () => {
   paraGet.play()
 }
 
-///function for adding a coin
+///adding a coin to your inv
 const addCoin = () => {
   coinLoc.forEach((cn, i) => {
     if (cn === playerLoc) {
@@ -591,10 +596,12 @@ const usePlank = (lkAd) => {
 ///
 ///
 
+////Setboard takes params for: 1.walls 2.ladders 3.torches 4.exitloc 5.holes 6.planks 7.IF it IS initially dark 8.coins
 const exit = () => {
+  const levelDsp = document.querySelector(`.display-level`)
   lookAhead = 187
   exitfx.play()
-  exitfx.volume = 0.2
+  exitfx.volume = 0.1
   if (curLvl === 0) {
     setBoard(
       lvlOneWalls,
@@ -647,9 +654,9 @@ const exit = () => {
   } else if (curLvl === 4) {
     curLvl++
     clearBrd()
-    // clearLdrs()
     ending(mazzy.parachute)
   }
+  levelDsp.innerText = curLvl
 }
 
 ///
@@ -657,54 +664,13 @@ const exit = () => {
 /// CLEAR BOARD
 ///
 ///
+
 function clearBrd() {
-  // tiles.forEach((tile, i) => {
-  //   if (tiles[i].classList.contains(`wall`)) {
-  //     tiles[i].classList.remove(`wall`)
-  //   }
-  // })
-  // tiles.forEach((tile, i) => {
-  //   if (tiles[i].classList.contains(`wvert`)) {
-  //     tiles[i].classList.remove(`wvert`)
-  //   } else if (tiles[i].classList.contains(`whor`)) {
-  //     tiles[i].classList.remove(`whor`)
-  //   } else if (tiles[i].classList.contains(`nwcorner`)) {
-  //     tiles[i].classList.remove(`nwcorner`)
-  //   } else if (tiles[i].classList.contains(`necorner`)) {
-  //     tiles[i].classList.remove(`necorner`)
-  //   } else if (tiles[i].classList.contains(`swcorner`)) {
-  //     tiles[i].classList.remove(`swcorner`)
-  //   } else if (tiles[i].classList.contains(`secorner`)) {
-  //     tiles[i].classList.remove(`secorner`)
-  //   }
-  // })
-  // tiles.forEach((tile, i) => {
-  //   if (tiles[i].classList.contains(`ldr-applied`)) {
-  //     tiles[i].className = `tile`
-  //     tiles[i].innerHTML = ``
-  //     lstApdLdr.push(`i`)
-  //   } else {
-  //     tiles[i].className = `tile`
-  //     tiles[i].innerHTML = ``
-  //   }
-  // })
   tiles.forEach((tile, i) => {
     tiles[i].className = `tile`
     tiles[i].innerHTML = ``
   })
 }
-
-// const clearLdrs = () => {
-//   tiles.forEach((tile, i) => {
-//     if (tiles[i].classList.contains(`ladder`)) {
-//       tiles[i].classList.remove(`ladder`)
-//     } else if (tiles[i].classList.contains(`ldr-applied`)) {
-//       tiles[i].innerHTML = ``
-//       tiles[i].classList.remove(`ldr-applied`)
-//       lstApdLdr.push(`i`)
-//     }
-//   })
-// }
 
 ///
 ///ENDINGS
@@ -721,6 +687,8 @@ const ending = (parachute) => {
   const endDiv = document.getElementById(`t32`)
   endDiv.classList.add(`end-div`)
   endDiv.classList.remove(`tile`)
+  const resultH1 = document.createElement(`h1`)
+  resultH1.classList.add(`result`)
   const endP = document.createElement(`p`)
   const endUl = document.createElement(`ul`)
   const endStep = document.createElement(`li`)
@@ -731,13 +699,14 @@ const ending = (parachute) => {
   backgroundMusic.pause()
 
   if (parachute === true) {
-    const endGood =
-      document.createTextNode(`Mazzy has reached the top of The Maze Tower!  He looks out over the landscape from the top of the massive 
+    const endGood = (resultH1.innerText = `You Made It!!`)
+    document.createTextNode(`Mazzy has reached the top of The Maze Tower!  He looks out over the landscape from the top of the massive 
     tower(...well...it's only 2 floors up).  With the giant door to the tower closing behind him... he takes a deep breath, throws on the parachute and jumps to freedom!`)
     endP.append(endGood)
     winfx.play()
     setTimeout(playEndSong(), 2000)
   } else if (parachute !== 1 || parachute === false) {
+    resultH1.innerText = `Oh No!`
     const endBad =
       document.createTextNode(`Mazzy has reached the top of The Maze Tower!  He looks out over the landscape from the top of the massive 
     tower(...well... it's only 2 floors up).  With the giant door to the tower closing behind him... he takes a deep breath. He decides to jump to freedom.... As he falls he 
@@ -745,6 +714,7 @@ const ending = (parachute) => {
     endP.append(endBad)
     fallfx.play()
   } else if (parachute === 1) {
+    resultH1.innerText = `You Died!`
     const endFell = document.createTextNode(
       `Mazzy fell through a hole in the floor. For a split second all he saw was darkness... then... SPLAT! He died.`
     )
@@ -752,8 +722,9 @@ const ending = (parachute) => {
     endP.append(endFell)
   }
 
+  endDiv.append(resultH1)
   endDiv.append(endP)
-  endUl.innerText = `Ending Stats:`
+  endUl.innerHTML = `Ending Stats:`
   endStep.innerText = `Mazzy took ${mazzy.steps} steps`
   endCoin.innerText = `Mazzy collected ${mazzy.coins} coins`
   endTorch.innerText = `Mazzy has ${mazzy.torches} torches left`
@@ -781,13 +752,8 @@ const ending = (parachute) => {
 ///
 ///
 
-/// Make Mazzy
 const mazzy = new Character(`Mazzy`, 0, 0)
 exit()
-// /// Make Dark
-// /// Make Light if there is any
-// makeDark()
-// makeLight()
 
 ///
 ///
@@ -842,7 +808,6 @@ window.addEventListener(`keydown`, (event) => {
       return wall === lookAhead
     })
     ///IF YOU CAN GO
-
     if (noGo === false) {
       if (lookAhead === exitLoc) {
         curLvl++
@@ -859,10 +824,6 @@ window.addEventListener(`keydown`, (event) => {
           usePlank(lookAhead)
         }
       } else {
-        ///reset Lighted tiles according to the proposed new player location
-        // lighted.forEach((ntile, i) => {
-        //   lighted[i] += tileDifference
-        // })
         playerLoc += tileDifference
         ///removing player from current location
         plyr.classList.remove('player')
