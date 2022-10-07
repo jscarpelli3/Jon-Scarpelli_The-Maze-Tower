@@ -60,6 +60,21 @@ _Project files and Production links:_
 - [The Maze Tower](https://the-maze-tower.surge.sh/) - Link to deployed App.
 - [The Maze Tower production Trello Board](https://trello.com/b/rfFDmLX2/js-maze-walker)
 - [The Maze Tower Repo on GitHub](https://github.com/jscarpelli3/Jon-Scarpelli_The-Maze-Tower)
+  <br><br><br>
+
+---
+
+## Future Improvements
+
+<br>
+
+I have MANY ideas for additional features. Firstly, new levels are easily added, so I'm hoping to add at least 10 more levels (so it's actually a tower!). Also, the torch feature can be made more robust. Alter the interval of time at higher levels. Special torches make larger sighted area. Certain levels maybe have periodic light and dark.
+
+The biggest thing I want to do is make make a level designer for the user. Currently it's easy to make levels, so I think it would be easy-ish to create a grid and allow the use to select where they would like a wall/torch/ladder etc...
+
+---
+
+## Credits
 
 The Maze Tower was created, designed & programmed by Jon Scarpelli<br>
 The art for the game is also by Jon Scarpelli<br>
