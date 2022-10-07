@@ -35,7 +35,7 @@ div.game {
   display: grid;
   margin: 0 auto;
   padding: 0;
-  background-image: url(floor2.png);
+  background-image: url(pics/floor2.png);
   width: 720px;
   height: 720px;
   grid-template: repeat(15, 1fr)/ repeat(15, 1fr);
@@ -50,39 +50,39 @@ div.game {
 }
 
 .wcross{
-  background-image: url(wall-cross.png);
+  background-image: url(pics/wall-cross.png);
   
 }
 .wvert{
-  background-image: url(wall-vert.png);
+  background-image: url(pics/wall-vert.png);
 }
 
 .whor {
-  background-image: url(wall-hor.png);
+  background-image: url(pics/wall-hor.png);
 }
 
 .nwcorner{
-  background-image: url(nwcorner.png);
+  background-image: url(pics/nwcorner.png);
 }
 
 .necorner{
-  background-image: url(necorner.png);
+  background-image: url(pics/necorner.png);
 }
 
 .swcorner{
-  background-image: url(swcorner.png);
+  background-image: url(pics/swcorner.png);
 }
 
 .secorner{
-  background-image: url(secorner.png);
+  background-image: url(pics/secorner.png);
 }
 
 .exit {
-  background-image: url(exithor.png);
+  background-image: url(pics/exithor.png);
 }
 
 .player {
-  background-image: url(mazzy.png);
+  background-image: url(pics/mazzy.png);
   z-index: 1;
 }
 
@@ -91,27 +91,27 @@ div.game {
 }
 
 .ladder {
-  background-image: url(ladder.png);
+  background-image: url(pics/ladder.png);
 }
 
 .plank {
-  background-image: url(planks.png);
+  background-image: url(pics/planks.png);
 }
 
 .hole {
-  background-image: url(hole.png);
+  background-image: url(pics/hole.png);
 }
 
 .para {
-  background-image: url(parachute.png);
+  background-image: url(pics/parachute.png);
 }
 
 .exit {
-  background-image: url(exithor.png);
+  background-image: url(pics/exithor.png);
 }
 
 .ent {
-  background-image: url(entrance.png);
+  background-image: url(pics/entrance.png);
 }
 
 .coin {

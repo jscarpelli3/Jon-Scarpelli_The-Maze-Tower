@@ -327,7 +327,7 @@ const makeDark = () => {
       tile.classList.contains(`plk-applied`)
     ) {
     } else {
-      tile.innerHTML = `<img src="ctrBlack.png">`
+      tile.innerHTML = `<img src="pics/ctrBlack.png">`
     }
   })
 }
@@ -420,7 +420,7 @@ const addTorch = () => {
   if (mazzy.torches === 0) {
     let trchDiv = document.createElement(`div`)
     // let trchCount = document.createElement(`span`)
-    trchDiv.innerHTML = `<img src=torch.png>`
+    trchDiv.innerHTML = `<img src=pics/torch.png>`
     trchDiv.classList.add(`inv-trch`)
     trchCount.classList.add(`trch-count`)
     trchDiv.append(trchCount)
@@ -443,7 +443,7 @@ const addLadder = () => {
   if (mazzy.ladders === 0) {
     let ladderDiv = document.createElement(`div`)
     // let trchCount = document.createElement(`span`)
-    ladderDiv.innerHTML = `<img src=ladder.png>`
+    ladderDiv.innerHTML = `<img src=pics/ladder.png>`
     ladderDiv.classList.add(`inv-ladder`)
     ladderCount.classList.add(`ldr-count`)
     ladderDiv.append(ladderCount)
@@ -467,7 +467,7 @@ const addPlank = () => {
   if (mazzy.planks === 0) {
     let plankDiv = document.createElement(`div`)
     // let trchCount = document.createElement(`span`)
-    plankDiv.innerHTML = `<img src=planks.png>`
+    plankDiv.innerHTML = `<img src=pics/planks.png>`
     plankDiv.classList.add(`inv-plank`)
     plankCount.classList.add(`plk-count`)
     plankDiv.append(plankCount)
@@ -484,7 +484,7 @@ const addPara = () => {
   tiles[playerLoc].classList.remove(`para`)
   let paraDiv = document.createElement(`div`)
   // let trchCount = document.createElement(`span`)
-  paraDiv.innerHTML = `<img src=parachute.png>`
+  paraDiv.innerHTML = `<img src=pics/parachute.png>`
   paraDiv.classList.add(`inv-para`)
   paraCount.classList.add(`para-count`)
   paraDiv.append(paraCount)
@@ -555,7 +555,7 @@ const useLadder = (lkAhd) => {
       ladderfx.play()
       ladderfx.volume = 0.3
     })
-    tiles[lkAhd].innerHTML = `<img id="ladder" src=ladder.png>`
+    tiles[lkAhd].innerHTML = `<img id="ladder" src=pics/ladder.png>`
     tiles[lkAhd].classList.add(`ldr-applied`)
     mazzy.ladders -= 1
     ladderCount.innerText = mazzy.ladders
@@ -573,7 +573,7 @@ const useLadder = (lkAhd) => {
 const usePlank = (lkAd) => {
   ladderfx.play()
   ladderfx.volume = 0.3
-  tiles[lkAd].innerHTML = `<img id="planks" src=holeplank.png>`
+  tiles[lkAd].innerHTML = `<img id="planks" src=pics/holeplank.png>`
   tiles[lkAd].classList.add(`plk-applied`)
   mazzy.planks -= 1
   plankCount.innerText = mazzy.planks
