@@ -65,6 +65,7 @@ const lvlOneHoles = [78, 153]
 const lvlOnePlanks = [50]
 const lvlOneCoins = [16, 142]
 const lvlOneExit = 5
+const lvlOneDarkTime = 60000
 
 ///LEVEL 2, exit is at 5
 const lvlTwoWalls = [
@@ -81,6 +82,7 @@ const lvlTwoHoles = [17, 131]
 const lvlTwoPlanks = [87]
 const lvlTwoCoins = [25, 193]
 const lvlTwoExit = 5
+const lvlTwoDarkTime = 1000
 
 ///LEVEL 3, exit at 5
 const lvlThreeWalls = [
@@ -97,6 +99,7 @@ const lvlThreeHoles = [
 const lvlThreePlanks = [96]
 const lvlThreeCoins = [98, 147]
 const lvlThreeExit = 5
+const lvlThreeDarkTime = 4000
 
 ///LEVEL 4, exit at 5
 const lvlFourWalls = [
@@ -115,6 +118,7 @@ const lvlFourHoles = [28, 76, 81, 117, 123, 144]
 const lvlFourPlanks = [87]
 const lvlFourCoins = [113, 147]
 const lvlFourExit = 5
+const lvlFourDarkTime = 5000
 /////
 /////
 /////
@@ -132,14 +136,26 @@ class Character {
 }
 
 class Level {
-  constructor(level, walls, torches, ladders, holes, planks, exit) {
+  constructor(
+    level,
+    walls,
+    torches,
+    ladders,
+    holes,
+    planks,
+    coins,
+    exit,
+    dark
+  ) {
     this.level = level
     this.walls = walls
     this.torches = torches
     this.ladders = ladders
     this.holes = holes
     this.planks = planks
+    this.coins = coins
     this.exit = exit
+    this.dark = dark
   }
 }
 
@@ -148,6 +164,7 @@ class Level {
 ///SETUP GAME BOARD
 ///
 ///
+
 const setBoard = (wlls, lddrs, tors, ext, hle, plk, drk, cns) => {
   walls.length = 0
   torchLoc.length = 0
@@ -167,21 +184,29 @@ const setBoard = (wlls, lddrs, tors, ext, hle, plk, drk, cns) => {
   getHoles()
   getCoins()
   placePlayer()
-  if (drk === 1) {
+  const pauseDark = () => {
     makeDark()
-  } else if (drk === 0) {
-    darkOn = 0
-  } else {
-    const pauseDark = () => {
-      makeDark()
-      makeLight()
-    }
-    if (curLvl === 3 || curLvl === 4) {
-      setTimeout(() => {
-        pauseDark()
-      }, 4500)
-    }
+    makeLight()
   }
+  setTimeout(() => {
+    pauseDark()
+  }, drk)
+
+  // if (drk === 1) {
+  //   makeDark()
+  // } else if (drk === 0) {
+  //   darkOn = 0
+  // } else {
+  //   const pauseDark = () => {
+  //     makeDark()
+  //     makeLight()
+  //   }
+  //   if (curLvl === 3 || curLvl === 4) {
+  //     setTimeout(() => {
+  //       pauseDark()
+  //     }, 4500)
+  //   }
+  // }
 }
 
 ///
@@ -533,6 +558,7 @@ const addCoin = () => {
 }
 
 ///USING a Torch
+
 const useTorch = () => {
   if (mazzy.torches > 0 && darkOn === 1) {
     mazzy.torches -= 1
@@ -616,6 +642,7 @@ const usePlank = (lkAd) => {
 ////Setboard takes params for: 1.walls 2.ladders 3.torches 4.exitloc 5.holes 6.planks 7.IF it IS initially dark 8.coins
 const exit = () => {
   const levelDsp = document.querySelector(`.display-level`)
+  darkOn = 0
   lookAhead = 187
   exitfx.play()
   exitfx.volume = 0.1
@@ -627,7 +654,7 @@ const exit = () => {
       lvlOneExit,
       lvlOneHoles,
       lvlOnePlanks,
-      0,
+      lvlOneDarkTime,
       lvlOneCoins
     )
     curLvl = 1
@@ -640,7 +667,7 @@ const exit = () => {
       lvlOneExit,
       lvlOneHoles,
       lvlOnePlanks,
-      0,
+      lvlOneDarkTime,
       lvlOneCoins
     )
   } else if (curLvl === 2) {
@@ -652,7 +679,7 @@ const exit = () => {
       lvlTwoExit,
       lvlTwoHoles,
       lvlTwoPlanks,
-      1,
+      lvlTwoDarkTime,
       lvlTwoCoins
     )
     tiles[paraLoc].classList.add(`para`)
@@ -665,7 +692,7 @@ const exit = () => {
       lvlThreeExit,
       lvlThreeHoles,
       lvlThreePlanks,
-      3,
+      lvlThreeDarkTime,
       lvlThreeCoins
     )
   } else if (curLvl === 4) {
@@ -677,7 +704,7 @@ const exit = () => {
       lvlFourExit,
       lvlFourHoles,
       lvlFourPlanks,
-      3,
+      lvlFourDarkTime,
       lvlThreeCoins
     )
   } else if (curLvl === 5) {
@@ -870,7 +897,7 @@ window.addEventListener(`keydown`, (event) => {
         checkPlank()
         checkPara()
         checkCoin()
-        if (curLvl !== 1) {
+        if (darkOn === 1) {
           makeDark()
           makeLight()
         }
