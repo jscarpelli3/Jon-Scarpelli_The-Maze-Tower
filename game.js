@@ -572,6 +572,17 @@ const addCoin = () => {
 
 ///USING a Torch
 
+const torchFail = (lvl) => {
+  if (curLvl === lvl) {
+    makeDark()
+    torchOn = 0
+    makeLight()
+    denyFx.play()
+  } else {
+    torchOn = 0
+  }
+}
+
 const useTorch = () => {
   if (mazzy.torches > 0 && darkOn === 1) {
     mazzy.torches -= 1
@@ -582,16 +593,16 @@ const useTorch = () => {
     makeLight()
     let lvlNow = curLvl
     ///function for torch turning off after an interval
-    const torchFail = (lvl) => {
-      if (curLvl === lvl) {
-        makeDark()
-        torchOn = 0
-        makeLight()
-        denyFx.play()
-      } else {
-        torchOn = 0
-      }
-    }
+    // const torchFail = (lvl) => {
+    //   if (curLvl === lvl) {
+    //     makeDark()
+    //     torchOn = 0
+    //     makeLight()
+    //     denyFx.play()
+    //   } else {
+    //     torchOn = 0
+    //   }
+    // }
     ///set interval fr torch turn off, call the above function(could i have just written the function right in there?)
     setTimeout(() => {
       torchFail(lvlNow)
@@ -663,6 +674,7 @@ const rexit = () => {
     curLvl = 1
   }
   if (curLvl === allLevels.length) {
+    clearTimeout()
     curLvl++
     clearBrd()
     ending(mazzy.parachute)
