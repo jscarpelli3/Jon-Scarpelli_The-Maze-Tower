@@ -12,13 +12,16 @@ _`The Maze Tower` is a throwback to early 90's freeware made with HTML, CSS & Ja
 ![](pics/mazzy.png)You play as Mazzy. A kid who got stuck at the bottom of a tower. To get out, Mazzy has to reach the top of the tower by traversing 3 levels of mazes and the escape out the top of the tower.
 
 ...Wait... what is Mazzy going to do from the top of a tower? Oh right... along the way you MUST locate the parachute. If Mazzy gets through all 3 levels of the tower without it... well the only taste of freedom Mazzy will have is the few seconds it takes to fall straight to the ground and... **`SPLAT!`**
+
+Anyway, from a programming standpoint, the best feature is how simple it is to make levels. All the information to layout a level is in the first large array of objects called allLevels. It contains the locations of all walls, torches, ladders and other items for that level. It even passes the value for how long the level will remain lit before the lights go out!
+
 <br><br>
 
 ## **`Gameplay`**
 
 ---
 
-The game is played using the arrow keys to move Mazzy around the level to get Mazzy from the bottom of the level to the exit at the top. There are also a few items and elements to be aware of:
+The game is played using the arrow keys to move Mazzy around the level to get Mazzy from the bottom of the level to the exit at the top. Each level is lit for a period of time that varies form level to level. For example the first level is lit or 60 seconds and then will go dark and you will have to use torches. Level 2 is lit for only a half second. Level three is lit for 3 seconds. Torches will be crucial. There are also a few items and elements to be aware of:
 
 ![torch](pics/torch1.png)
 
@@ -48,6 +51,10 @@ The game is played using the arrow keys to move Mazzy around the level to get Ma
 ![Exit](pics/exithor.png)
 
 **Exit:** Head toward the exit..... because... it's an exit.
+
+![Exit](pics/parachute.png)
+
+**Exit:** Finally, the parachuite. Find this item to succesfully fininsh the game. If you don't you will get to the top of the tower and Mazzy will fall to his death!
 
 <br><br><br>
 
