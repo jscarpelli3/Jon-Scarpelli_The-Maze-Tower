@@ -119,6 +119,119 @@ const lvlFourPlanks = [87]
 const lvlFourCoins = [113, 147]
 const lvlFourExit = 5
 const lvlFourDarkTime = 5000
+
+////////////
+let allLevels = [
+  {
+    name: `zero`,
+    walls: [
+      0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 29, 30, 44, 45, 59, 60,
+      74, 75, 89, 90, 104, 105, 119, 120, 134, 135, 149, 150, 164, 165, 179,
+      180, 194, 195, 209, 210, 211, 212, 213, 214, 215, 216, 218, 219, 220, 221,
+      222, 223, 224
+    ],
+    torches: [],
+    ladders: [],
+    holes: [],
+    planks: [],
+    coins: [],
+    exit: 5,
+    darkTime: 60000
+  },
+  {
+    name: `"Grab Stuff"`,
+    walls: [
+      0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 29, 30, 44, 45, 59, 60,
+      74, 75, 89, 90, 104, 105, 119, 120, 134, 135, 149, 150, 164, 165, 179,
+      180, 194, 195, 209, 210, 211, 212, 213, 214, 215, 216, 218, 219, 220, 221,
+      222, 223, 224, 17, 19, 34, 35, 36, 37, 38, 39, 40, 41, 42, 47, 49, 62, 64,
+      65, 66, 68, 69, 70, 71, 72, 73, 77, 79, 92, 94, 95, 96, 97, 98, 99, 100,
+      107, 109, 117, 122, 124, 126, 128, 129, 130, 131, 132, 137, 139, 143, 147,
+      152, 154, 155, 156, 157, 158, 162, 167, 177, 182, 183, 184, 185, 186, 187,
+      188, 189, 190, 192
+    ],
+    torches: [140, 208, 108],
+    ladders: [123],
+    holes: [78, 153],
+    planks: [50],
+    coins: [16, 142],
+    exit: 5,
+    darkTime: 60000
+  },
+  {
+    name: `"Uh Oh, it's dark"`,
+    walls: [
+      0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 29, 30, 44, 45, 59, 60,
+      74, 75, 89, 90, 104, 105, 119, 120, 134, 135, 149, 150, 164, 165, 179,
+      180, 194, 195, 209, 210, 211, 212, 213, 214, 215, 216, 218, 219, 220, 221,
+      222, 223, 224, 21, 23, 32, 33, 34, 35, 36, 38, 39, 40, 41, 42, 43, 53, 61,
+      62, 63, 64, 65, 66, 67, 68, 69, 79, 83, 94, 98, 109, 113, 124, 128, 139,
+      143, 154, 158, 169, 173, 184, 188, 203
+    ],
+    torches: [111, 24, 50, 57],
+    ladders: [121, 122, 123, 163],
+    holes: [17, 131],
+    planks: [87],
+    coins: [25, 193],
+    exit: 5,
+    darkTime: 1000
+  },
+  {
+    name: `"So many holes!"`,
+    walls: [
+      0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 29, 30, 44, 45, 59, 60,
+      74, 75, 89, 90, 104, 105, 119, 120, 134, 135, 149, 150, 164, 165, 179,
+      180, 194, 195, 209, 210, 211, 212, 213, 214, 215, 216, 218, 219, 220, 221,
+      222, 223, 224, 19, 21, 34, 35, 36
+    ],
+    torches: [32, 79, 197, 199, 201, 203, 205, 207],
+    ladders: [28],
+    holes: [27, 42, 54, 73, 77, 82, 114, 111, 140, 146, 154, 108, 127, 122],
+    planks: [96],
+    coins: [98, 147],
+    exit: 5,
+    darkTime: 4000
+  },
+  {
+    name: `"Dooozy!"`,
+    walls: [
+      0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 29, 30, 44, 45, 59, 60,
+      74, 75, 89, 90, 104, 105, 119, 120, 134, 135, 149, 150, 164, 165, 179,
+      180, 194, 195, 209, 210, 211, 212, 213, 214, 215, 216, 218, 219, 220, 221,
+      222, 223, 224, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 61, 62, 63, 64,
+      65, 66, 67, 69, 70, 71, 72, 73, 77, 82, 84, 92, 93, 95, 96, 97, 99, 101,
+      102, 122, 125, 126, 127, 128, 129, 131, 137, 138, 139, 140, 146, 163, 161,
+      157, 152, 167, 169, 170, 171, 172, 173, 174, 175, 176, 182, 184, 188, 192,
+      199, 201, 205
+    ],
+    torches: [191, 124],
+    ladders: [196],
+    holes: [28, 76, 81, 117, 123, 144],
+    planks: [87],
+    coins: [113, 147],
+    exit: 5,
+    darkTime: 5000
+  },
+  {
+    name: `"Luqui's Level"`,
+    walls: [
+      0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 29, 30, 44, 45, 59, 60,
+      74, 75, 89, 90, 104, 105, 119, 120, 134, 135, 149, 150, 164, 165, 179,
+      180, 194, 195, 209, 210, 211, 212, 213, 214, 215, 216, 218, 219, 220, 221,
+      222, 223, 224, 17, 21, 25, 32, 36, 40, 47, 51, 55, 62, 66, 70, 76, 77, 78,
+      79, 80, 81, 85, 96, 100, 101, 102, 103, 111, 112, 113, 114, 115, 126, 130,
+      141, 145, 151, 152, 153, 154, 155, 156, 160, 175, 186, 190, 201, 205
+    ],
+    torches: [],
+    ladders: [107, 122, 137, 142],
+    holes: [95, 97, 99, 110, 116, 125, 146, 176, 206],
+    planks: [28],
+    coins: [31, 49, 53, 57, 124, 158, 167, 183],
+    exit: 5,
+    darkTime: 500
+  }
+]
+
 /////
 /////
 /////
@@ -165,7 +278,7 @@ class Level {
 ///
 ///
 
-const setBoard = (wlls, lddrs, tors, ext, hle, plk, drk, cns) => {
+const rsetBoard = (lvl) => {
   walls.length = 0
   torchLoc.length = 0
   ladderLoc.length = 0
@@ -175,8 +288,15 @@ const setBoard = (wlls, lddrs, tors, ext, hle, plk, drk, cns) => {
   coinLoc.length = 0
   playerLoc = 202
   entLoc = playerLoc + 15
-  placeWalls(wlls)
-  placeItems(lddrs, tors, ext, hle, plk, cns)
+  placeWalls(allLevels[lvl].walls)
+  placeItems(
+    allLevels[lvl].ladders,
+    allLevels[lvl].torches,
+    allLevels[lvl].exit,
+    allLevels[lvl].holes,
+    allLevels[lvl].planks,
+    allLevels[lvl].coins
+  )
   getWalls()
   getTorches()
   getLadder()
@@ -190,24 +310,41 @@ const setBoard = (wlls, lddrs, tors, ext, hle, plk, drk, cns) => {
   }
   setTimeout(() => {
     pauseDark()
-  }, drk)
-
-  // if (drk === 1) {
-  //   makeDark()
-  // } else if (drk === 0) {
-  //   darkOn = 0
-  // } else {
-  //   const pauseDark = () => {
-  //     makeDark()
-  //     makeLight()
-  //   }
-  //   if (curLvl === 3 || curLvl === 4) {
-  //     setTimeout(() => {
-  //       pauseDark()
-  //     }, 4500)
-  //   }
-  // }
+  }, allLevels[curLvl].darkTime)
+  if (curLvl === 2) {
+    tiles[paraLoc].classList.add(`para`)
+  }
+  const levelDsp = document.querySelector(`.display-level`)
+  levelDsp.innerText = allLevels[curLvl].name
 }
+
+// const setBoard = (wlls, lddrs, tors, ext, hle, plk, drk, cns) => {
+//   walls.length = 0
+//   torchLoc.length = 0
+//   ladderLoc.length = 0
+//   holeLoc.length = 0
+//   ladderLoc.length = 0
+//   plankLoc.length = 0
+//   coinLoc.length = 0
+//   playerLoc = 202
+//   entLoc = playerLoc + 15
+//   placeWalls(wlls)
+//   placeItems(lddrs, tors, ext, hle, plk, cns)
+//   getWalls()
+//   getTorches()
+//   getLadder()
+//   getPlanks()
+//   getHoles()
+//   getCoins()
+//   placePlayer()
+// const pauseDark = () => {
+//   makeDark()
+//   makeLight()
+// }
+// setTimeout(() => {
+//   pauseDark()
+// }, drk)
+// }
 
 ///
 ///
@@ -389,7 +526,6 @@ const makeDark = () => {
 const makeLight = () => {
   let lit = []
   if (torchOn === 0) {
-    // let lighted = [202, 186, 187, 188, 203, 216, 217, 218, 201]
     lit = [playerLoc]
   } else {
     lit = [
@@ -640,80 +776,99 @@ const usePlank = (lkAd) => {
 ///
 
 ////Setboard takes params for: 1.walls 2.ladders 3.torches 4.exitloc 5.holes 6.planks 7.IF it IS initially dark 8.coins
-const exit = () => {
+const rexit = () => {
   const levelDsp = document.querySelector(`.display-level`)
   darkOn = 0
   lookAhead = 187
   exitfx.play()
-  exitfx.volume = 0.1
+  exitfx.volume = 0.2
   if (curLvl === 0) {
-    setBoard(
-      lvlOneWalls,
-      lvlOneLadders,
-      lvlOneTorches,
-      lvlOneExit,
-      lvlOneHoles,
-      lvlOnePlanks,
-      lvlOneDarkTime,
-      lvlOneCoins
-    )
     curLvl = 1
-  } else if (curLvl === 1) {
-    clearBrd()
-    setBoard(
-      lvlOneWalls,
-      lvlOneLadders,
-      lvlOneTorches,
-      lvlOneExit,
-      lvlOneHoles,
-      lvlOnePlanks,
-      lvlOneDarkTime,
-      lvlOneCoins
-    )
-  } else if (curLvl === 2) {
-    clearBrd()
-    setBoard(
-      lvlTwoWalls,
-      lvlTwoLadders,
-      lvlTwoTorches,
-      lvlTwoExit,
-      lvlTwoHoles,
-      lvlTwoPlanks,
-      lvlTwoDarkTime,
-      lvlTwoCoins
-    )
-    tiles[paraLoc].classList.add(`para`)
-  } else if (curLvl === 3) {
-    clearBrd()
-    setBoard(
-      lvlThreeWalls,
-      lvlThreeLadders,
-      lvlThreeTorches,
-      lvlThreeExit,
-      lvlThreeHoles,
-      lvlThreePlanks,
-      lvlThreeDarkTime,
-      lvlThreeCoins
-    )
-  } else if (curLvl === 4) {
-    clearBrd()
-    setBoard(
-      lvlFourWalls,
-      lvlFourLadders,
-      lvlFourTorches,
-      lvlFourExit,
-      lvlFourHoles,
-      lvlFourPlanks,
-      lvlFourDarkTime,
-      lvlThreeCoins
-    )
-  } else if (curLvl === 5) {
+  }
+  if (curLvl === allLevels.length) {
     curLvl++
     clearBrd()
     ending(mazzy.parachute)
+  } else {
+    clearBrd()
+    rsetBoard(curLvl)
   }
-  levelDsp.innerText = curLvl
 }
+
+// const exit = () => {
+//   const levelDsp = document.querySelector(`.display-level`)
+//   darkOn = 0
+//   lookAhead = 187
+//   exitfx.play()
+//   exitfx.volume = 0.2
+//   if (curLvl === 0) {
+//     setBoard(
+//       lvlOneWalls,
+//       lvlOneLadders,
+//       lvlOneTorches,
+//       lvlOneExit,
+//       lvlOneHoles,
+//       lvlOnePlanks,
+//       lvlOneDarkTime,
+//       lvlOneCoins
+//     )
+//     curLvl = 1
+//   } else if (curLvl === 1) {
+//     clearBrd()
+//     setBoard(
+//       lvlOneWalls,
+//       lvlOneLadders,
+//       lvlOneTorches,
+//       lvlOneExit,
+//       lvlOneHoles,
+//       lvlOnePlanks,
+//       lvlOneDarkTime,
+//       lvlOneCoins
+//     )
+//   } else if (curLvl === 2) {
+//     clearBrd()
+//     setBoard(
+//       lvlTwoWalls,
+//       lvlTwoLadders,
+//       lvlTwoTorches,
+//       lvlTwoExit,
+//       lvlTwoHoles,
+//       lvlTwoPlanks,
+//       lvlTwoDarkTime,
+//       lvlTwoCoins
+//     )
+//     tiles[paraLoc].classList.add(`para`)
+//   } else if (curLvl === 3) {
+//     clearBrd()
+//     setBoard(
+//       lvlThreeWalls,
+//       lvlThreeLadders,
+//       lvlThreeTorches,
+//       lvlThreeExit,
+//       lvlThreeHoles,
+//       lvlThreePlanks,
+//       lvlThreeDarkTime,
+//       lvlThreeCoins
+//     )
+//   } else if (curLvl === 4) {
+//     clearBrd()
+//     setBoard(
+//       lvlFourWalls,
+//       lvlFourLadders,
+//       lvlFourTorches,
+//       lvlFourExit,
+//       lvlFourHoles,
+//       lvlFourPlanks,
+//       lvlFourDarkTime,
+//       lvlThreeCoins
+//     )
+//   } else if (curLvl === 5) {
+//     curLvl++
+//     clearBrd()
+//     ending(mazzy.parachute)
+//   }
+//   levelDsp.innerText = curLvl
+// }
 
 ///
 ///
@@ -811,7 +966,8 @@ const ending = (parachute) => {
 ///
 
 const mazzy = new Character(`Mazzy`, 0, 0)
-exit()
+curLvl++
+rexit()
 
 ///
 ///
@@ -869,10 +1025,10 @@ window.addEventListener(`keydown`, (event) => {
     if (noGo === false) {
       if (lookAhead === exitLoc) {
         curLvl++
-        exit()
+        rexit()
       } else if (lookAhead === entLoc) {
         curLvl--
-        exit()
+        rexit()
       } else if (tiles[lookAhead].classList.contains(`hole`)) {
         if (mazzy.planks === 0) {
           clearBrd()

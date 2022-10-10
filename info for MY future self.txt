@@ -16,3 +16,31 @@ ADDITIONALLY:
 i may have to rework this SLIGHTLY so that instead of choosing just 0,1 or 3 (for start light but then go dark).  I want to simply pass through the amount of 
 seconds that the level is light.  This would get passed in the EXIT function.  so instead of passing 0,1 etc... i'd pass 3000 for 3 seconds or 5000 for 
 5 seconds.  for levels that are meant to be all light i can just pass a huge number. so if the level takes you longer than say 60,000ms, or 60 seconds, it will go dark. which if fair and fun.
+
+
+
+
+ok, so I know i can make level creation more efficient:
+
+make an array of objects (allLevels),  exch obkect is the level arrays.
+in the exit function, instead of having setBoard pass all the level info... just have it pass the curLvl (which will need to be incrememnted prior to that).
+then in setBoard, i can pass the allLevels[curLvl].walls, allLevels[curLvl].torches  etc.... i should even have a level name instead of level number.  names are more fun.
+
+
+
+ok half way through this.
+
+made the allLevels array
+
+made a duplicate "setBOard" function in the new structure
+in the midst of the new Exit function.
+
+MUST ADD "parachute" to the allLevels array so that it's consistent.  only level 2 will have it.  take location from "paraLoc"
+must add ability to display level name
+must add if stament for if curent level is greater than allLevels.length(kinda have this already but it's not finished)
+that SHOULD be pretty much it. 
+
+
+
+
+what i have added so far SHOULD NOT BE interfering with the game as it is.... if it is commented out it the game should work anyway. 
