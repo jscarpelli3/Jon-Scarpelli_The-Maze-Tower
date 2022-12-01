@@ -42,6 +42,7 @@ div.game {
   place-items: center;
   border: 1px solid white
 }
+
 .tile {
   width: 48px;
   height: 48px;
@@ -49,11 +50,12 @@ div.game {
   margin: 0;
 }
 
-.wcross{
+.wcross {
   background-image: url(pics/wall-cross.png);
-  
+
 }
-.wvert{
+
+.wvert {
   background-image: url(pics/wall-vert.png);
 }
 
@@ -61,19 +63,19 @@ div.game {
   background-image: url(pics/wall-hor.png);
 }
 
-.nwcorner{
+.nwcorner {
   background-image: url(pics/nwcorner.png);
 }
 
-.necorner{
+.necorner {
   background-image: url(pics/necorner.png);
 }
 
-.swcorner{
+.swcorner {
   background-image: url(pics/swcorner.png);
 }
 
-.secorner{
+.secorner {
   background-image: url(pics/secorner.png);
 }
 
@@ -81,9 +83,14 @@ div.game {
   background-image: url(pics/exithor.png);
 }
 
+.plk-applied {
+  background-image: url(pics/holeplank.png);
+  z-index: 0;
+}
+
 .player {
   background-image: url(pics/mazzy.png);
-  z-index: 1;
+  z-index: 2;
 }
 
 .torch {
@@ -118,13 +125,23 @@ div.game {
   background-image: url(pics/coin3.gif);
 }
 
-.inv-trch, .inv-ladder, .inv-coin, .inv-plank, .inv-para {
+
+
+.inv-trch,
+.inv-ladder,
+.inv-coin,
+.inv-plank,
+.inv-para {
   padding: 6px;
   margin: 12px 12px;
   border: 2px solid white;
 }
 
-.trch-count, .ldr-count, .cn-count, .plk-count, .para-count {
+.trch-count,
+.ldr-count,
+.cn-count,
+.plk-count,
+.para-count {
   color: blanchedalmond;
 }
 
@@ -161,7 +178,7 @@ ul {
   font-size: 14px;
   margin: 0;
   padding: 0;
-  color:rgb(160, 151, 138);
+  color: rgb(160, 151, 138);
   grid-area: 3/2/4/3;
 }
 
@@ -169,7 +186,7 @@ li {
   grid-area: 3/2/4/3;
   font-size: 12px;
   margin: 0;
-  color:blanchedalmond;
+  color: blanchedalmond;
   list-style: none;
   text-align: center;
 

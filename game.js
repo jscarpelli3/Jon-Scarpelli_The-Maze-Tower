@@ -645,11 +645,12 @@ const useLadder = (lkAhd) => {
 const usePlank = (lkAd) => {
   ladderfx.play()
   ladderfx.volume = 0.3
-  tiles[lkAd].innerHTML = `<img id="planks" src=pics/holeplank.png>`
+  // tiles[lkAd].innerHTML = `<img id="planks" src=pics/holeplank.png>`
   tiles[lkAd].classList.add(`plk-applied`)
   mazzy.planks -= 1
   plankCount.innerText = mazzy.planks
   tiles[lkAd].classList.remove(`hole`)
+  tiles[lkAd].classList.add(`hole-covered`)
   if (mazzy.planks === 0) {
     const plkDiv = document.querySelector(`.inv-plank`)
     const ldrCntTxt = document.querySelector(`.plk-count`)
@@ -858,6 +859,11 @@ window.addEventListener(`keydown`, (event) => {
         ///setting new location
         ///adding player to that new location
         tiles[playerLoc].classList.add(`player`)
+        // if (tiles[lookAhead].classList.contains(`hole-covered`)){
+        //   console.log('holy moly')
+        // }else{
+        //   tiles[playerLoc].classList.add(`player`)
+        //   }
         mazzy.steps += 1
         stepFx.play()
         stepCnt.innerHTML = mazzy.steps
