@@ -7,7 +7,7 @@
 
 ---
 
-_`The Maze Tower` is a throwback to early 90's freeware made with HTML, CSS & Javascript. The goal of the game is to navigate a seires of mazes using the arrow keys. Avoiding danger and using resources to make your way through to the end._
+_`The Maze Tower` is a throwback to early 80's MS-DOS freeware made with HTML, CSS & Javascript. The goal of the game is to navigate a seires of mazes avoiding danger and using resources to make your way through to the end._
 
 ![](pics/mazzy.png)You play as Mazzy. A kid who got stuck at the bottom of a tower. To get out, Mazzy has to reach the top of the tower by traversing 3 levels of mazes and the escape out the top of the tower.
 
