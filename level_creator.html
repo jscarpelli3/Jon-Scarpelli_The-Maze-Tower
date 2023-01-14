@@ -1,21 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="style.css" />
-  <script defer src="game.js" charset="utf-8"></script>
+  <script defer src="level_creator.js" charset="utf-8"></script>
   <style>
-@import url('https://fonts.googleapis.com/css2?family=Vollkorn&display=swap');
-</style>
+    @import url('https://fonts.googleapis.com/css2?family=Vollkorn&display=swap');
+  </style>
   <title>The Maze Tower</title>
 </head>
+
 <body>
-  <h1 class="title">The Maze Tower</h1>
+  <h1 class="title">Level Designer</h1>
   <div class="ui1">
-    <h2 class="level">Level:</h2><h2 class="display-level">0</h2><br><br><br>
-    <h3>Steps:</h3><h3 class="steps">0</h3>
+    <h3 class="designer-instructions">Create your own level</h3>
+    <p>
+      Click on a grid square. The square will cycle throug the elements of the game. Stop clicking when the element you
+      want is showing.
+    </p>
+    <p>
+      When you are done deciding where everything goes, input a number, in seconds, what will determine how long the
+      level stays lit before going dark.
+    </p>
   </div>
   <div class="inventory">
     <h2>Inventory:</h2>
@@ -253,4 +262,5 @@
     <div class="tile" id="t224"></div>
   </div>
 </body>
+
 </html>
