@@ -192,7 +192,7 @@ li {
 
 }
 
-button {
+/* button {
   grid-area: 4/2/5/3;
   font-family: vollkorn, serif;
   font-size: 24px;
@@ -205,8 +205,22 @@ button {
   border-style: ridge;
   border: 2px double rgb(217, 217, 217);
   margin-top: 18px;
-}
+} */
 
 .creator-instr {
   text-align: left;
+}
+
+button {
+  font-family: vollkorn, serif;
+  font-size: 24px;
+  width: 64;
+  height: 52px;
+  text-align: center;
+  color: blanchedalmond;
+  grid-area: 2/3/3/4;
+  background-color: rgb(28, 0, 47);
+  border-color: whitesmoke;
+  border-style: ridge;
+  border: 2px double rgb(217, 217, 217);
 }
