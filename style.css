@@ -206,3 +206,7 @@ button {
   border: 2px double rgb(217, 217, 217);
   margin-top: 18px;
 }
+
+.creator-instr {
+  text-align: left;
+}
