@@ -6,23 +6,37 @@ let torches=[]
 let planks=[]
 let holes=[]
 let coins=[]
+let newLevels = []
 
-let level = {
-  name: ``,
-  walls: [],
-  torches: [],
-  ladders: [],
-  holes: [],
-  planks: [],
-  coins: [],
-  exit: 5,
-  darkTime: 0
+let light = 60
+let lvlOrder = 1
+const setLightTime = () => {
+  light = document.getElementById("light-time").value
+  console.log(light)
 }
+const setLevelOrder = () => {
+  // document.getElementById("light-time").stepUp()
+  lvlOrder = document.getElementById("level-order").value
+  console.log(lvlOrder)
+}
+
 
 ///start button takes you to the game
 startButton.addEventListener(`click`, () => {
+  let level = {
+    name: ``,
+    walls: [],
+    torches: [],
+    ladders: [],
+    holes: [],
+    planks: [],
+    coins: [],
+    exit: 5,
+    darkTime: 0,
+    levelOrder: 1
+  }
   tiles.forEach((tile, idx)=>{
-    if (tile.classList.contains('whor')){
+    if (tile.classList.contains('wvert') || tile.classList.contains('whor') || tile.classList.contains('nwcorner') || tile.classList.contains('necorner') || tile.classList.contains('swcorner') || tile.classList.contains('secorner')){
       level.walls.push(idx)
     } else if (tile.classList.contains('ladder')){
         level.ladders.push(idx)
@@ -36,7 +50,11 @@ startButton.addEventListener(`click`, () => {
     level.coins.push(idx)
     }
   })
-  window.localStorage.setItem()
+  level.darkTime=light*1000
+  level.levelOrder=1 
+  newLevels.push(level)
+  console.log(newLevels)
+  // window.localStorage.setItem('levels', newLevels )
 })
 
 
@@ -63,10 +81,6 @@ const addClickables = () => {
       }
      }
     })
-    // tiles.forEach((tile)=>{
-    //   increment
-    // })
-  console.log('this was clicked')
   })
 }
 
