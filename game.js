@@ -186,13 +186,17 @@ class Character {
 /// get user levels from local storage
 const addUserLevels = () => {
   let userLevelsJSON = null
+  let userLevels = null
   if (localStorage.getItem('levels') !== null) {
     userLevelsJSON = localStorage.getItem('levels')
-    let userLevels = JSON.parse(userLevelsJSON)
+    userLevels = JSON.parse(userLevelsJSON)
     console.log(userLevels)
   } else {
     console.log(`no user levels found!`)
   }
+  userLevels.forEach((level)=>{
+    allLevels.splice(level.levelOrder,0,level)
+  })
 }
 
 

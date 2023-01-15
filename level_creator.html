@@ -27,7 +27,11 @@
     </p>
   </div>
   <div class="inventory">
-    <h2>Inventory:</h2>
+    <h2>Level Details:</h2>
+    <div class="order-dsp">
+      <label>Where in the order of level do you want your level?</label>
+      <input type="text" id="level-name" onchange="setLevelName()">
+    </div>
     <div class="ladder-dsp">
       <img id="ldr" src="pics/ladder.png">
       <span class="ldr-count">0</span>
@@ -48,16 +52,19 @@
       <img id="cn" src="pics/coin3.gif">
       <span class="cn-count">0</span>
     </div>
-    <div>
+    <div class="time-dsp">
       <label>Time before darkness(in seconds)?</label>
       <input type="number" id="light-time" onchange="setLightTime()">
     </div>
-    <div>
+    <div class="order-dsp">
       <label>Where in the order of level do you want your level?</label>
       <input type="number" id="level-order" onchange="setLevelOrder()">
     </div>
-    <div class="save-start">
-      <button class="start">Start Game</button>
+    <div class="save-start-btn">
+      <button class="save-start">Save Level</button>
+    </div>
+    <div class="nosave-start-btn">
+      <button class="nosave-start">Exit without Saving</button>
     </div>
   </div>
   <div class="game">

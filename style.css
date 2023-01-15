@@ -192,7 +192,7 @@ li {
 
 }
 
-/* button {
+button {
   grid-area: 4/2/5/3;
   font-family: vollkorn, serif;
   font-size: 24px;
@@ -205,15 +205,16 @@ li {
   border-style: ridge;
   border: 2px double rgb(217, 217, 217);
   margin-top: 18px;
-} */
+}
 
 .creator-instr {
   text-align: left;
 }
 
-button {
+.save-start,
+.nosave-start {
   font-family: vollkorn, serif;
-  font-size: 24px;
+  font-size: 14px;
   width: 64;
   height: 52px;
   text-align: center;
@@ -223,4 +224,14 @@ button {
   border-color: whitesmoke;
   border-style: ridge;
   border: 2px double rgb(217, 217, 217);
+}
+
+.ladder-dsp,
+.torch-dsp,
+.planks-dsp,
+.holes-dsp,
+.coins-dsp,
+.time-dsp,
+.order-dsp {
+  margin: 1vh 0 0 0;
 }

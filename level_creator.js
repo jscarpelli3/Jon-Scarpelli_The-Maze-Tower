@@ -1,4 +1,5 @@
-const startButton = document.querySelector(`button`)
+const saveStartButton = document.querySelector('.save-start')
+const noSaveStartButton = document.querySelector(`.nosave-start`)
 const tiles = document.querySelectorAll(`.tile`)
 const element = ['empty', 'whor', 'ladder', 'torch', 'plank', 'hole', 'coin']
 let ladders=[]
@@ -10,18 +11,24 @@ let newLevels = []
 
 let light = 60
 let lvlOrder = 1
+let lvlName=''
+const setLevelName = () => {
+  lvlName = document.getElementById("level-name").value
+  console.log(lvlName)
+}
 const setLightTime = () => {
   light = document.getElementById("light-time").value
-  console.log(light)
 }
 const setLevelOrder = () => {
   lvlOrder = document.getElementById("level-order").value
-  console.log(lvlOrder)
 }
+///start button that DOES NT save the level
+noSaveStartButton.addEventListener(`click`, () => {
+  window.location.href = 'index.html'
+})
 
-
-///start button takes you to the game
-startButton.addEventListener(`click`, () => {
+///start button that saves your new level and takes you to the game
+saveStartButton.addEventListener(`click`, () => {
   let level = {
     name: ``,
     walls: [],
@@ -50,12 +57,13 @@ startButton.addEventListener(`click`, () => {
     }
   })
   level.darkTime=light*1000
-  level.levelOrder=1 
+  level.levelOrder= lvlOrder
+  level.name = lvlName
   newLevels.push(level)
   let newLevelsJSON = JSON.stringify(newLevels)
   console.log(newLevels)
   window.localStorage.setItem('levels', newLevelsJSON )
-  window.location.href = 'game.html'
+  window.location.href = 'index.html'
 })
 
 
