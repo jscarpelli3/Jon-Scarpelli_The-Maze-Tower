@@ -15,7 +15,6 @@ const setLightTime = () => {
   console.log(light)
 }
 const setLevelOrder = () => {
-  // document.getElementById("light-time").stepUp()
   lvlOrder = document.getElementById("level-order").value
   console.log(lvlOrder)
 }
@@ -53,8 +52,10 @@ startButton.addEventListener(`click`, () => {
   level.darkTime=light*1000
   level.levelOrder=1 
   newLevels.push(level)
+  let newLevelsJSON = JSON.stringify(newLevels)
   console.log(newLevels)
-  // window.localStorage.setItem('levels', newLevels )
+  window.localStorage.setItem('levels', newLevelsJSON )
+  window.location.href = 'game.html'
 })
 
 

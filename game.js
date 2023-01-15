@@ -183,6 +183,19 @@ class Character {
 ///
 ///
 
+/// get user levels from local storage
+const addUserLevels = () => {
+  let userLevelsJSON = null
+  if (localStorage.getItem('levels') !== null) {
+    userLevelsJSON = localStorage.getItem('levels')
+    let userLevels = JSON.parse(userLevelsJSON)
+    console.log(userLevels)
+  } else {
+    console.log(`no user levels found!`)
+  }
+}
+
+
 const rsetBoard = (lvl) => {
   walls.length = 0
   torchLoc.length = 0
@@ -781,6 +794,7 @@ const ending = (parachute) => {
 ///
 
 const mazzy = new Character(`Mazzy`, 0, 0)
+addUserLevels()
 curLvl++
 rexit()
 
