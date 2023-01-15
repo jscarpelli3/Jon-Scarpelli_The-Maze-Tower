@@ -31,6 +31,7 @@ const outWalls = [
   220, 221, 222, 223, 224
 ]
 let curLvl = 0
+let curLvlName = ''
 let playerLoc = 202
 let exitLoc = 5
 let paraLoc = 27
@@ -210,6 +211,7 @@ const rsetBoard = (lvl) => {
   coinLoc.length = 0
   playerLoc = 202
   entLoc = playerLoc + 15
+  curLvlName = allLevels[curLvl].name
   placeWalls(allLevels[lvl].walls)
   placeItems(
     allLevels[lvl].ladders,
@@ -233,7 +235,7 @@ const rsetBoard = (lvl) => {
   setTimeout(() => {
     pauseDark()
   }, allLevels[curLvl].darkTime)
-  if (curLvl === 2) {
+  if (curLvlName === `"Uh Oh, it's dark"`) {
     tiles[paraLoc].classList.add(`para`)
   }
   const levelDsp = document.querySelector(`.display-level`)
