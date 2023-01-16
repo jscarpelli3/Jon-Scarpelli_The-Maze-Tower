@@ -11,13 +11,14 @@ body {
   grid-template: 1fr 720px 1fr/1fr 720px 1fr;
 }
 
-h1, h3 {
+h1,
+h3 {
   font-family: vollkorn, serif;
   text-align: left;
 }
 
 h1 {
-  
+
   grid-area: 1 / 2 / 2 / 3;
   color: rgb(228, 228, 228);
 }
@@ -38,6 +39,7 @@ h5 {
   display: grid;
   grid-template: 1fr 1fr 1fr /1fr 1fr 1fr;
 }
+
 .setup {
   grid-area: 1/1/2/4;
   margin: 48px 412px 56px 1px;
@@ -48,7 +50,7 @@ h5 {
   background-color: rgba(120, 120, 120, 0.246);
   border-color: rgb(47, 47, 47);
   border-style: ridge;
-  }
+}
 
 .control1 {
   grid-area: 2/1/3/2;
@@ -66,14 +68,30 @@ h5 {
 }
 
 
-button {
+.start {
   font-family: vollkorn, serif;
+  border-radius: 2px;
   font-size: 24px;
   width: 64;
   height: 52px;
   text-align: center;
   color: blanchedalmond;
   grid-area: 2/3/3/4;
+  background-color: rgb(28, 0, 47);
+  border-color: whitesmoke;
+  border-style: ridge;
+  border: 2px double rgb(217, 217, 217);
+}
+
+.level-creator {
+  font-family: vollkorn, serif;
+  border-radius: 2px;
+  font-size: 24px;
+  width: 64;
+  height: 52px;
+  text-align: center;
+  color: blanchedalmond;
+  grid-area: 3/3/4/4;
   background-color: rgb(28, 0, 47);
   border-color: whitesmoke;
   border-style: ridge;

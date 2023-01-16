@@ -214,6 +214,7 @@ button {
 .save-start,
 .nosave-start {
   font-family: vollkorn, serif;
+  border-radius: 2px;
   font-size: 14px;
   width: 64;
   height: 52px;
@@ -225,6 +226,7 @@ button {
   border-style: ridge;
   border: 2px double rgb(217, 217, 217);
 }
+
 
 .ladder-dsp,
 .torch-dsp,
