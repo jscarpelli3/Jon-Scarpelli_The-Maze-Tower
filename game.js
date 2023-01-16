@@ -192,12 +192,12 @@ const addUserLevels = () => {
     userLevelsJSON = localStorage.getItem('levels')
     userLevels = JSON.parse(userLevelsJSON)
     console.log(userLevels)
+    userLevels.forEach((level)=>{
+      allLevels.splice(level.levelOrder,0,level)
+    })
   } else {
     console.log(`no user levels found!`)
   }
-  userLevels.forEach((level)=>{
-    allLevels.splice(level.levelOrder,0,level)
-  })
 }
 
 

@@ -227,7 +227,7 @@ button {
   border: 2px double rgb(217, 217, 217);
 }
 
-.clear {
+.erase-levels {
   margin-top: 8vh;
   font-family: vollkorn, serif;
   border-radius: 2px;

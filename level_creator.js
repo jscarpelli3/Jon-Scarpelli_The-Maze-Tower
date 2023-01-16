@@ -1,5 +1,6 @@
 const saveStartButton = document.querySelector('.save-start')
 const noSaveStartButton = document.querySelector(`.nosave-start`)
+const eraseLevelsButton = document.querySelector(`.erase-levels`)
 const tiles = document.querySelectorAll(`.tile`)
 const element = ['empty', 'whor', 'ladder', 'torch', 'plank', 'hole', 'coin']
 let ladders=[]
@@ -22,10 +23,6 @@ const setLightTime = () => {
 const setLevelOrder = () => {
   lvlOrder = document.getElementById("level-order").value
 }
-///start button that DOES NT save the level
-noSaveStartButton.addEventListener(`click`, () => {
-  window.location.href = 'index.html'
-})
 
 ///start button that saves your new level and takes you to the game
 saveStartButton.addEventListener(`click`, () => {
@@ -45,15 +42,15 @@ saveStartButton.addEventListener(`click`, () => {
     if (tile.classList.contains('wvert') || tile.classList.contains('whor') || tile.classList.contains('nwcorner') || tile.classList.contains('necorner') || tile.classList.contains('swcorner') || tile.classList.contains('secorner')){
       level.walls.push(idx)
     } else if (tile.classList.contains('ladder')){
-        level.ladders.push(idx)
+      level.ladders.push(idx)
     } else if (tile.classList.contains('torch')){
       level.torches.push(idx)
     } else if (tile.classList.contains('plank')){
       level.planks.push(idx)
     } else if (tile.classList.contains('hole')){
-    level.holes.push(idx)
+      level.holes.push(idx)
     } else if (tile.classList.contains('coin')){
-    level.coins.push(idx)
+      level.coins.push(idx)
     }
   })
   level.darkTime=light*1000
@@ -66,6 +63,15 @@ saveStartButton.addEventListener(`click`, () => {
   window.location.href = 'index.html'
 })
 
+///start button that DOES NT save the level
+noSaveStartButton.addEventListener(`click`, () => {
+  window.location.href = 'index.html'
+})
+
+eraseLevelsButton.addEventListener(`click`, () => {
+  window.localStorage.clear()
+  window.location.href = 'index.html'
+})
 
 const addClickables = () => {
   tiles.forEach((tile) => {
