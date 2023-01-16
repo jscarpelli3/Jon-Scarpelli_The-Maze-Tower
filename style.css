@@ -215,7 +215,7 @@ button {
 .nosave-start {
   font-family: vollkorn, serif;
   border-radius: 2px;
-  font-size: 14px;
+  font-size: 16px;
   width: 64;
   height: 52px;
   text-align: center;
@@ -227,6 +227,21 @@ button {
   border: 2px double rgb(217, 217, 217);
 }
 
+.clear {
+  margin-top: 8vh;
+  font-family: vollkorn, serif;
+  border-radius: 2px;
+  font-size: 12px;
+  width: 64;
+  height: 52px;
+  text-align: center;
+  color: blanchedalmond;
+  grid-area: 2/3/3/4;
+  background-color: rgba(188, 0, 0, 0.528);
+  border-style: ridge;
+  border: 2px double rgb(188, 0, 0);
+}
+
 
 .ladder-dsp,
 .torch-dsp,
@@ -236,4 +251,13 @@ button {
 .time-dsp,
 .order-dsp {
   margin: 1vh 0 0 0;
+}
+
+.dsp {
+  margin: 1vh 0 1vh 0;
+  padding: 1vh 3vw;
+}
+
+.erase-txt {
+  font-size: 12px;
 }
