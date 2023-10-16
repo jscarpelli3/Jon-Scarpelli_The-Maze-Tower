@@ -253,54 +253,361 @@ const placeWalls = (levelWalls) => {
   levelWalls.forEach((wallTile, i) => {
     tiles[wallTile].classList.add(`wall`)
   })
-  levelWalls.forEach((tile, i) => {
-    let lt = (tile -= 1)
-    let rt = (tile += 1)
-    let up = (tile -= 15)
-    let dn = (tile += 15)
+  // levelWalls.forEach((tile, i) => {
+  //   let lt = (tile -= 1)
+  //   let rt = (tile += 1)
+  //   let up = (tile -= 15)
+  //   let dn = (tile += 15)
 
-    if (tile % 15 === 14 || tile % 15 === 0) {
-      tiles[tile].classList.add(`wvert`)
-    } else if (
-      tiles[rt].classList.contains(`wall`) &&
-      tiles[lt].classList.contains(`wall`)
-    ) {
-      tiles[tile].classList.add(`whor`)
-    } else if (
-      tiles[dn].classList.contains(`wall`) ||
-      tiles[up].classList.contains(`wall`)
-    ) {
-      tiles[tile].classList.add('wvert')
-    } else if (
-      tiles[up].classList.contains(`wall`) &&
-      tiles[rt].classList.contains(`wall`)
-    ) {
-      tiles[tile].classList.add(`swcorner`)
-    } else if (
-      tiles[up].classList.contains(`wall`) &&
-      tiles[lt].classList.contains(`wall`)
-    ) {
-      tiles[tile].classList.add(`secorner`)
-    } else if (
-      tiles[dn].classList.contains(`wall`) &&
-      tiles[rt].classList.contains(`wall`)
-    ) {
-      tiles[tile].classList.add(`nwcorner`)
-    } else if (
-      tiles[dn].classList.contains(`wall`) &&
-      tiles[lt].classList.contains(`wall`)
-    ) {
-      tiles[tile].classList.add(`necorner`)
-    }
+  //   if (tile % 15 === 14 || tile % 15 === 0) {
+  //     console.log('vert')
+  //     tiles[tile].classList.add(`wvert`)
+  //   } else if (
+  //     tiles[rt].classList.contains(`wall`) &&
+  //     tiles[lt].classList.contains(`wall`)
+  //     ) {
+  //     console.log('hor')
+  //     tiles[tile].classList.add(`whor`)
+  //   } else if (
+  //     tiles[dn].classList.contains(`wall`) ||
+  //     tiles[up].classList.contains(`wall`)
+  //     ) {
+  //     console.log('vert')
+  //     tiles[tile].classList.add('wvert')
+  //   } else if (
+  //     tiles[up].classList.contains(`wall`) &&
+  //     tiles[rt].classList.contains(`wall`)
+  //     ) {
+  //     console.log('sw')
+  //     tiles[tile].classList.add(`swcorner`)
+  //   } else if (
+  //     tiles[up].classList.contains(`wall`) &&
+  //     tiles[lt].classList.contains(`wall`)
+  //     ) {
+  //     console.log('se')
+  //     tiles[tile].classList.add(`secorner`)
+  //   } else if (
+  //     tiles[dn].classList.contains(`wall`) &&
+  //     tiles[rt].classList.contains(`wall`)
+  //     ) {
+  //       console.log('nw')
+  //       tiles[tile].classList.add(`nwcorner`)
+  //     } else if (
+  //       tiles[dn].classList.contains(`wall`) &&
+  //       tiles[lt].classList.contains(`wall`)
+  //       ) {
+  //         console.log('ne')
+  //         tiles[tile].classList.add(`necorner`)
+  //   }
+  // })
+  tiles.forEach((tile, i) => {
+
+    let lt = (i - 1)
+    let rt = (i + 1)
+    let up = (i - 15)
+    let dn = (i + 15)
+    ///in the top row check for connecting walls below, if so make a tdown, if not just make whorizontal
+  if (tiles[i].classList.contains('wall')) {
+      if (i >= 1 && i < 14) {
+          if (tiles[dn].classList.contains('wall')) {
+            tiles[i].classList.add(`tvertdn`);
+          } else {
+          tiles[i].classList.add(`whor`);
+        }
+      }
+      ///in the bottom row, check for connecting walls above, if so make tup, if not make whorizontal
+      if (i >= 211 && i < 224) {
+          if (tiles[up].classList.contains('wall')) {
+            tiles[i].classList.add(`tvertup`);
+          } else {
+          tiles[i].classList.add(`whor`);
+        }
+      }
+      ///check walls on the right edge for connecting walls on the left, if so make a tleft, if not make wvert
+      if (i % 15 === 14) {
+        if(tiles[lt].classList.contains('wall')){
+          if (i > 14 && i < 224) {
+          tiles[i].classList.add(`tleft`)
+          }
+        } else {
+          tiles[i].classList.add(`wvert`)
+        } 
+      } 
+      ///check walls on the left edge for connecting walls on the right, if so make tright, if not make wvert
+      if (i % 15 === 0) {
+        if(tiles[rt].classList.contains('wall')){
+          if (i > 0 && i < 210) {
+            tiles[i].classList.add(`tleft`)
+            }
+          } else {
+            tiles[i].classList.add(`wvert`)
+          } 
+      } 
+      ///check all walls between the top row and bottom row
+      if ( i >= 15 && i <= 209 ) {
+        ///but dont include walls on the right or left edge
+        if(i % 15 !== 14 || i % 15 !== 0) {
+          ///SW corner tiles
+          if (
+            tiles[rt].classList.contains(`wall`) &&
+            !tiles[lt].classList.contains(`wall`) &&
+            !tiles[dn].classList.contains(`wall`) &&
+            tiles[up].classList.contains(`wall`)
+          ) {
+            tiles[i].classList.add(`swcorner`);
+          } 
+          else if (
+          ///SE corner tiles
+              !tiles[rt].classList.contains(`wall`) &&
+              tiles[lt].classList.contains(`wall`) &&
+              !tiles[dn].classList.contains(`wall`) &&
+              tiles[up].classList.contains(`wall`)
+            ) {
+              tiles[i].classList.add(`secorner`);
+            } 
+          else if (
+          ////NW corner tiles
+                tiles[rt].classList.contains(`wall`) &&
+                !tiles[lt].classList.contains(`wall`) &&
+                tiles[dn].classList.contains(`wall`) &&
+                !tiles[up].classList.contains(`wall`)
+              ) {
+                tiles[i].classList.add(`nwcorner`);
+              } 
+            else if (
+            /// NE corner tiles
+                  !tiles[rt].classList.contains(`wall`) &&
+                  tiles[lt].classList.contains(`wall`) &&
+                  tiles[dn].classList.contains(`wall`) &&
+                  !tiles[up].classList.contains(`wall`)
+                ) {
+                  tiles[i].classList.add(`necorner`);
+                }
+            else if (
+            /// Horizontal wall
+                  tiles[rt].classList.contains(`wall`) &&
+                  tiles[lt].classList.contains(`wall`) &&
+                  !tiles[dn].classList.contains(`wall`) &&
+                  !tiles[up].classList.contains(`wall`)
+                ) {
+                  tiles[i].classList.add(`whor`);
+                }
+            else if (
+            ///Vertical wall
+                  !tiles[rt].classList.contains(`wall`) &&
+                  !tiles[lt].classList.contains(`wall`) &&
+                  tiles[dn].classList.contains(`wall`) &&
+                  tiles[up].classList.contains(`wall`)
+                ) {
+                  tiles[i].classList.add(`wvert`);
+                }
+            else if (
+            ///Cross  
+                  tiles[rt].classList.contains(`wall`) &&
+                  tiles[lt].classList.contains(`wall`) &&
+                  tiles[dn].classList.contains(`wall`) &&
+                  tiles[up].classList.contains(`wall`)
+                ) {
+                  tiles[i].classList.add(`cross`);
+                }   
+            else if (
+            ///T going up
+                    tiles[rt].classList.contains(`wall`) &&
+                    tiles[lt].classList.contains(`wall`) &&
+                    !tiles[dn].classList.contains(`wall`) &&
+                    tiles[up].classList.contains(`wall`)
+                  ) {
+                    tiles[i].classList.add(`tvertup`);
+                  } 
+            else if (
+            ///T going down
+                    tiles[rt].classList.contains(`wall`) &&
+                    tiles[lt].classList.contains(`wall`) &&
+                    tiles[dn].classList.contains(`wall`) &&
+                    !tiles[up].classList.contains(`wall`)
+                  ) {
+                    tiles[i].classList.add(`tvertdn`);
+                  }   
+            else if (
+            ///T going right
+                      tiles[rt].classList.contains(`wall`) &&
+                      tiles[dn].classList.contains(`wall`) &&
+                      tiles[up].classList.contains(`wall`) 
+                      // !tiles[lt].classList.contains(`wall`)
+                      ) {                      
+                        if (!tiles[lt].classList.contains(`wall`))
+                        {
+                         if (i % 15 != 14) 
+                         {
+                         tiles[i].classList.add(`tright`);
+                       }
+                     }  
+                  }  
+            else if (
+            ///T going left
+                      tiles[lt].classList.contains(`wall`) &&
+                      tiles[dn].classList.contains(`wall`) &&
+                      tiles[up].classList.contains(`wall`)
+                      ) {  
+                        if (!tiles[rt].classList.contains(`wall`))
+                        {
+                         if (i % 15 != 0) 
+                         {
+                         tiles[i].classList.add(`tleft`);
+                       }
+                     }  
+                    }
+            else if (
+            ///No connecting walls
+                      !tiles[rt].classList.contains(`wall`) &&
+                      !tiles[lt].classList.contains(`wall`) &&
+                      !tiles[dn].classList.contains(`wall`) &&
+                      !tiles[up].classList.contains(`wall`)
+                      ) {
+                        tiles[i].classList.add(`pillar`);
+                        } 
+            else if (
+            ///under but not over, vert end cap up
+                      !tiles[rt].classList.contains(`wall`) &&
+                      !tiles[lt].classList.contains(`wall`) &&
+                      tiles[dn].classList.contains(`wall`) &&
+                      !tiles[up].classList.contains(`wall`)
+                      ) {
+                        tiles[i].classList.add(`vert-end-up`);
+                        } 
+            else if (
+            ///over but not under, vert end cap dn
+                      !tiles[rt].classList.contains(`wall`) &&
+                      !tiles[lt].classList.contains(`wall`) &&
+                      !tiles[dn].classList.contains(`wall`) &&
+                      tiles[up].classList.contains(`wall`)
+                      ) {
+                        tiles[i].classList.add(`vert-end-dn`);
+                        } 
+            else if (
+            ///right but not left, hor end cap left
+                      tiles[rt].classList.contains(`wall`) &&
+                      !tiles[lt].classList.contains(`wall`) &&
+                      !tiles[dn].classList.contains(`wall`) &&
+                      !tiles[up].classList.contains(`wall`)
+                      ) {
+                        tiles[i].classList.add(`hor-end-lt`);
+                        } 
+            else if (
+            ///left but not right, hor end cap right
+                      !tiles[rt].classList.contains(`wall`) &&
+                      tiles[lt].classList.contains(`wall`) &&
+                      !tiles[dn].classList.contains(`wall`) &&
+                      !tiles[up].classList.contains(`wall`)
+                      ) {
+                        tiles[i].classList.add(`hor-end-rt`);
+                        } 
+            // else if (i >= 210 && i < 224) {
+            //           if (
+            //               tiles[rt].classList.contains(`wall`) &&
+            //               tiles[lt].classList.contains(`wall`) &&
+            //               tiles[up].classList.contains(`wall`)
+            //               ) {
+            //                 tiles[i].classList.add(`tvertup`);
+            //                 }
+            //     }  
+              }
+
+
+
+
+            }
+
+
+          }
   })
+
+
+  /// set t intersection walls 
+
+//   tiles.forEach((tile, i) => {
+//     let lt = (i - 1)
+//     let rt = (i + 1)
+//     let up = (i - 15)
+//     let dn = (i + 15)
+
+//   if (tiles[i].classList.contains('wall')) {
+//       if (i >= 1 && i < 14) {
+//         if (
+//           tiles[rt].classList.contains(`wall`) &&
+//           tiles[lt].classList.contains(`wall`) &&
+//           tiles[dn].classList.contains(`wall`)
+//         ) {
+//           tiles[i].classList.add(`tvertdn`);
+//         } 
+//       } 
+  
+//       else if (i > 15 && i < 210) {
+//         if (
+//           tiles[rt].classList.contains(`wall`) &&
+//           tiles[lt].classList.contains(`wall`) &&
+//           !tiles[dn].classList.contains(`wall`) &&
+//           tiles[up].classList.contains(`wall`)
+//         ) {
+//           tiles[i].classList.add(`tvertup`);
+//         } 
+//       else if (
+//           tiles[rt].classList.contains(`wall`) &&
+//           tiles[lt].classList.contains(`wall`) &&
+//           tiles[dn].classList.contains(`wall`) &&
+//           !tiles[up].classList.contains(`wall`)
+//         ) {
+//           tiles[i].classList.add(`tvertdn`);
+//         }   
+//       else if (
+//             tiles[rt].classList.contains(`wall`) &&
+//             tiles[dn].classList.contains(`wall`) &&
+//             tiles[up].classList.contains(`wall`)   
+//             ) {
+//               if (!tiles[lt].classList.contains(`wall`) &&
+//                   i % 15 != 14 )
+//               {
+//                     tiles[i].classList.add(`tright`);
+//               }
+//         }  
+//       else if (
+//             tiles[lt].classList.contains(`wall`) &&
+//             tiles[dn].classList.contains(`wall`) &&
+//             tiles[up].classList.contains(`wall`)
+//             ) {  
+//             if (!tiles[rt].classList.contains(`wall`))
+//                {
+//                 if (i % 15 != 0) 
+//                 {
+//                 tiles[i].classList.add(`tleft`);
+//                 }
+//             } 
+//           } 
+//       else if (i >= 210 && i < 224) {
+//             if (
+//                   tiles[rt].classList.contains(`wall`) &&
+//                   tiles[lt].classList.contains(`wall`) &&
+//                   tiles[up].classList.contains(`wall`)
+//                 ) {
+//                   tiles[i].classList.add(`tvertup`);
+//                   }
+//       }  
+//     }
+//   }
+// })
+
+// tiles[0].classList.remove(`tright`)
+// tiles[14].classList.remove(`tleft`)
+  // tiles[210].classList.remove(`tright`)
+  // tiles[224].classList.remove(`tleft`)
+
+
+
+  // BOARD CORNERS AND ENTRY/EXITS
   tiles[0].classList.add(`nwcorner`)
-  tiles[0].classList.remove(`wvert`)
   tiles[14].classList.add(`necorner`)
-  tiles[14].classList.remove(`wvert`)
   tiles[210].classList.add(`swcorner`)
-  tiles[210].classList.remove(`wvert`)
   tiles[224].classList.add(`secorner`)
-  tiles[224].classList.remove(`wvert`)
   tiles[exitLoc + 1].classList.add(`whor`)
   tiles[exitLoc + 1].classList.remove(`wvert`)
   tiles[entLoc].classList.add(`ent`)

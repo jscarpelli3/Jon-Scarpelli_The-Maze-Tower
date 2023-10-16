@@ -59,8 +59,29 @@ div.game {
   background-image: url(pics/wall-vert.png);
 }
 
+.vert-end-up {
+  background-image: url(pics/vertend.png);
+  transform: scaleY(-1);
+}
+
+.vert-end-dn {
+  background-image: url(pics/vertend.png);
+}
+
 .whor {
   background-image: url(pics/wall-hor.png);
+}
+
+.hor-end-rt {
+  background-image: url(pics/horend.png);
+}
+.hor-end-lt {
+  background-image: url(pics/horend.png);
+  transform: scaleX(-1);
+}
+
+.pillar {
+  background-image: url(pics/pillar.png);
 }
 
 .nwcorner {
@@ -77,6 +98,28 @@ div.game {
 
 .secorner {
   background-image: url(pics/secorner.png);
+}
+
+.cross {
+  background-image: url(pics/wall-cross.png);
+  /* transform: rotate(90deg);
+  background-size: cover; */
+}
+
+.tvertup {
+  background-image: url(pics/tup.png);
+}
+
+.tvertdn {
+  background-image: url(pics/tdn.png);
+}
+
+.tleft {
+  background-image: url(pics/tleft.png);
+}
+
+.tright {
+  background-image: url(pics/tright.png);
 }
 
 .exit {
