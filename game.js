@@ -82,8 +82,8 @@ let allLevels = [
     ],
     torches: [140, 208, 108],
     ladders: [123],
-    holes: [78, 153],
-    planks: [50],
+    holes: [78, 153,204],
+    planks: [50,203],
     coins: [16, 142],
     exit: 5,
     darkTime: 60000
@@ -253,53 +253,6 @@ const placeWalls = (levelWalls) => {
   levelWalls.forEach((wallTile, i) => {
     tiles[wallTile].classList.add(`wall`)
   })
-  // levelWalls.forEach((tile, i) => {
-  //   let lt = (tile -= 1)
-  //   let rt = (tile += 1)
-  //   let up = (tile -= 15)
-  //   let dn = (tile += 15)
-
-  //   if (tile % 15 === 14 || tile % 15 === 0) {
-  //     console.log('vert')
-  //     tiles[tile].classList.add(`wvert`)
-  //   } else if (
-  //     tiles[rt].classList.contains(`wall`) &&
-  //     tiles[lt].classList.contains(`wall`)
-  //     ) {
-  //     console.log('hor')
-  //     tiles[tile].classList.add(`whor`)
-  //   } else if (
-  //     tiles[dn].classList.contains(`wall`) ||
-  //     tiles[up].classList.contains(`wall`)
-  //     ) {
-  //     console.log('vert')
-  //     tiles[tile].classList.add('wvert')
-  //   } else if (
-  //     tiles[up].classList.contains(`wall`) &&
-  //     tiles[rt].classList.contains(`wall`)
-  //     ) {
-  //     console.log('sw')
-  //     tiles[tile].classList.add(`swcorner`)
-  //   } else if (
-  //     tiles[up].classList.contains(`wall`) &&
-  //     tiles[lt].classList.contains(`wall`)
-  //     ) {
-  //     console.log('se')
-  //     tiles[tile].classList.add(`secorner`)
-  //   } else if (
-  //     tiles[dn].classList.contains(`wall`) &&
-  //     tiles[rt].classList.contains(`wall`)
-  //     ) {
-  //       console.log('nw')
-  //       tiles[tile].classList.add(`nwcorner`)
-  //     } else if (
-  //       tiles[dn].classList.contains(`wall`) &&
-  //       tiles[lt].classList.contains(`wall`)
-  //       ) {
-  //         console.log('ne')
-  //         tiles[tile].classList.add(`necorner`)
-  //   }
-  // })
   tiles.forEach((tile, i) => {
 
     let lt = (i - 1)
@@ -1180,12 +1133,20 @@ window.addEventListener(`keydown`, (event) => {
           usePlank(lookAhead)
         }
       } else {
-        playerLoc += tileDifference
         ///removing player from current location
-        plyr.classList.remove('player')
+        if(tiles[playerLoc].classList.contains('player-plk-applied')){
+          tiles[playerLoc].classList.remove('player-plk-applied')
+        } else {
+          tiles[playerLoc].classList.remove('player')
+        }
+        playerLoc += tileDifference
         ///setting new location
         ///adding player to that new location
+        if (tiles[playerLoc].classList.contains('plk-applied')){
+          tiles[playerLoc].classList.add(`player-plk-applied`)
+        } else {
         tiles[playerLoc].classList.add(`player`)
+        }
         // if (tiles[lookAhead].classList.contains(`hole-covered`)){
         //   console.log('holy moly')
         // }else{

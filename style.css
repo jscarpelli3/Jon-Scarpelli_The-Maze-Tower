@@ -43,6 +43,11 @@ div.game {
   border: 1px solid white
 }
 
+
+/*  */
+/* setting all divs as tiles */
+/*  */
+
 .tile {
   width: 48px;
   height: 48px;
@@ -50,9 +55,13 @@ div.game {
   margin: 0;
 }
 
+
+/*  */
+/* WALLS */
+/*  */
+
 .wcross {
   background-image: url(pics/wall-cross.png);
-
 }
 
 .wvert {
@@ -102,8 +111,6 @@ div.game {
 
 .cross {
   background-image: url(pics/wall-cross.png);
-  /* transform: rotate(90deg);
-  background-size: cover; */
 }
 
 .tvertup {
@@ -126,15 +133,29 @@ div.game {
   background-image: url(pics/exithor.png);
 }
 
-.plk-applied {
-  background-image: url(pics/holeplank.png);
-  z-index: 0;
-}
+
+
+/*  */
+/* game board pieces & places */
+/*  */
 
 .player {
   background-image: url(pics/mazzy.png);
   z-index: 2;
 }
+
+.plk-applied {
+  background-image: url(pics/holeplank.png);
+  z-index: 0;
+}
+
+.player-plk-applied {
+  background-image: 
+  url(pics/mazzy.png),
+    url(pics/holeplank.png);
+
+}
+
 
 .torch {
   background-image: url(pics/torch3.gif);
