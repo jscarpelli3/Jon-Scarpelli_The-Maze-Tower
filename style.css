@@ -167,10 +167,6 @@ div.game {
   background-image: url(pics/ladder.png);
 }
 
-/* .ldr-applied {
-  background-image: url(pics/ladder.png),
-                    url(pics/ladder.png);
-} */
 
 .plank {
   background-image: url(pics/planks.png);
@@ -184,11 +180,11 @@ div.game {
   background-image: url(pics/parachute.png);
 }
 
-.exit {
+.ent {
   background-image: url(pics/exithor.png);
 }
 
-.ent {
+.exit {
   background-image: url(pics/entrance.png);
 }
 

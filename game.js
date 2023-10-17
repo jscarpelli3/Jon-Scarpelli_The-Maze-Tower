@@ -201,7 +201,7 @@ const addUserLevels = () => {
 }
 
 
-const rsetBoard = (lvl) => {
+const rsetBoard = (lvl, start) => {
   walls.length = 0
   torchLoc.length = 0
   ladderLoc.length = 0
@@ -209,8 +209,13 @@ const rsetBoard = (lvl) => {
   ladderLoc.length = 0
   plankLoc.length = 0
   coinLoc.length = 0
-  playerLoc = 202
-  entLoc = playerLoc + 15
+  
+  
+  start ? playerLoc = 202 : playerLoc = 20
+  
+  
+  entLoc = 217
+  // entLoc = playerLoc + 15
   curLvlName = allLevels[curLvl].name
   placeWalls(allLevels[lvl].walls)
   placeItems(
@@ -611,6 +616,7 @@ const makeLight = () => {
     if (
       tiles[tile].classList.contains(`ldr-applied`) ||
       tiles[tile].classList.contains(`plk-applied`) 
+
       ) {
       } else {
         const blackElement = tiles[tile].querySelector('#black');
@@ -854,7 +860,7 @@ const usePlank = (lkAd) => {
 ///
 
 ////Setboard takes params for: 1.walls 2.ladders 3.torches 4.exitloc 5.holes 6.planks 7.IF it IS initially dark 8.coins
-const rexit = () => {
+const rexit = (start) => {
   const levelDsp = document.querySelector(`.display-level`)
   darkOn = 0
   lookAhead = 187
@@ -870,7 +876,7 @@ const rexit = () => {
     ending(mazzy.parachute)
   } else {
     clearBrd()
-    rsetBoard(curLvl)
+    rsetBoard(curLvl,start)
   }
 }
 
@@ -972,7 +978,7 @@ const ending = (parachute) => {
 const mazzy = new Character(`Mazzy`, 0, 0)
 addUserLevels()
 curLvl++
-rexit()
+rexit(true)
 
 ///
 ///
@@ -1030,10 +1036,10 @@ window.addEventListener(`keydown`, (event) => {
     if (noGo === false) {
       if (lookAhead === exitLoc) {
         curLvl++
-        rexit()
+        rexit(true)
       } else if (lookAhead === entLoc) {
         curLvl--
-        rexit()
+        rexit(false)
       } else if (tiles[lookAhead].classList.contains(`hole`)) {
         if (mazzy.planks === 0) {
           clearBrd()
