@@ -235,7 +235,7 @@ const rsetBoard = (lvl) => {
   setTimeout(() => {
     pauseDark()
   }, allLevels[curLvl].darkTime)
-  
+
   if (curLvlName === `"Uh Oh, it's dark"`) {
     tiles[paraLoc].classList.add(`para`)
   }
@@ -611,7 +611,6 @@ const makeLight = () => {
     if (
       tiles[tile].classList.contains(`ldr-applied`) ||
       tiles[tile].classList.contains(`plk-applied`) 
-      // tiles[tile].classList.contains(`player`)
       ) {
       } else {
         const blackElement = tiles[tile].querySelector('#black');
