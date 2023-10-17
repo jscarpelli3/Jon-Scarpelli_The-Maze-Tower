@@ -23,7 +23,6 @@ h1.title {
   text-align: center;
 }
 
-
 .inventory {
   color: rgb(175, 172, 172);
   text-align: center;
@@ -38,11 +37,10 @@ div.game {
   background-image: url(pics/floor2.png);
   width: 720px;
   height: 720px;
-  grid-template: repeat(15, 1fr)/ repeat(15, 1fr);
+  grid-template: repeat(15, 1fr) / repeat(15, 1fr);
   place-items: center;
-  border: 1px solid white
+  border: 1px solid white;
 }
-
 
 /*  */
 /* setting all divs as tiles */
@@ -54,7 +52,6 @@ div.game {
   padding: 0;
   margin: 0;
 }
-
 
 /*  */
 /* WALLS */
@@ -133,26 +130,34 @@ div.game {
   background-image: url(pics/exithor.png);
 }
 
-
-
 /*  */
 /* game board pieces & places */
 /*  */
 
 .player {
-  background-image: url(pics/mazzy.png);
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+#mazzy {
+  position: absolute;
+  z-index: 2;
+}
+
+#ladder {
+  position: absolute;
+  z-index: 2;
 }
 
 .plk-applied {
   background-image: url(pics/holeplank.png);
-  z-index: 0;
 }
 
 .player-plk-applied {
-  background-image: url(pics/mazzy.png),
-                    url(pics/holeplank.png);
+  background-image: url(pics/mazzy.png), url(pics/holeplank.png);
 }
-
 
 .torch {
   background-image: url(pics/torch3.gif);
@@ -191,8 +196,6 @@ div.game {
   background-image: url(pics/coin3.gif);
 }
 
-
-
 .inv-trch,
 .inv-ladder,
 .inv-coin,
@@ -210,9 +213,6 @@ div.game {
 .para-count {
   color: blanchedalmond;
 }
-
-
-
 
 .end-div {
   margin: 0;
@@ -255,7 +255,6 @@ li {
   color: blanchedalmond;
   list-style: none;
   text-align: center;
-
 }
 
 button {
@@ -307,7 +306,6 @@ button {
   border-style: ridge;
   border: 2px double rgb(188, 0, 0);
 }
-
 
 .ladder-dsp,
 .torch-dsp,

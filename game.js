@@ -104,7 +104,7 @@ let allLevels = [
     planks: [87],
     coins: [25, 193],
     exit: 5,
-    darkTime: 1000
+    darkTime: 3000
   },
   {
     name: `"So many holes!"`,
@@ -158,7 +158,7 @@ let allLevels = [
     planks: [28],
     coins: [31, 49, 53, 57, 124, 158, 167, 183],
     exit: 5,
-    darkTime: 500
+    darkTime: 5000
   }
 ]
 
@@ -235,6 +235,7 @@ const rsetBoard = (lvl) => {
   setTimeout(() => {
     pauseDark()
   }, allLevels[curLvl].darkTime)
+
   if (curLvlName === `"Uh Oh, it's dark"`) {
     tiles[paraLoc].classList.add(`para`)
   }
@@ -454,106 +455,11 @@ const placeWalls = (levelWalls) => {
                       !tiles[up].classList.contains(`wall`)
                       ) {
                         tiles[i].classList.add(`hor-end-rt`);
-                        } 
-            // else if (i >= 210 && i < 224) {
-            //           if (
-            //               tiles[rt].classList.contains(`wall`) &&
-            //               tiles[lt].classList.contains(`wall`) &&
-            //               tiles[up].classList.contains(`wall`)
-            //               ) {
-            //                 tiles[i].classList.add(`tvertup`);
-            //                 }
-            //     }  
+                       } 
               }
-
-
-
-
             }
-
-
           }
   })
-
-
-  /// set t intersection walls 
-
-//   tiles.forEach((tile, i) => {
-//     let lt = (i - 1)
-//     let rt = (i + 1)
-//     let up = (i - 15)
-//     let dn = (i + 15)
-
-//   if (tiles[i].classList.contains('wall')) {
-//       if (i >= 1 && i < 14) {
-//         if (
-//           tiles[rt].classList.contains(`wall`) &&
-//           tiles[lt].classList.contains(`wall`) &&
-//           tiles[dn].classList.contains(`wall`)
-//         ) {
-//           tiles[i].classList.add(`tvertdn`);
-//         } 
-//       } 
-  
-//       else if (i > 15 && i < 210) {
-//         if (
-//           tiles[rt].classList.contains(`wall`) &&
-//           tiles[lt].classList.contains(`wall`) &&
-//           !tiles[dn].classList.contains(`wall`) &&
-//           tiles[up].classList.contains(`wall`)
-//         ) {
-//           tiles[i].classList.add(`tvertup`);
-//         } 
-//       else if (
-//           tiles[rt].classList.contains(`wall`) &&
-//           tiles[lt].classList.contains(`wall`) &&
-//           tiles[dn].classList.contains(`wall`) &&
-//           !tiles[up].classList.contains(`wall`)
-//         ) {
-//           tiles[i].classList.add(`tvertdn`);
-//         }   
-//       else if (
-//             tiles[rt].classList.contains(`wall`) &&
-//             tiles[dn].classList.contains(`wall`) &&
-//             tiles[up].classList.contains(`wall`)   
-//             ) {
-//               if (!tiles[lt].classList.contains(`wall`) &&
-//                   i % 15 != 14 )
-//               {
-//                     tiles[i].classList.add(`tright`);
-//               }
-//         }  
-//       else if (
-//             tiles[lt].classList.contains(`wall`) &&
-//             tiles[dn].classList.contains(`wall`) &&
-//             tiles[up].classList.contains(`wall`)
-//             ) {  
-//             if (!tiles[rt].classList.contains(`wall`))
-//                {
-//                 if (i % 15 != 0) 
-//                 {
-//                 tiles[i].classList.add(`tleft`);
-//                 }
-//             } 
-//           } 
-//       else if (i >= 210 && i < 224) {
-//             if (
-//                   tiles[rt].classList.contains(`wall`) &&
-//                   tiles[lt].classList.contains(`wall`) &&
-//                   tiles[up].classList.contains(`wall`)
-//                 ) {
-//                   tiles[i].classList.add(`tvertup`);
-//                   }
-//       }  
-//     }
-//   }
-// })
-
-// tiles[0].classList.remove(`tright`)
-// tiles[14].classList.remove(`tleft`)
-  // tiles[210].classList.remove(`tright`)
-  // tiles[224].classList.remove(`tleft`)
-
 
 
   // BOARD CORNERS AND ENTRY/EXITS
@@ -590,6 +496,7 @@ const placeItems = (ldrs, trchs, exit, holes, planks, cns) => {
 
 const placePlayer = () => {
   tiles[playerLoc].classList.add(`player`)
+  tiles[playerLoc].innerHTML = `<img id="mazzy" src=pics/mazzy.png>`
 }
 
 ///
@@ -663,18 +570,18 @@ const makeDark = () => {
   darkOn = 1
   tiles.forEach((tile) => {
     if (
-      tile.classList.contains(`torch`) ||
-      tile.classList.contains(`ladder`) ||
-      tile.classList.contains(`exit`) ||
-      tile.classList.contains(`ent`) ||
-      tile.classList.contains(`player`) ||
-      tile.classList.contains(`plank`) ||
-      tile.classList.contains(`ldr-applied`) ||
-      tile.classList.contains(`plk-applied`)
-    ) {
-    } else {
-      tile.innerHTML = `<img src="pics/ctrBlack.png">`
-    }
+        tile.classList.contains(`torch`) ||
+        tile.classList.contains(`ladder`) ||
+        tile.classList.contains(`exit`) ||
+        tile.classList.contains(`ent`) ||
+        tile.classList.contains(`player`) ||
+        tile.classList.contains(`plank`) ||
+        tile.classList.contains(`ldr-applied`) ||
+        tile.classList.contains(`plk-applied`)
+        ) { 
+      } else {
+        tile.innerHTML = `<img id="black" src="pics/ctrBlack.png">`
+      }
   })
 }
 
@@ -703,13 +610,16 @@ const makeLight = () => {
   lit.forEach((tile) => {
     if (
       tiles[tile].classList.contains(`ldr-applied`) ||
-      tiles[tile].classList.contains(`plk-applied`)
-    ) {
-    } else {
-      tiles[tile].innerHTML = ``
-    }
-  })
-}
+      tiles[tile].classList.contains(`plk-applied`) 
+      ) {
+      } else {
+        const blackElement = tiles[tile].querySelector('#black');
+        if (blackElement) {
+          blackElement.remove();
+        }
+      }
+    })
+  }
 
 ////checking for torches at player
 const checkTorch = () => {
@@ -1133,25 +1043,20 @@ window.addEventListener(`keydown`, (event) => {
           usePlank(lookAhead)
         }
       } else {
-        ///removing player from current location
-        if(tiles[playerLoc].classList.contains('player-plk-applied')){
-          tiles[playerLoc].classList.remove('player-plk-applied')
-        } else {
-          tiles[playerLoc].classList.remove('player')
-        }
+          ///removing player from current location
+            tiles[playerLoc].classList.remove('player')
+            // tiles[playerLoc].innerHTML = ``
+            const mazzyElement = tiles[playerLoc].querySelector('#mazzy');
+              if (mazzyElement) {
+                mazzyElement.remove();
+              }
         playerLoc += tileDifference
-        ///setting new location
-        ///adding player to that new location
-        if (tiles[playerLoc].classList.contains('plk-applied')){
-          tiles[playerLoc].classList.add(`player-plk-applied`)
-        } else {
-        tiles[playerLoc].classList.add(`player`)
-        }
-        // if (tiles[lookAhead].classList.contains(`hole-covered`)){
-        //   console.log('holy moly')
-        // }else{
-        //   tiles[playerLoc].classList.add(`player`)
-        //   }
+          ///setting new location
+          ///adding player to that new location
+
+            tiles[playerLoc].innerHTML += `<img id="mazzy" src=pics/mazzy.png>`
+            tiles[playerLoc].classList.add(`player`)
+
         mazzy.steps += 1
         stepFx.play()
         stepCnt.innerHTML = mazzy.steps
@@ -1162,8 +1067,8 @@ window.addEventListener(`keydown`, (event) => {
         checkPara()
         checkCoin()
         if (darkOn === 1) {
-          makeDark()
-          makeLight()
+             makeDark()
+             makeLight()
         }
       }
       ///you CANNOT go
