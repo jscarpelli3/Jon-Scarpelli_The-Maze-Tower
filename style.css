@@ -141,7 +141,6 @@ div.game {
 
 .player {
   background-image: url(pics/mazzy.png);
-  z-index: 2;
 }
 
 .plk-applied {
@@ -150,10 +149,8 @@ div.game {
 }
 
 .player-plk-applied {
-  background-image: 
-  url(pics/mazzy.png),
-    url(pics/holeplank.png);
-
+  background-image: url(pics/mazzy.png),
+                    url(pics/holeplank.png);
 }
 
 
@@ -164,6 +161,11 @@ div.game {
 .ladder {
   background-image: url(pics/ladder.png);
 }
+
+/* .ldr-applied {
+  background-image: url(pics/ladder.png),
+                    url(pics/ladder.png);
+} */
 
 .plank {
   background-image: url(pics/planks.png);
