@@ -1098,10 +1098,10 @@ window.addEventListener(`keydown`, (event) => {
         tileDifference = -1
         lookAhead = playerLoc + tileDifference
         break
-      case `Control`:
+      case `l`:
         useLadder(lookAhead)
         break
-      case `0`:
+      case `t`:
         useTorch()
         break
       default:
