@@ -82,7 +82,7 @@ let allLevels = [
     ],
     torches: [140, 208, 108],
     ladders: [123],
-    holes: [78, 153,201, 204],
+    holes: [78, 153, 204],
     planks: [50,203],
     coins: [16, 142],
     exit: 5,
