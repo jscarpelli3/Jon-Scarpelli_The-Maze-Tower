@@ -82,7 +82,7 @@ let allLevels = [
     ],
     torches: [140, 208, 108],
     ladders: [123],
-    holes: [78, 153,204],
+    holes: [78, 153,201, 204],
     planks: [50,203],
     coins: [16, 142],
     exit: 5,
@@ -159,6 +159,23 @@ let allLevels = [
     coins: [31, 49, 53, 57, 124, 158, 167, 183],
     exit: 5,
     darkTime: 5000
+  },
+  {
+    name: `"This is odd..."`,
+    walls: [
+      0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 29, 30, 44, 45, 59, 60,
+      74, 75, 89, 90, 104, 105, 119, 120, 134, 135, 149, 150, 164, 165, 179,
+      180, 194, 195, 209, 210, 211, 212, 213, 214, 215, 216, 218, 219, 220, 221,
+      222, 223, 224, 33,37,38,39,46,47,48,49,50,55,66,71,77,82,87,93,94,98,102,109,110,114,117,
+      122,125,126,130,132,137,141,142,146,151,152,157,160,168,169,170,173,174,185,186,191,206
+    ],
+    torches: [145,127,],
+    ladders: [184],
+    holes: [34,118,40,28,64,182,183],
+    planks: [107],
+    coins: [106,138,154,166,171],
+    exit: 5,
+    darkTime: 100000
   }
 ]
 
@@ -210,9 +227,8 @@ const rsetBoard = (lvl, start) => {
   plankLoc.length = 0
   coinLoc.length = 0
   
-  
-  start ? playerLoc = 202 : playerLoc = 20
-  
+  // start ? playerLoc = 202 : playerLoc = 20
+
   
   entLoc = 217
   // entLoc = playerLoc + 15
@@ -225,13 +241,14 @@ const rsetBoard = (lvl, start) => {
     allLevels[lvl].holes,
     allLevels[lvl].planks,
     allLevels[lvl].coins
-  )
+    )
   getWalls()
   getTorches()
   getLadder()
   getPlanks()
   getHoles()
   getCoins()
+  playerLoc = playerStartSquare(start)
   placePlayer()
   const pauseDark = () => {
     makeDark()
@@ -969,16 +986,77 @@ const ending = (parachute) => {
   })
 }
 
+
 ///
 ///
-///Starting Game
+// UTILITY FUNCTIONS FOR PLAYER PLACEMENT
 ///
 ///
 
+
+
+// FIND QUADRANT OF THE BOARD
+
+// const getQuadrant = (squareNumber) => {
+//   const totalSquares = 224;
+//   const quadrantSize = totalSquares / 4;
+//   const quadrant = Math.floor(squareNumber / quadrantSize);
+
+//   switch (quadrant) {
+//     case 0:
+//       return 1;
+//     case 1:
+//       return 2;
+//     case 2:
+//       return 3;
+//     case 3:
+//       return 4;
+//     default:
+//       return 5;
+//   }
+// }
+        
+
+//  RANDOMLY CHOOSE A NON WALL TILE WITHIN A QUADRANT
+
+const chooseWithinQuadrant = (holeTile) => {
+  const possibleTiles = [-16,-15,-14,-1,0,+1,+14,+15,+16]
+  let offsetSquare
+  for (let i = 0; i < 9; i++){
+    // choose a random number between 0 and 9
+    offsetSquare = possibleTiles[(Math.floor(Math.random()*9))]
+    // if that number doesnt have a wall or a hole, thats where the player will be placed
+    if (!tiles[holeTile + offsetSquare].classList.contains('wall') && !tiles[holeTile + offsetSquare].classList.contains('hole')){
+      return holeTile + offsetSquare
+    }
+    // if the loop didnt escape the function then just place the player at the exit
+  }
+  return 20
+}
+
+// PLACE PLAYER START INCLUSIVE OF POSSIBLY CHOOSING RANDOMLY WITHIN A QUADRANT
+
+const playerStartSquare = (startingLocation) => {
+  if(startingLocation !== 202 && startingLocation !== 20){
+    return chooseWithinQuadrant(startingLocation)
+  } else {
+    return startingLocation
+  }    
+}
+
+
+
+          
+///
+///
+///Starting Game
+ ///
+ ///
+          
 const mazzy = new Character(`Mazzy`, 0, 0)
 addUserLevels()
 curLvl++
-rexit(true)
+rexit(start=202)
 
 ///
 ///
@@ -992,6 +1070,7 @@ window.addEventListener(`keydown`, (event) => {
     backgroundMusic.loop = true
     backgroundMusic.volume = 0.1
   }
+
   if (ended === 0) {
     ///Grab steps h2 to count steps
     let stepCnt = document.querySelector(`.steps`)
@@ -1019,10 +1098,10 @@ window.addEventListener(`keydown`, (event) => {
         tileDifference = -1
         lookAhead = playerLoc + tileDifference
         break
-      case `l`:
+      case `Control`:
         useLadder(lookAhead)
         break
-      case `t`:
+      case `0`:
         useTorch()
         break
       default:
@@ -1036,15 +1115,24 @@ window.addEventListener(`keydown`, (event) => {
     if (noGo === false) {
       if (lookAhead === exitLoc) {
         curLvl++
-        rexit(true)
+        // place player at the start location
+        rexit(start=202)
       } else if (lookAhead === entLoc) {
         curLvl--
-        rexit(false)
+        // place player at exit door
+        rexit(start=20)
       } else if (tiles[lookAhead].classList.contains(`hole`)) {
         if (mazzy.planks === 0) {
-          clearBrd()
-          ending(1)
-          curLvl++
+          if(curLvl > 1) {
+              curLvl--
+              let holeLocationId = tiles[lookAhead].getAttribute('id')
+              let holeParsedId = parseInt(holeLocationId.substring(1))
+              rexit(start=holeParsedId)
+            } else {
+            clearBrd()
+            ending(1)
+            curLvl++
+          }
         } else {
           usePlank(lookAhead)
         }
