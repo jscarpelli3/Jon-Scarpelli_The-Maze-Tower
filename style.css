@@ -27,6 +27,8 @@ h1.title {
   color: rgb(175, 172, 172);
   text-align: center;
   grid-area: 2 / 3 / 3 / 4;
+  margin: 0 12px;
+  /* background-color: rgba(102, 102, 102, 0.286); */
 }
 
 div.game {
@@ -126,9 +128,9 @@ div.game {
   background-image: url(pics/tright.png);
 }
 
-.exit {
+/* .exit {
   background-image: url(pics/exithor.png);
-}
+} */
 
 /*  */
 /* game board pieces & places */
@@ -198,8 +200,8 @@ div.game {
 .inv-plank,
 .inv-para {
   padding: 6px;
-  margin: 12px 12px;
-  border: 2px solid white;
+  margin: 12px 60px;
+  border: 2px solid rgba(255, 255, 255, 0.287);
 }
 
 .trch-count,

@@ -82,7 +82,7 @@ let allLevels = [
     ],
     torches: [140, 208, 108],
     ladders: [123],
-    holes: [78, 153,204],
+    holes: [78, 153,201, 204],
     planks: [50,203],
     coins: [16, 142],
     exit: 5,
@@ -210,9 +210,8 @@ const rsetBoard = (lvl, start) => {
   plankLoc.length = 0
   coinLoc.length = 0
   
-  
-  start ? playerLoc = 202 : playerLoc = 20
-  
+  // start ? playerLoc = 202 : playerLoc = 20
+
   
   entLoc = 217
   // entLoc = playerLoc + 15
@@ -225,13 +224,15 @@ const rsetBoard = (lvl, start) => {
     allLevels[lvl].holes,
     allLevels[lvl].planks,
     allLevels[lvl].coins
-  )
+    )
   getWalls()
   getTorches()
   getLadder()
   getPlanks()
   getHoles()
   getCoins()
+  console.log(playerStartSquare(start))
+  playerLoc = playerStartSquare(start)
   placePlayer()
   const pauseDark = () => {
     makeDark()
@@ -500,6 +501,7 @@ const placeItems = (ldrs, trchs, exit, holes, planks, cns) => {
 }
 
 const placePlayer = () => {
+  console.log(playerLoc)
   tiles[playerLoc].classList.add(`player`)
   tiles[playerLoc].innerHTML = `<img id="mazzy" src=pics/mazzy.png>`
 }
@@ -969,16 +971,81 @@ const ending = (parachute) => {
   })
 }
 
+
 ///
 ///
-///Starting Game
+// UTILITY FUNCTIONS FOR PLAYER PLACEMENT
 ///
 ///
 
+
+
+// FIND QUADRANT OF THE BOARD
+
+// const getQuadrant = (squareNumber) => {
+//   const totalSquares = 224;
+//   const quadrantSize = totalSquares / 4;
+//   const quadrant = Math.floor(squareNumber / quadrantSize);
+
+//   switch (quadrant) {
+//     case 0:
+//       return 1;
+//     case 1:
+//       return 2;
+//     case 2:
+//       return 3;
+//     case 3:
+//       return 4;
+//     default:
+//       return 5;
+//   }
+// }
+        
+
+//  RANDOMLY CHOOSE A NON WALL TILE WITHIN A QUADRANT
+
+const chooseWithinQuadrant = (holeTile) => {
+  const possibleTiles = [-16,-15,-14,-1,0,+1,+14,+15,+16]
+  let offsetSquare
+  for (let i = 0; i < 9; i++){
+    // choose a random number between 0 and 9
+    offsetSquare = possibleTiles[(Math.floor(Math.random()*9))]
+    console.log(holeTile, (Math.floor(Math.random()*9)))
+    // if that number doesnt have a wall or a hole, thats where the player will be placed
+    if (!tiles[holeTile + offsetSquare].classList.contains('wall') && !tiles[holeTile + offsetSquare].classList.contains('hole')){
+      // console.log(tiles[startSquare].classList,tiles[startSquare].classList.contains('wall') , tiles[startSquare].classList.contains('hole') )
+      return holeTile + offsetSquare
+    }
+    // if the loop didnt escape the function then just place the player at the exit
+  }
+  return 20
+}
+
+// PLACE PLAYER START INCLUSIVE OF POSSIBLY CHOOSING RANDOMLY WITHIN A QUADRANT
+
+const playerStartSquare = (startingLocation) => {
+  console.log(startingLocation)
+  if(startingLocation !== 202 && startingLocation !== 20){
+    return chooseWithinQuadrant(startingLocation)
+    console.log(chooseWithinQuadrant(1))
+  } else {
+    return startingLocation
+  }    
+}
+
+
+
+          
+///
+///
+///Starting Game
+ ///
+ ///
+          
 const mazzy = new Character(`Mazzy`, 0, 0)
 addUserLevels()
 curLvl++
-rexit(true)
+rexit(start=202)
 
 ///
 ///
@@ -992,6 +1059,7 @@ window.addEventListener(`keydown`, (event) => {
     backgroundMusic.loop = true
     backgroundMusic.volume = 0.1
   }
+
   if (ended === 0) {
     ///Grab steps h2 to count steps
     let stepCnt = document.querySelector(`.steps`)
@@ -1036,15 +1104,24 @@ window.addEventListener(`keydown`, (event) => {
     if (noGo === false) {
       if (lookAhead === exitLoc) {
         curLvl++
-        rexit(true)
+        // place player at the start location
+        rexit(start=202)
       } else if (lookAhead === entLoc) {
         curLvl--
-        rexit(false)
+        // place player at exit door
+        rexit(start=20)
       } else if (tiles[lookAhead].classList.contains(`hole`)) {
         if (mazzy.planks === 0) {
-          clearBrd()
-          ending(1)
-          curLvl++
+          if(curLvl > 1) {
+              curLvl--
+              let holeLocationId = tiles[lookAhead].getAttribute('id')
+              let holeParsedId = parseInt(holeLocationId.substring(1))
+              rexit(start=holeParsedId)
+            } else {
+            clearBrd()
+            ending(1)
+            curLvl++
+          }
         } else {
           usePlank(lookAhead)
         }
