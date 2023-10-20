@@ -175,7 +175,7 @@ let allLevels = [
     planks: [107],
     coins: [106,138,154,166,171],
     exit: 5,
-    darkTime: 6000
+    darkTime: 100000
   }
 ]
 
