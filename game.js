@@ -231,7 +231,6 @@ const rsetBoard = (lvl, start) => {
   getPlanks()
   getHoles()
   getCoins()
-  console.log(playerStartSquare(start))
   playerLoc = playerStartSquare(start)
   placePlayer()
   const pauseDark = () => {
@@ -501,7 +500,6 @@ const placeItems = (ldrs, trchs, exit, holes, planks, cns) => {
 }
 
 const placePlayer = () => {
-  console.log(playerLoc)
   tiles[playerLoc].classList.add(`player`)
   tiles[playerLoc].innerHTML = `<img id="mazzy" src=pics/mazzy.png>`
 }
@@ -1010,10 +1008,8 @@ const chooseWithinQuadrant = (holeTile) => {
   for (let i = 0; i < 9; i++){
     // choose a random number between 0 and 9
     offsetSquare = possibleTiles[(Math.floor(Math.random()*9))]
-    console.log(holeTile, (Math.floor(Math.random()*9)))
     // if that number doesnt have a wall or a hole, thats where the player will be placed
     if (!tiles[holeTile + offsetSquare].classList.contains('wall') && !tiles[holeTile + offsetSquare].classList.contains('hole')){
-      // console.log(tiles[startSquare].classList,tiles[startSquare].classList.contains('wall') , tiles[startSquare].classList.contains('hole') )
       return holeTile + offsetSquare
     }
     // if the loop didnt escape the function then just place the player at the exit
@@ -1024,10 +1020,8 @@ const chooseWithinQuadrant = (holeTile) => {
 // PLACE PLAYER START INCLUSIVE OF POSSIBLY CHOOSING RANDOMLY WITHIN A QUADRANT
 
 const playerStartSquare = (startingLocation) => {
-  console.log(startingLocation)
   if(startingLocation !== 202 && startingLocation !== 20){
     return chooseWithinQuadrant(startingLocation)
-    console.log(chooseWithinQuadrant(1))
   } else {
     return startingLocation
   }    
