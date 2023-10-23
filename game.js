@@ -85,7 +85,7 @@ let allLevels = [
     holes: [78, 153, 204],
     planks: [50,203],
     coins: [16, 142],
-    sprite: [true, 3, ],
+    sprite: [true, 4000],
     exit: 5,
     darkTime: 60000
   },
@@ -244,11 +244,12 @@ const rsetBoard = (lvl, start) => {
     allLevels[lvl].coins
     )
   getWalls()
+  getCoins()
   getTorches()
   getLadder()
   getPlanks()
   getHoles()
-  getCoins()
+  placeSprite()
   playerLoc = playerStartSquare(start)
   placePlayer()
   const pauseDark = () => {
@@ -264,6 +265,7 @@ const rsetBoard = (lvl, start) => {
   }
   const levelDsp = document.querySelector(`.display-level`)
   levelDsp.innerText = allLevels[curLvl].name
+  moveSprite()
 }
 
 ///
@@ -524,6 +526,48 @@ const placePlayer = () => {
     fallfx.play()
   }
 }
+
+const placeSprite = () => {
+  const gameBoard = document.getElementById('game-board');
+  const sprite = document.createElement('div')
+  sprite.classList.add('sprite')
+  sprite.setAttribute('id', 'sprite1')
+  gameBoard.appendChild(sprite)
+}
+
+///
+/// SPRITE 1
+///
+
+
+const moveSprite = () => {
+  const sprite1 = document.getElementById('sprite1')
+  console.log(sprite1)
+  // const gameBoard = document.querySelector('#game-board');
+  // const gameBoardBox = gameBoard.getBoundingClientRect();
+
+  // const targetX = gameBoardBox.left;
+  // const targetY = gameBoardBox.top;
+
+  const sprite1Patrol = sprite1.animate ([
+    {transform: 'translate(0px,0px)'},
+    {transform: 'translate(0px, 336px)'}
+  ], {
+    duration: 4000,
+    easing: 'ease-out'
+  }
+  
+  )}
+
+
+    //   // Animate the icon's movement
+    //   const animation = icon.animate([
+    //     { transform: `translate(0, 0)` },
+    //     { transform: `translate(${targetX}px, ${targetY}px)` }
+    // ], {
+    //     duration: 1000, // Adjust the duration as needed (in milliseconds)
+    //     easing: 'ease-out'
+    // });
 
 ///
 ///

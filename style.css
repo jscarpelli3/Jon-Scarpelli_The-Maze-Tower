@@ -32,6 +32,7 @@ h1.title {
 }
 
 div.game {
+  position: relative;
   grid-area: 2/2/3/3;
   display: grid;
   margin: 0 auto;
@@ -326,3 +327,12 @@ button {
 
 
 
+.sprite {
+  height: 48px;
+  width: 48px;
+  z-index: 2;
+  background-image: url(pics/Sprite.png);
+  position: absolute;
+  top: 96px !important;
+  left: 48px !important;
+}
