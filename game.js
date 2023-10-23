@@ -85,6 +85,7 @@ let allLevels = [
     holes: [78, 153, 204],
     planks: [50,203],
     coins: [16, 142],
+    sprite: [true, 3, ],
     exit: 5,
     darkTime: 60000
   },
@@ -519,6 +520,9 @@ const placeItems = (ldrs, trchs, exit, holes, planks, cns) => {
 const placePlayer = () => {
   tiles[playerLoc].classList.add(`player`)
   tiles[playerLoc].innerHTML = `<img id="mazzy" src=pics/mazzy.png>`
+  if(playerLoc !== 20 & playerLoc !== 202) {
+    fallfx.play()
+  }
 }
 
 ///
