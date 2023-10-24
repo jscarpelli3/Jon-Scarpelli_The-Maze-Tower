@@ -213,6 +213,10 @@ div.game {
   color: blanchedalmond;
 }
 
+#black {
+  z-index: 2;
+}
+
 .end-div {
   margin: 0;
   grid-area: 3/4/14/13;
@@ -330,9 +334,9 @@ button {
 .sprite {
   height: 48px;
   width: 48px;
-  z-index: 2;
-  background-image: url(pics/Sprite.png);
+  z-index: 0;
   position: absolute;
-  top: 96px !important;
-  left: 48px !important;
+  top: 96px;
+  left: 48px;
 }
+

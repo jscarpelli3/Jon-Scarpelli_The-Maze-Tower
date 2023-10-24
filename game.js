@@ -85,11 +85,22 @@ let allLevels = [
     holes: [78, 153, 204],
     planks: [50,203],
     coins: [16, 142],
-    sprite: [true, 4000],
+    sprite: {
+              on: true, 
+              s1X: '48', 
+              s1Y: '96',
+              e1X: '0',
+              e1Y: '348',
+              s2X: '4',
+              s2Y: '4',
+              e2X: '4',
+              e2Y: '4',
+              time: 60000
+            },
     exit: 5,
     darkTime: 60000
   },
-  {
+  { 
     name: `"Uh Oh, it's dark"`,
     walls: [
       0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 29, 30, 44, 45, 59, 60,
@@ -249,7 +260,7 @@ const rsetBoard = (lvl, start) => {
   getLadder()
   getPlanks()
   getHoles()
-  placeSprite()
+  placeSprite(allLevels[lvl].sprite)
   playerLoc = playerStartSquare(start)
   placePlayer()
   const pauseDark = () => {
@@ -265,7 +276,7 @@ const rsetBoard = (lvl, start) => {
   }
   const levelDsp = document.querySelector(`.display-level`)
   levelDsp.innerText = allLevels[curLvl].name
-  moveSprite()
+  moveSprite(allLevels[lvl].sprite)
 }
 
 ///
@@ -527,37 +538,82 @@ const placePlayer = () => {
   }
 }
 
-const placeSprite = () => {
+const placeSprite = (spriteData) => {
   const gameBoard = document.getElementById('game-board');
-  const sprite = document.createElement('div')
+  const sprite = document.createElement('img')
   sprite.classList.add('sprite')
+  sprite.setAttribute('src', 'pics/sprite.png')
   sprite.setAttribute('id', 'sprite1')
   gameBoard.appendChild(sprite)
 }
 
 ///
-/// SPRITE 1
+/// SPRITE 1 BEHAVIOR
 ///
 
 
-const moveSprite = () => {
-  const sprite1 = document.getElementById('sprite1')
-  console.log(sprite1)
-  // const gameBoard = document.querySelector('#game-board');
-  // const gameBoardBox = gameBoard.getBoundingClientRect();
+const moveSprite = (spriteData) => {
+  const sprite1 = document.getElementById('sprite1');
 
-  // const targetX = gameBoardBox.left;
-  // const targetY = gameBoardBox.top;
-
-  const sprite1Patrol = sprite1.animate ([
-    {transform: 'translate(0px,0px)'},
-    {transform: 'translate(0px, 336px)'}
+  const s1Start = sprite1.animate ([
+    {transform: `translate(0, 0)`},
+    {transform: `translate(${spriteData.e1X}px, ${spriteData.e1Y}px)`}
   ], {
     duration: 4000,
     easing: 'ease-out'
+  })
+
+  s1Start.onfinish = () => {
+    const s1Return = sprite1.animate([
+      {transform: `translate(${spriteData.e1X}px, ${spriteData.e1Y}px)`},
+      {transform: `translate(0, 0)`}
+    ],{
+      duration: 4000,
+      easing: 'ease-out'
+    })
+  // s1Start.onfinish = () => {
+  //   const s1Return = sprite1.animate([
+  //     {transform: `translate(${spriteData.e1X}px, ${spriteData.e1Y}px)`},
+  //     {transform: `translate(0, 0)`}
+  //   ],{
+  //     duration: 4000,
+  //     easing: 'ease-out'
+  //   })
+  //   setTimeout(()=> {
+  //     const s1Return = sprite1.animate([
+  //       {transform: `translate(${spriteData.e1X}px, ${spriteData.e1Y}px)`},
+  //       {transform: `translate(0, 0)`}
+  //     ],{
+  //       duration: 4000,
+  //       easing: 'ease-out'
+  //     })
+      
+  //     s1Return.onfinish = () => {
+  //       moveSprite(spriteData)
+  //     }
+  //   }, 1000)
+    s1Return.onfinish = () => {
+      moveSprite(spriteData)
+    }
   }
-  
-  )}
+}
+
+// animation.onfinish = () => {
+//   // Pause for 1 second before moving back to the original position
+//   setTimeout(() => {
+//     // Animation to move the sprite back to its original position
+//     const originalPosition = icon.animate([
+//       { transform: `translate(${targetX}px, ${targetY}px)` }, // End position of the first animation
+//       { transform: `translate(0, 0)` } // Original position
+//     ], {
+//       duration: 1000,
+//       easing: 'ease-in-out'
+//     });
+//   }, 1000); // 1000 milliseconds (1 second) delay
+// };
+
+
+
 
 
     //   // Animate the icon's movement
@@ -679,9 +735,7 @@ const makeLight = () => {
 
   lit.forEach((tile) => {
     if (
-      tiles[tile].classList.contains(`ldr-applied`) ||
-      tiles[tile].classList.contains(`plk-applied`) 
-
+      tiles[tile].classList.contains(`ldr-applied`) 
       ) {
       } else {
         const blackElement = tiles[tile].querySelector('#black');
