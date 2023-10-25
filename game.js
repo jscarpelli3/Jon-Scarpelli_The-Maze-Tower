@@ -204,6 +204,7 @@ class Character {
     this.steps = 0
     this.hasParachute = false
     this.coins = 0
+    this.location = {}
   }
 }
 
@@ -276,7 +277,6 @@ const rsetBoard = (lvl, start) => {
   }
   const levelDsp = document.querySelector(`.display-level`)
   levelDsp.innerText = allLevels[curLvl].name
-  moveSprite(allLevels[lvl].sprite)
 }
 
 ///
@@ -547,56 +547,7 @@ const placeSprite = (spriteData) => {
   gameBoard.appendChild(sprite)
 }
 
-///
-/// SPRITE 1 BEHAVIOR
-///
 
-
-const moveSprite = (spriteData) => {
-  const sprite1 = document.getElementById('sprite1');
-
-  const s1Start = sprite1.animate ([
-    {transform: `translate(0, 0)`},
-    {transform: `translate(${spriteData.e1X}px, ${spriteData.e1Y}px)`}
-  ], {
-    duration: 4000,
-    easing: 'ease-out'
-  })
-
-  s1Start.onfinish = () => {
-    const s1Return = sprite1.animate([
-      {transform: `translate(${spriteData.e1X}px, ${spriteData.e1Y}px)`},
-      {transform: `translate(0, 0)`}
-    ],{
-      duration: 4000,
-      easing: 'ease-out'
-    })
-  // s1Start.onfinish = () => {
-  //   const s1Return = sprite1.animate([
-  //     {transform: `translate(${spriteData.e1X}px, ${spriteData.e1Y}px)`},
-  //     {transform: `translate(0, 0)`}
-  //   ],{
-  //     duration: 4000,
-  //     easing: 'ease-out'
-  //   })
-  //   setTimeout(()=> {
-  //     const s1Return = sprite1.animate([
-  //       {transform: `translate(${spriteData.e1X}px, ${spriteData.e1Y}px)`},
-  //       {transform: `translate(0, 0)`}
-  //     ],{
-  //       duration: 4000,
-  //       easing: 'ease-out'
-  //     })
-      
-  //     s1Return.onfinish = () => {
-  //       moveSprite(spriteData)
-  //     }
-  //   }, 1000)
-    s1Return.onfinish = () => {
-      moveSprite(spriteData)
-    }
-  }
-}
 
 // animation.onfinish = () => {
 //   // Pause for 1 second before moving back to the original position
@@ -1275,3 +1226,92 @@ window.addEventListener(`keydown`, (event) => {
     }
   }
 })
+
+
+
+///
+///
+/// BEHAVIORS AND REALTIME FUNCTIONALITY
+///
+///
+
+
+/// Basic Collission detection
+const collisionDetector = (mazzyRect, objectRect) => {
+  if (
+    objectRect.right > mazzyRect.left && 
+    objectRect.left < mazzyRect.right && 
+    objectRect.bottom > mazzyRect.top && 
+    objectRect.top < mazzyRect.bottom  
+    ) {
+      // Collision detected
+      console.log('collission!')
+      return true
+    } else {
+      // No collision
+      console.log('nope')
+      return false
+    }
+  }
+
+
+
+/// SPRITE 1 BEHAVIOR
+const moveSprite = (spriteData) => {
+  const sprite1 = document.getElementById('sprite1');
+
+  const s1Start = sprite1.animate ([
+    {transform: `translate(0, 0)`},
+    {transform: `translate(${spriteData.e1X}px, ${spriteData.e1Y}px)`}
+  ], {
+    duration: 4000,
+    easing: 'ease-out'
+  })
+
+  s1Start.onfinish = () => {
+    const s1Return = sprite1.animate([
+      {transform: `translate(${spriteData.e1X}px, ${spriteData.e1Y}px)`},
+      {transform: `translate(0, 0)`}
+    ],{
+      duration: 4000,
+      easing: 'ease-out'
+    })
+    s1Return.onfinish = () => {
+      moveSprite(spriteData)
+    }
+  }
+}
+
+/// Collission With Sprite
+const spriteCollission = () => {
+    //get the player element
+    const player = document.getElementById('mazzy'); 
+    //set the player element location data to the mazzy object/player class
+    mazzy.location = player.getBoundingClientRect();
+      //find sprite rectangle
+    const sprite = document.getElementById('sprite1'); 
+    const spriteLocation = sprite.getBoundingClientRect();
+
+    collisionDetector(mazzy.location, spriteLocation)
+}
+
+///CHECK FOR COLLISSION WITH SPRITE
+setInterval(spriteCollission ,17)
+
+
+
+
+
+
+///
+/// THINGS TO DO AFTER DOM IS LOADED
+///
+
+document.addEventListener('DOMContentLoaded', function() {
+  moveSprite(allLevels[curLvl].sprite)
+console.log('DOM Loaded')
+})
+
+///
+///
+///
