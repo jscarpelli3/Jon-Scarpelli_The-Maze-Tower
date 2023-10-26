@@ -30,6 +30,11 @@ const outWalls = [
   134, 149, 164, 179, 194, 209, 211, 212, 213, 214, 215, 216, 217, 218, 219,
   220, 221, 222, 223, 224
 ]
+///variables to hold timers
+let torchTimeoutID
+let pasueDarkID
+///
+
 let curLvl = 0
 let curLvlName = ''
 let playerLoc = 202
@@ -43,6 +48,8 @@ const plankLoc = []
 const holeLoc = []
 const coinLoc = []
 const lstApdLdr = []
+
+
 
 ////
 ////
@@ -209,6 +216,28 @@ class Character {
   }
 }
 
+
+///
+/// Establish Various Timers
+
+const startTorchLight = () => {
+  torchTimeoutID = setTimeout (function() {
+
+  }, 4500)
+}
+
+const startPauseDark = () => {
+  pasueDarkID = setTimeout(function(){
+
+  }, allLevels[curLvl].darkTime)
+}
+
+///
+///
+
+
+
+
 ///
 ///
 ///SETUP GAME BOARD
@@ -300,7 +329,9 @@ const rsetBoard = (lvl, start) => {
   getLadder()
   getPlanks()
   getHoles()
-  placeSprite(allLevels[lvl].sprite)
+  if (allLevels[lvl].sprite){
+    placeSprite(allLevels[lvl].sprite)
+  }
   playerLoc = playerStartSquare(start)
   placePlayer()
   const pauseDark = () => {
@@ -1227,7 +1258,6 @@ const collisionDetector = (objectRect) => {
         clearBrd()
         ending('sprite')
         curLvl++
-        console.log('aren\'t you dead?')
       }
     } else {
       // No collision
