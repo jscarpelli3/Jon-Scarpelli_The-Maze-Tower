@@ -825,7 +825,7 @@ const addPara = () => {
   paraCount.classList.add(`para-count`)
   paraDiv.append(paraCount)
   invDiv.append(paraDiv)
-  mazzy.parachute = true
+  mazzy.hasParachute = true
   plankCount.innerText = `1`
   paraGet.play()
 }
@@ -954,7 +954,7 @@ const rexit = (start) => {
     clearTimeout()
     curLvl++
     clearBrd()
-    ending(mazzy.parachute)
+    ending('win')
   } else {
     clearBrd()
     rsetBoard(curLvl,start)
@@ -985,7 +985,7 @@ const playEndSong = () => {
   endSong.play()
 }
 
-const ending = (parachute) => {
+const ending = (endType) => {
   let gameBrd = document.querySelector(`.game`)
   document.body.style.backgroundImage = 'url(pics/darktower.gif)'
   gameBrd.style.backgroundImage = 'url()'
@@ -1004,16 +1004,16 @@ const ending = (parachute) => {
   const endPlank = document.createElement(`li`)
   backgroundMusic.pause()
 
-  if (parachute === true) {
+  if (endType === 'win' && mazzy.hasParachute === true) {
     resultH1.innerText = `You Made It!!`
     const endGood =
       document.createTextNode(`Mazzy has reached the top of The Maze Tower!  He looks out over the landscape from the top of the massive 
-    tower(...well...it's only 2 floors up).  With the giant door to the tower closing behind him... he takes a deep breath, throws on the parachute and jumps to freedom!`)
+    tower.  With the giant door to the tower closing behind him... he takes a deep breath, throws on the parachute and jumps to freedom!`)
     endDiv.append(resultH1)
     endP.append(endGood)
     winfx.play()
     setTimeout(playEndSong(), 2000)
-  } else if (parachute !== 1 || parachute === false) {
+  } else if (endType === 'win' && parachute === false) {
     resultH1.innerText = `Oh No!`
     const endBad =
       document.createTextNode(`Mazzy has reached the top of The Maze Tower!  He looks out over the landscape from the top of the massive 
@@ -1022,10 +1022,18 @@ const ending = (parachute) => {
     endDiv.append(resultH1)
     endP.append(endBad)
     fallfx.play()
-  } else if (parachute === 1) {
+  } else if ( endType === 'fell') {
     resultH1.innerText = `You Died!`
     const endFell = document.createTextNode(
       `Mazzy fell through a hole in the floor. For a split second all he saw was darkness... then... SPLAT! He died.`
+    )
+    fallfx.play()
+    endDiv.append(resultH1)
+    endP.append(endFell)
+  } else if (endType === 'sprite') {
+    resultH1.innerText = `You Died!`
+    const endFell = document.createTextNode(
+      `Not sure what that mystical creature was... but it killed Mazzy.... Bummer.`
     )
     fallfx.play()
     endDiv.append(resultH1)
@@ -1145,7 +1153,7 @@ window.addEventListener(`keydown`, (event) => {
               rexit(start=holeParsedId)
             } else {
             clearBrd()
-            ending(1)
+            ending('fell')
             curLvl++
           }
         } else {
@@ -1217,7 +1225,7 @@ const collisionDetector = (objectRect) => {
         return true
       } else if (mazzy.life === 0) {
         clearBrd()
-        ending(1)
+        ending('sprite')
         curLvl++
         console.log('aren\'t you dead?')
       }
