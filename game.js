@@ -30,6 +30,11 @@ const outWalls = [
   134, 149, 164, 179, 194, 209, 211, 212, 213, 214, 215, 216, 217, 218, 219,
   220, 221, 222, 223, 224
 ]
+///variables to hold timers
+let torchTimeoutID
+let pasueDarkID
+///
+
 let curLvl = 0
 let curLvlName = ''
 let playerLoc = 202
@@ -43,6 +48,8 @@ const plankLoc = []
 const holeLoc = []
 const coinLoc = []
 const lstApdLdr = []
+
+
 
 ////
 ////
@@ -85,11 +92,22 @@ let allLevels = [
     holes: [78, 153, 204],
     planks: [50,203],
     coins: [16, 142],
-    sprite: [true, 3, ],
+    sprite: {
+              on: true, 
+              s1X: '48', 
+              s1Y: '96',
+              e1X: '0',
+              e1Y: '348',
+              s2X: '4',
+              s2Y: '4',
+              e2X: '4',
+              e2Y: '4',
+              time: 60000
+            },
     exit: 5,
     darkTime: 60000
   },
-  {
+  { 
     name: `"Uh Oh, it's dark"`,
     walls: [
       0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 29, 30, 44, 45, 59, 60,
@@ -193,8 +211,32 @@ class Character {
     this.steps = 0
     this.hasParachute = false
     this.coins = 0
+    this.location = {}
+    this.life = 100
   }
 }
+
+
+///
+/// Establish Various Timers
+
+const startTorchLight = () => {
+  torchTimeoutID = setTimeout (function() {
+
+  }, 4500)
+}
+
+const startPauseDark = () => {
+  pasueDarkID = setTimeout(function(){
+
+  }, allLevels[curLvl].darkTime)
+}
+
+///
+///
+
+
+
 
 ///
 ///
@@ -217,6 +259,44 @@ const addUserLevels = () => {
     console.log(`no user levels found!`)
   }
 }
+
+
+///
+/// Player Placement logic
+///
+
+// PLACE PLAYER START INCLUSIVE OF POSSIBLY CHOOSING RANDOMLY WITHIN A 6 tile space
+
+const playerStartSquare = (startingLocation) => {
+  if(startingLocation !== 202 && startingLocation !== 20){
+    return chooseWithinQuadrant(startingLocation)
+  } else {
+    return startingLocation
+  }    
+}
+
+
+//  RANDOMLY CHOOSE A NON WALL TILE WITHIN A 9 tile area
+
+const chooseWithinQuadrant = (holeTile) => {
+  const possibleTiles = [-16,-15,-14,-1,0,+1,+14,+15,+16]
+  let offsetSquare
+  for (let i = 0; i < 9; i++){
+    // choose a random number between 0 and 9
+    offsetSquare = possibleTiles[(Math.floor(Math.random()*9))]
+    // if that number doesnt have a wall or a hole, thats where the player will be placed
+    if (!tiles[holeTile + offsetSquare].classList.contains('wall') && !tiles[holeTile + offsetSquare].classList.contains('hole')){
+      return holeTile + offsetSquare
+    }
+    // if the loop didnt escape the function then just place the player at the exit
+  }
+  return 20
+}
+
+///
+///
+///
+
 
 
 const rsetBoard = (lvl, start) => {
@@ -244,11 +324,14 @@ const rsetBoard = (lvl, start) => {
     allLevels[lvl].coins
     )
   getWalls()
+  getCoins()
   getTorches()
   getLadder()
   getPlanks()
   getHoles()
-  getCoins()
+  if (allLevels[lvl].sprite){
+    placeSprite(allLevels[lvl].sprite)
+  }
   playerLoc = playerStartSquare(start)
   placePlayer()
   const pauseDark = () => {
@@ -525,6 +608,16 @@ const placePlayer = () => {
   }
 }
 
+const placeSprite = (spriteData) => {
+  const gameBoard = document.getElementById('game-board');
+  const sprite = document.createElement('img')
+  sprite.classList.add('sprite')
+  sprite.setAttribute('src', 'pics/sprite.png')
+  sprite.setAttribute('id', 'sprite1')
+  gameBoard.appendChild(sprite)
+}
+
+
 ///
 ///
 ///Get Everything
@@ -635,9 +728,7 @@ const makeLight = () => {
 
   lit.forEach((tile) => {
     if (
-      tiles[tile].classList.contains(`ldr-applied`) ||
-      tiles[tile].classList.contains(`plk-applied`) 
-
+      tiles[tile].classList.contains(`ldr-applied`) 
       ) {
       } else {
         const blackElement = tiles[tile].querySelector('#black');
@@ -765,7 +856,7 @@ const addPara = () => {
   paraCount.classList.add(`para-count`)
   paraDiv.append(paraCount)
   invDiv.append(paraDiv)
-  mazzy.parachute = true
+  mazzy.hasParachute = true
   plankCount.innerText = `1`
   paraGet.play()
 }
@@ -894,7 +985,7 @@ const rexit = (start) => {
     clearTimeout()
     curLvl++
     clearBrd()
-    ending(mazzy.parachute)
+    ending('win')
   } else {
     clearBrd()
     rsetBoard(curLvl,start)
@@ -911,6 +1002,10 @@ function clearBrd() {
   tiles.forEach((tile, i) => {
     tiles[i].className = `tile`
     tiles[i].innerHTML = ``
+    let allSprites = document.querySelectorAll('.sprite')
+    allSprites.forEach(one =>{
+      one.remove()
+    }) 
   })
 }
 
@@ -921,7 +1016,7 @@ const playEndSong = () => {
   endSong.play()
 }
 
-const ending = (parachute) => {
+const ending = (endType) => {
   let gameBrd = document.querySelector(`.game`)
   document.body.style.backgroundImage = 'url(pics/darktower.gif)'
   gameBrd.style.backgroundImage = 'url()'
@@ -940,16 +1035,16 @@ const ending = (parachute) => {
   const endPlank = document.createElement(`li`)
   backgroundMusic.pause()
 
-  if (parachute === true) {
+  if (endType === 'win' && mazzy.hasParachute === true) {
     resultH1.innerText = `You Made It!!`
     const endGood =
       document.createTextNode(`Mazzy has reached the top of The Maze Tower!  He looks out over the landscape from the top of the massive 
-    tower(...well...it's only 2 floors up).  With the giant door to the tower closing behind him... he takes a deep breath, throws on the parachute and jumps to freedom!`)
+    tower.  With the giant door to the tower closing behind him... he takes a deep breath, throws on the parachute and jumps to freedom!`)
     endDiv.append(resultH1)
     endP.append(endGood)
     winfx.play()
     setTimeout(playEndSong(), 2000)
-  } else if (parachute !== 1 || parachute === false) {
+  } else if (endType === 'win' && parachute === false) {
     resultH1.innerText = `Oh No!`
     const endBad =
       document.createTextNode(`Mazzy has reached the top of The Maze Tower!  He looks out over the landscape from the top of the massive 
@@ -958,10 +1053,18 @@ const ending = (parachute) => {
     endDiv.append(resultH1)
     endP.append(endBad)
     fallfx.play()
-  } else if (parachute === 1) {
+  } else if ( endType === 'fell') {
     resultH1.innerText = `You Died!`
     const endFell = document.createTextNode(
       `Mazzy fell through a hole in the floor. For a split second all he saw was darkness... then... SPLAT! He died.`
+    )
+    fallfx.play()
+    endDiv.append(resultH1)
+    endP.append(endFell)
+  } else if (endType === 'sprite') {
+    resultH1.innerText = `You Died!`
+    const endFell = document.createTextNode(
+      `Not sure what that mystical creature was... but it killed Mazzy.... Bummer.`
     )
     fallfx.play()
     endDiv.append(resultH1)
@@ -996,59 +1099,6 @@ const ending = (parachute) => {
 // UTILITY FUNCTIONS FOR PLAYER PLACEMENT
 ///
 ///
-
-
-
-// FIND QUADRANT OF THE BOARD
-
-// const getQuadrant = (squareNumber) => {
-//   const totalSquares = 224;
-//   const quadrantSize = totalSquares / 4;
-//   const quadrant = Math.floor(squareNumber / quadrantSize);
-
-//   switch (quadrant) {
-//     case 0:
-//       return 1;
-//     case 1:
-//       return 2;
-//     case 2:
-//       return 3;
-//     case 3:
-//       return 4;
-//     default:
-//       return 5;
-//   }
-// }
-        
-
-//  RANDOMLY CHOOSE A NON WALL TILE WITHIN A QUADRANT
-
-const chooseWithinQuadrant = (holeTile) => {
-  const possibleTiles = [-16,-15,-14,-1,0,+1,+14,+15,+16]
-  let offsetSquare
-  for (let i = 0; i < 9; i++){
-    // choose a random number between 0 and 9
-    offsetSquare = possibleTiles[(Math.floor(Math.random()*9))]
-    // if that number doesnt have a wall or a hole, thats where the player will be placed
-    if (!tiles[holeTile + offsetSquare].classList.contains('wall') && !tiles[holeTile + offsetSquare].classList.contains('hole')){
-      return holeTile + offsetSquare
-    }
-    // if the loop didnt escape the function then just place the player at the exit
-  }
-  return 20
-}
-
-// PLACE PLAYER START INCLUSIVE OF POSSIBLY CHOOSING RANDOMLY WITHIN A QUADRANT
-
-const playerStartSquare = (startingLocation) => {
-  if(startingLocation !== 202 && startingLocation !== 20){
-    return chooseWithinQuadrant(startingLocation)
-  } else {
-    return startingLocation
-  }    
-}
-
-
 
           
 ///
@@ -1134,7 +1184,7 @@ window.addEventListener(`keydown`, (event) => {
               rexit(start=holeParsedId)
             } else {
             clearBrd()
-            ending(1)
+            ending('fell')
             curLvl++
           }
         } else {
@@ -1158,7 +1208,7 @@ window.addEventListener(`keydown`, (event) => {
         mazzy.steps += 1
         stepFx.play()
         stepCnt.innerHTML = mazzy.steps
-        ///if you go to a torch spot
+        ///if you go to a torch spot or whatever
         checkTorch()
         checkLadder()
         checkPlank()
@@ -1177,3 +1227,157 @@ window.addEventListener(`keydown`, (event) => {
     }
   }
 })
+
+
+
+///
+///
+/// BEHAVIORS AND REALTIME FUNCTIONALITY
+///
+///
+
+
+/// Basic Collission detection
+const collisionDetector = (objectRect) => {
+  if (
+    objectRect.right > mazzy.location.left && 
+    objectRect.left < mazzy.location.right && 
+    objectRect.bottom > mazzy.location.top && 
+    objectRect.top < mazzy.location.bottom 
+    ) {
+      // Collision detected
+      console.log('collission!')
+      mazzy.life -= 1
+      const lifeInv = document.querySelector('.lf-count')
+      // const lifeInv = document.getElementsByClassName('lf-count')
+      console.log(mazzy.life)
+      lifeInv.innerText = mazzy.life
+      if(mazzy.life >= 1 ) {
+        return true
+      } else if (mazzy.life === 0) {
+        clearBrd()
+        ending('sprite')
+        curLvl++
+      }
+    } else {
+      // No collision
+      console.log('nope')
+      return false
+    }
+  }
+
+
+
+/// SPRITE 1 BEHAVIOR
+
+// animation.onfinish = () => {
+//   // Pause for 1 second before moving back to the original position
+//   setTimeout(() => {
+//     // Animation to move the sprite back to its original position
+//     const originalPosition = icon.animate([
+//       { transform: `translate(${targetX}px, ${targetY}px)` }, // End position of the first animation
+//       { transform: `translate(0, 0)` } // Original position
+//     ], {
+//       duration: 1000,
+//       easing: 'ease-in-out'
+//     });
+//   }, 1000); // 1000 milliseconds (1 second) delay
+// };
+
+
+    //   // Animate the icon's movement
+    //   const animation = icon.animate([
+    //     { transform: `translate(0, 0)` },
+    //     { transform: `translate(${targetX}px, ${targetY}px)` }
+    // ], {
+    //     duration: 1000, // Adjust the duration as needed (in milliseconds)
+    //     easing: 'ease-out'
+    // });
+
+
+const moveSprite = (spriteData) => {
+  const sprite1 = document.getElementById('sprite1');
+
+  const s1Start = sprite1.animate ([
+    {transform: `translate(0, 0)`},
+    {transform: `translate(${spriteData.e1X}px, ${spriteData.e1Y}px)`}
+  ], {
+    duration: 4000,
+    easing: 'ease-out'
+  })
+
+  s1Start.onfinish = () => {
+    const s1Return = sprite1.animate([
+      {transform: `translate(${spriteData.e1X}px, ${spriteData.e1Y}px)`},
+      {transform: `translate(0, 0)`}
+    ],{
+      duration: 4000,
+      easing: 'ease-out'
+    })
+    s1Return.onfinish = () => {
+      moveSprite(spriteData)
+    }
+  }
+}
+
+/// Collission With Sprite
+const spriteCollission = () => {
+    //get the player element
+    const player = document.getElementById('mazzy'); 
+    //set the player element location data to the mazzy object/player class
+    mazzy.location = player.getBoundingClientRect();
+      //find sprite rectangle
+    const sprite = document.getElementById('sprite1'); 
+    const spriteLocation = sprite.getBoundingClientRect();
+
+    collisionDetector(spriteLocation)
+}
+
+
+///CHECK FOR COLLISSION WITH SPRITE
+setInterval(spriteCollission ,17)
+
+///
+///
+///
+
+
+
+// FIND QUADRANT OF THE BOARD
+
+// const getQuadrant = (squareNumber) => {
+//   const totalSquares = 224;
+//   const quadrantSize = totalSquares / 4;
+//   const quadrant = Math.floor(squareNumber / quadrantSize);
+
+//   switch (quadrant) {
+//     case 0:
+//       return 1;
+//     case 1:
+//       return 2;
+//     case 2:
+//       return 3;
+//     case 3:
+//       return 4;
+//     default:
+//       return 5;
+//   }
+// }
+        
+
+
+
+
+
+///
+/// THINGS TO DO AFTER DOM IS LOADED
+///
+
+document.addEventListener('DOMContentLoaded', function() {
+  moveSprite(allLevels[curLvl].sprite)
+console.log('DOM Loaded')
+})
+
+///
+///
+///
