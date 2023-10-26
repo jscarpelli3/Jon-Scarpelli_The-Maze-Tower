@@ -205,6 +205,7 @@ class Character {
     this.hasParachute = false
     this.coins = 0
     this.location = {}
+    this.life = 100
   }
 }
 
@@ -229,6 +230,44 @@ const addUserLevels = () => {
     console.log(`no user levels found!`)
   }
 }
+
+
+///
+/// Player Placement logic
+///
+
+// PLACE PLAYER START INCLUSIVE OF POSSIBLY CHOOSING RANDOMLY WITHIN A 6 tile space
+
+const playerStartSquare = (startingLocation) => {
+  if(startingLocation !== 202 && startingLocation !== 20){
+    return chooseWithinQuadrant(startingLocation)
+  } else {
+    return startingLocation
+  }    
+}
+
+
+//  RANDOMLY CHOOSE A NON WALL TILE WITHIN A 9 tile area
+
+const chooseWithinQuadrant = (holeTile) => {
+  const possibleTiles = [-16,-15,-14,-1,0,+1,+14,+15,+16]
+  let offsetSquare
+  for (let i = 0; i < 9; i++){
+    // choose a random number between 0 and 9
+    offsetSquare = possibleTiles[(Math.floor(Math.random()*9))]
+    // if that number doesnt have a wall or a hole, thats where the player will be placed
+    if (!tiles[holeTile + offsetSquare].classList.contains('wall') && !tiles[holeTile + offsetSquare].classList.contains('hole')){
+      return holeTile + offsetSquare
+    }
+    // if the loop didnt escape the function then just place the player at the exit
+  }
+  return 20
+}
+
+///
+///
+///
+
 
 
 const rsetBoard = (lvl, start) => {
@@ -547,34 +586,6 @@ const placeSprite = (spriteData) => {
   gameBoard.appendChild(sprite)
 }
 
-
-
-// animation.onfinish = () => {
-//   // Pause for 1 second before moving back to the original position
-//   setTimeout(() => {
-//     // Animation to move the sprite back to its original position
-//     const originalPosition = icon.animate([
-//       { transform: `translate(${targetX}px, ${targetY}px)` }, // End position of the first animation
-//       { transform: `translate(0, 0)` } // Original position
-//     ], {
-//       duration: 1000,
-//       easing: 'ease-in-out'
-//     });
-//   }, 1000); // 1000 milliseconds (1 second) delay
-// };
-
-
-
-
-
-    //   // Animate the icon's movement
-    //   const animation = icon.animate([
-    //     { transform: `translate(0, 0)` },
-    //     { transform: `translate(${targetX}px, ${targetY}px)` }
-    // ], {
-    //     duration: 1000, // Adjust the duration as needed (in milliseconds)
-    //     easing: 'ease-out'
-    // });
 
 ///
 ///
@@ -960,6 +971,10 @@ function clearBrd() {
   tiles.forEach((tile, i) => {
     tiles[i].className = `tile`
     tiles[i].innerHTML = ``
+    let allSprites = document.querySelectorAll('.sprite')
+    allSprites.forEach(one =>{
+      one.remove()
+    }) 
   })
 }
 
@@ -1045,59 +1060,6 @@ const ending = (parachute) => {
 // UTILITY FUNCTIONS FOR PLAYER PLACEMENT
 ///
 ///
-
-
-
-// FIND QUADRANT OF THE BOARD
-
-// const getQuadrant = (squareNumber) => {
-//   const totalSquares = 224;
-//   const quadrantSize = totalSquares / 4;
-//   const quadrant = Math.floor(squareNumber / quadrantSize);
-
-//   switch (quadrant) {
-//     case 0:
-//       return 1;
-//     case 1:
-//       return 2;
-//     case 2:
-//       return 3;
-//     case 3:
-//       return 4;
-//     default:
-//       return 5;
-//   }
-// }
-        
-
-//  RANDOMLY CHOOSE A NON WALL TILE WITHIN A QUADRANT
-
-const chooseWithinQuadrant = (holeTile) => {
-  const possibleTiles = [-16,-15,-14,-1,0,+1,+14,+15,+16]
-  let offsetSquare
-  for (let i = 0; i < 9; i++){
-    // choose a random number between 0 and 9
-    offsetSquare = possibleTiles[(Math.floor(Math.random()*9))]
-    // if that number doesnt have a wall or a hole, thats where the player will be placed
-    if (!tiles[holeTile + offsetSquare].classList.contains('wall') && !tiles[holeTile + offsetSquare].classList.contains('hole')){
-      return holeTile + offsetSquare
-    }
-    // if the loop didnt escape the function then just place the player at the exit
-  }
-  return 20
-}
-
-// PLACE PLAYER START INCLUSIVE OF POSSIBLY CHOOSING RANDOMLY WITHIN A QUADRANT
-
-const playerStartSquare = (startingLocation) => {
-  if(startingLocation !== 202 && startingLocation !== 20){
-    return chooseWithinQuadrant(startingLocation)
-  } else {
-    return startingLocation
-  }    
-}
-
-
 
           
 ///
@@ -1207,7 +1169,7 @@ window.addEventListener(`keydown`, (event) => {
         mazzy.steps += 1
         stepFx.play()
         stepCnt.innerHTML = mazzy.steps
-        ///if you go to a torch spot
+        ///if you go to a torch spot or whatever
         checkTorch()
         checkLadder()
         checkPlank()
@@ -1237,16 +1199,28 @@ window.addEventListener(`keydown`, (event) => {
 
 
 /// Basic Collission detection
-const collisionDetector = (mazzyRect, objectRect) => {
+const collisionDetector = (objectRect) => {
   if (
-    objectRect.right > mazzyRect.left && 
-    objectRect.left < mazzyRect.right && 
-    objectRect.bottom > mazzyRect.top && 
-    objectRect.top < mazzyRect.bottom  
+    objectRect.right > mazzy.location.left && 
+    objectRect.left < mazzy.location.right && 
+    objectRect.bottom > mazzy.location.top && 
+    objectRect.top < mazzy.location.bottom 
     ) {
       // Collision detected
       console.log('collission!')
-      return true
+      mazzy.life -= 1
+      const lifeInv = document.querySelector('.lf-count')
+      // const lifeInv = document.getElementsByClassName('lf-count')
+      console.log(mazzy.life)
+      lifeInv.innerText = mazzy.life
+      if(mazzy.life >= 1 ) {
+        return true
+      } else if (mazzy.life === 0) {
+        clearBrd()
+        ending(1)
+        curLvl++
+        console.log('aren\'t you dead?')
+      }
     } else {
       // No collision
       console.log('nope')
@@ -1257,6 +1231,32 @@ const collisionDetector = (mazzyRect, objectRect) => {
 
 
 /// SPRITE 1 BEHAVIOR
+
+// animation.onfinish = () => {
+//   // Pause for 1 second before moving back to the original position
+//   setTimeout(() => {
+//     // Animation to move the sprite back to its original position
+//     const originalPosition = icon.animate([
+//       { transform: `translate(${targetX}px, ${targetY}px)` }, // End position of the first animation
+//       { transform: `translate(0, 0)` } // Original position
+//     ], {
+//       duration: 1000,
+//       easing: 'ease-in-out'
+//     });
+//   }, 1000); // 1000 milliseconds (1 second) delay
+// };
+
+
+    //   // Animate the icon's movement
+    //   const animation = icon.animate([
+    //     { transform: `translate(0, 0)` },
+    //     { transform: `translate(${targetX}px, ${targetY}px)` }
+    // ], {
+    //     duration: 1000, // Adjust the duration as needed (in milliseconds)
+    //     easing: 'ease-out'
+    // });
+
+
 const moveSprite = (spriteData) => {
   const sprite1 = document.getElementById('sprite1');
 
@@ -1292,12 +1292,40 @@ const spriteCollission = () => {
     const sprite = document.getElementById('sprite1'); 
     const spriteLocation = sprite.getBoundingClientRect();
 
-    collisionDetector(mazzy.location, spriteLocation)
+    collisionDetector(spriteLocation)
 }
+
 
 ///CHECK FOR COLLISSION WITH SPRITE
 setInterval(spriteCollission ,17)
 
+///
+///
+///
+
+
+
+// FIND QUADRANT OF THE BOARD
+
+// const getQuadrant = (squareNumber) => {
+//   const totalSquares = 224;
+//   const quadrantSize = totalSquares / 4;
+//   const quadrant = Math.floor(squareNumber / quadrantSize);
+
+//   switch (quadrant) {
+//     case 0:
+//       return 1;
+//     case 1:
+//       return 2;
+//     case 2:
+//       return 3;
+//     case 3:
+//       return 4;
+//     default:
+//       return 5;
+//   }
+// }
+        
 
 
 
