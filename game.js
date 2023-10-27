@@ -1278,16 +1278,16 @@ const collisionDetector = (objectRect) => {
 // check if a tile is unoccupied
 const isUnoccupied = (tile) => {
     if(
-      !tile.classList.contains('wall') &&
-      !tile.classList.contains('hole') &&
-      !tile.classList.contains('coin') &&
-      !tile.classList.contains('plank') &&
-      !tile.classList.contains('ladder') &&
-      !tile.classList.contains('torch') &&
-      !tile.classList.contains('player') &&
-      !tile.classList.contains('para') &&
-      !tile.classList.contains('exit') &&
-      !tile.classList.contains('ent')
+      !tiles[tile].classList.contains('wall') &&
+      !tiles[tile].classList.contains('hole') &&
+      !tiles[tile].classList.contains('coin') &&
+      !tiles[tile].classList.contains('plank') &&
+      !tiles[tile].classList.contains('ladder') &&
+      !tiles[tile].classList.contains('torch') &&
+      !tiles[tile].classList.contains('player') &&
+      !tiles[tile].classList.contains('para') &&
+      !tiles[tile].classList.contains('exit') &&
+      !tiles[tile].classList.contains('ent')
     ) {
       return true
     } else {
@@ -1367,6 +1367,7 @@ const spriteCollission = () => {
 
 
 const spikeBehavior = () => {
+
   let possibleSpikeLoc
   for (const tile in tiles) {
     possibleSpikeLoc = (Math.floor(Math.random()*210))
@@ -1380,8 +1381,19 @@ const spikeBehavior = () => {
   }
 }
 
-const placeSpike = () => {
-  tiles[possibleSpikeLoc].classList.add('spike')
+const placeSpike = (spikeLoc) => {
+  console.log('spike!', spikeLoc)
+  tiles[spikeLoc].classList.add('spike')
+  setTimeout(() => {
+    tiles[spikeLoc].classList.add('spikeHit')
+  }, 1000);
+  setTimeout(() => {
+    tiles[spikeLoc].classList.remove('spikeHit')
+    tiles[spikeLoc].classList.remove('spike')
+  }, 1800);
+  setTimeout(() => {
+    tiles[spikeLoc].classList.remove('spike')
+  }, 1400);
 }
 
 
@@ -1398,9 +1410,9 @@ const spikeCollission = () => {
 setInterval(spriteCollission ,17)
 
 //check for collission with spike
-setInterval(spikeCollission ,17)
+// setInterval(spikeCollission ,17)
 
-
+setInterval(spikeBehavior, 6000)
 
 
             ///                                          ///
