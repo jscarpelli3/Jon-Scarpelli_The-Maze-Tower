@@ -86,7 +86,7 @@ let allLevels = [
       222, 223, 224, 17, 19, 34, 35, 36, 37, 38, 39, 40, 41, 42, 47, 49, 62, 64,
       65, 66, 68, 69, 70, 71, 72, 73, 77, 79, 92, 94, 95, 96, 97, 98, 99, 100,
       107, 109, 117, 122, 124, 126, 128, 129, 130, 131, 132, 137, 139, 143, 147,
-      152, 154, 155, 156, 157, 158, 162, 167, 177, 182, 183, 184, 185, 186, 187,
+      152, 154, 155, 156, 157, 158, 162, 167, 177, 183, 184, 185, 186, 187,
       188, 189, 190, 192
     ],
     torches: [140, 208, 108],
@@ -99,12 +99,12 @@ let allLevels = [
               s1X: '48', 
               s1Y: '96',
               e1X: '0',
-              e1Y: '348',
+              e1Y: '520',
               s2X: '4',
               s2Y: '4',
               e2X: '4',
               e2Y: '4',
-              time: 60000
+              time: 4557
             },
     exit: 5,
     darkTime: 60000
@@ -1310,7 +1310,7 @@ const moveSprite = (spriteData) => {
     {transform: `translate(0, 0)`},
     {transform: `translate(${spriteData.e1X}px, ${spriteData.e1Y}px)`}
   ], {
-    duration: 4000,
+    duration: spriteData.time,
     easing: 'ease-out'
   })
 
@@ -1319,7 +1319,7 @@ const moveSprite = (spriteData) => {
       {transform: `translate(${spriteData.e1X}px, ${spriteData.e1Y}px)`},
       {transform: `translate(0, 0)`}
     ],{
-      duration: 4000,
+      duration: spriteData.time,
       easing: 'ease-out'
     })
     s1Return.onfinish = () => {
