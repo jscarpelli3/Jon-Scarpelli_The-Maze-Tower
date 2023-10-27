@@ -6,9 +6,13 @@ const torchfx = new Audio(`sound/fire.mp3`)
 const coinfx = new Audio(`sound/pickup2.mp3`)
 const winfx = new Audio(`sound/win.mp3`)
 const fallfx = new Audio(`sound/fall1.mp3`)
+const fallFloorfx = new Audio(`sound/fallFloor.mp3`)
 const getFx = new Audio(`sound/pickup.mp3`)
-const collissionFx1 = new Audio('sound/playerhit-43108.mp3')
-collissionFx1.volume = .2
+const collissionFx1 = new Audio('sound/spriteHit.mp3')
+      collissionFx1.volume = .2
+const spikeReady = new Audio('sound/spikeReady.mp3')
+const spikeHit = new Audio('sound/spikeHit.mp3')
+      spikeHit.volume = .5
 const exitfx = new Audio(`sound/level.mp3`)
 const endSong = new Audio(`sound/ending.mp3`)
 const paraGet = new Audio(`sound/para1.mp3`)
@@ -106,6 +110,7 @@ let allLevels = [
               e2Y: '4',
               time: 4557
             },
+    spike: true,
     exit: 5,
     darkTime: 60000
   },
@@ -1188,6 +1193,7 @@ window.addEventListener(`keydown`, (event) => {
               curLvl--
               let holeLocationId = tiles[lookAhead].getAttribute('id')
               let holeParsedId = parseInt(holeLocationId.substring(1))
+              fallFloorfx.play()
               rexit(start=holeParsedId)
             } else {
             clearBrd()
@@ -1367,12 +1373,12 @@ const spriteCollission = () => {
 
 
 const spikeBehavior = () => {
-
   let possibleSpikeLoc
   for (const tile in tiles) {
     possibleSpikeLoc = (Math.floor(Math.random()*210))
     if (isUnoccupied(possibleSpikeLoc)) {
-      placeSpike(possibleSpikeLoc)
+      spikeReady.play()
+      spikeAttack(possibleSpikeLoc)
       break;
     } else {
       continue;
@@ -1381,26 +1387,48 @@ const spikeBehavior = () => {
   }
 }
 
-const placeSpike = (spikeLoc) => {
-  console.log('spike!', spikeLoc)
-  tiles[spikeLoc].classList.add('spike')
+const spikeAttack = (spikeLoc) => {
+  console.log('spike attack!')
+  let spikeTile = document.createElement(`img`)
+  spikeTile.src='pics/spike-export3.gif'
+  spikeTile.id='spike'
+  tiles[spikeLoc].appendChild(spikeTile)
+  spikeHitStart(spikeLoc)
+}
+
+const spikeHitStart = (locat) => {
   setTimeout(() => {
-    tiles[spikeLoc].classList.add('spikeHit')
-  }, 1000);
+    spikeHit.play()
+    tiles[locat].classList.add('spikeHit')
+    spikeHitEnd(locat)
+  }, 1900);
+}
+
+const spikeHitEnd = (loca) => {
   setTimeout(() => {
-    tiles[spikeLoc].classList.remove('spikeHit')
-    tiles[spikeLoc].classList.remove('spike')
-  }, 1800);
-  setTimeout(() => {
-    tiles[spikeLoc].classList.remove('spike')
+    fallFloorfx.play()
+    tiles[loca].classList.remove('spikeHit')
+    spikeAttackEnd(loca)
   }, 1400);
 }
 
-
+const spikeAttackEnd = (loc) => {
+  setTimeout(() => {
+    const spike = document.getElementById('spike')
+    tiles[loc].removeChild(spike)
+  }, 500);
+  
+}
 
 const spikeCollission = () => {
   console.log('collided with spike')
 }
+
+//start the spike if its in the level
+if (allLevels[curLvl].spike){
+  setInterval(spikeBehavior, 7000)
+}
+
 
                       ///                         ///
                       /// INITIATE all DETECTIONS /// 
@@ -1409,10 +1437,10 @@ const spikeCollission = () => {
 //CHECK FOR COLLISSION WITH SPRITE
 setInterval(spriteCollission ,17)
 
-//check for collission with spike
-// setInterval(spikeCollission ,17)
+// check for collission with spike
+setInterval(spikeCollission ,17)
 
-setInterval(spikeBehavior, 6000)
+
 
 
             ///                                          ///
