@@ -36,9 +36,12 @@ const outWalls = [
   134, 149, 164, 179, 194, 209, 211, 212, 213, 214, 215, 216, 217, 218, 219,
   220, 221, 222, 223, 224
 ]
-///variables to hold timers
+///variables to hold timers & intervals
 let torchTimeoutID
 let pauseDarkID
+let spriteCollissionID
+let spikeBehaviorID
+let spikeCollissionID
 ///
 
 let curLvl = 0
@@ -315,6 +318,9 @@ const rsetBoard = (lvl, start) => {
   plankLoc.length = 0
   coinLoc.length = 0
   clearTimeout(pauseDarkID)
+  clearInterval(spriteCollissionID)
+  clearInterval(spikeCollissionID)
+  clearInterval(spikeBehaviorID)
   // start ? playerLoc = 202 : playerLoc = 20
 
   
@@ -989,7 +995,6 @@ const rexit = (start) => {
     curLvl = 1
   }
   if (curLvl === allLevels.length) {
-    clearTimeout()
     curLvl++
     clearBrd()
     ending('win')
@@ -1029,6 +1034,9 @@ const ending = (endType) => {
   if (torchTimeoutID) {
     clearTimeout(torchTimeoutID)
   }
+  clearInterval(spriteCollissionID)
+  clearInterval(spikeCollissionID)
+  clearInterval(spikeBehaviorID)
   let gameBrd = document.querySelector(`.game`)
   document.body.style.backgroundImage = 'url(pics/darktower.gif)'
   gameBrd.style.backgroundImage = 'url()'
@@ -1280,7 +1288,7 @@ const collisionDetector = (objectRect, withWhat) => {
       lifeInv.innerText = mazzy.life
       if(mazzy.life >= 1 ) {
         return true
-      } else if (mazzy.life === 0) {
+      } else if (mazzy.life <= 0) {
         clearBrd()
         ending(withWhat)
         curLvl++
@@ -1315,33 +1323,9 @@ const isUnoccupied = (tile) => {
 
 
 
-// SPRITE 1 BEHAVIOR
+/// SPRITE 1 BEHAVIOR
 
-// animation.onfinish = () => {
-//   // Pause for 1 second before moving back to the original position
-//   setTimeout(() => {
-//     // Animation to move the sprite back to its original position
-//     const originalPosition = icon.animate([
-//       { transform: `translate(${targetX}px, ${targetY}px)` }, // End position of the first animation
-//       { transform: `translate(0, 0)` } // Original position
-//     ], {
-//       duration: 1000,
-//       easing: 'ease-in-out'
-//     });
-//   }, 1000); // 1000 milliseconds (1 second) delay
-// };
-
-
-    //   // Animate the icon's movement
-    //   const animation = icon.animate([
-    //     { transform: `translate(0, 0)` },
-    //     { transform: `translate(${targetX}px, ${targetY}px)` }
-    // ], {
-    //     duration: 1000, // Adjust the duration as needed (in milliseconds)
-    //     easing: 'ease-out'
-    // });
-
-///sprite movement
+//sprite movement
 const moveSprite = (spriteData) => {
   const sprite1 = document.getElementById('sprite1');
 
@@ -1402,8 +1386,7 @@ const spikeBehavior = () => {
 let spikeOn = false
 
 const spikeAttack = (spikeLoc) => {
-  console.log('spike attack!')
-  spikeOn = true
+  console.log('spike attack!', spikeOn)
   let spikeTile = document.createElement(`img`)
   spikeTile.src='pics/spike-export3.gif'
   spikeTile.id='spike'
@@ -1413,6 +1396,7 @@ const spikeAttack = (spikeLoc) => {
 
 const spikeHitStart = (locat) => {
   setTimeout(() => {
+    spikeOn = true
     spikeHit.play()
     tiles[locat].classList.add('spikeHit')
     spikeHitEnd(locat)
@@ -1423,6 +1407,7 @@ const spikeHitEnd = (loca) => {
   setTimeout(() => {
     fallFloorfx.play()
     tiles[loca].classList.remove('spikeHit')
+    spikeOn = false
     spikeAttackEnd(loca)
   }, 1400);
 }
@@ -1431,13 +1416,18 @@ const spikeAttackEnd = (loc) => {
   setTimeout(() => {
     const spike = document.getElementById('spike')
     tiles[loc].removeChild(spike)
-    spikeOn = true
   }, 500);
   
 }
 
-// Collission With Spike
+// Collission With Spike:
+//
+// Since the spike appears and disappears, the collission detection is triggered every 17ms BUT first checks 
+// for "spikeOn" so it's only going to go ahead and get the rectangles if that is true
+// "spikeOn" is flipped during the spike behavior sequence above. it's also declared just above that sequence. 
+
 const spikeCollission = () => {
+  if (spikeOn){
   //get the player element
   const player = document.getElementById('mazzy'); 
   //set the player element location data to the mazzy object/player class
@@ -1447,28 +1437,31 @@ const spikeCollission = () => {
   const spikeLocation = spike.getBoundingClientRect();
 
   collisionDetector(spikeLocation, 'spike')
+  } 
 }
 
 //start the spike if its in the level
-if (allLevels[curLvl].spike){
-  setInterval(spikeBehavior, 7000)
-}
+
 
 
                       ///                         ///
                       /// INITIATE all DETECTIONS /// 
                       ///                         ///
 
-//CHECK FOR COLLISSION WITH SPRITE
-setInterval(spriteCollission, 17)
+                      ///intervalIDs at the top
 
-// check for collission with spike
-
-if (spikeOn){
-setInterval(spikeCollission, 17)
-} else {
-  console.log('no spike')
+const initiateEnemiesandCollisions = () => {
+  //check for collission with sprite
+  spriteCollissionID = setInterval(spriteCollission, 17)
+  
+  if (allLevels[curLvl].spike){
+    spikeBehaviorID = setInterval(spikeBehavior, 7000)
+    // check for collission with spike
+    spikeCollissionID = setInterval(spikeCollission, 17)
+  }
 }
+
+initiateEnemiesandCollisions()
 
 
 
