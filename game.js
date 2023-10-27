@@ -7,6 +7,8 @@ const coinfx = new Audio(`sound/pickup2.mp3`)
 const winfx = new Audio(`sound/win.mp3`)
 const fallfx = new Audio(`sound/fall1.mp3`)
 const getFx = new Audio(`sound/pickup.mp3`)
+const collissionFx1 = new Audio('sound/playerhit-43108.mp3')
+collissionFx1.volume = .2
 const exitfx = new Audio(`sound/level.mp3`)
 const endSong = new Audio(`sound/ending.mp3`)
 const paraGet = new Audio(`sound/para1.mp3`)
@@ -32,7 +34,7 @@ const outWalls = [
 ]
 ///variables to hold timers
 let torchTimeoutID
-let pasueDarkID
+let pauseDarkID
 ///
 
 let curLvl = 0
@@ -194,7 +196,7 @@ let allLevels = [
     planks: [107],
     coins: [106,138,154,166,171],
     exit: 5,
-    darkTime: 100000
+    darkTime: 5500
   }
 ]
 
@@ -226,9 +228,9 @@ const startTorchLight = () => {
   }, 4500)
 }
 
-const startPauseDark = () => {
-  pasueDarkID = setTimeout(function(){
-
+const startPauseDark = (pausingDark) => {
+  pauseDarkID = setTimeout(function(){
+    pausingDark()
   }, allLevels[curLvl].darkTime)
 }
 
@@ -307,7 +309,7 @@ const rsetBoard = (lvl, start) => {
   ladderLoc.length = 0
   plankLoc.length = 0
   coinLoc.length = 0
-  
+  clearTimeout(pauseDarkID)
   // start ? playerLoc = 202 : playerLoc = 20
 
   
@@ -338,10 +340,10 @@ const rsetBoard = (lvl, start) => {
     makeDark()
     makeLight()
   }
-  setTimeout(() => {
-    pauseDark()
-  }, allLevels[curLvl].darkTime)
-
+  // setTimeout(() => {
+  //   pauseDark()
+  // }, allLevels[curLvl].darkTime)
+  startPauseDark(pauseDark)
   if (curLvlName === `"Uh Oh, it's dark"`) {
     tiles[paraLoc].classList.add(`para`)
   }
@@ -1017,6 +1019,11 @@ const playEndSong = () => {
 }
 
 const ending = (endType) => {
+  console.log('this is the end')
+  clearTimeout(pauseDarkID)
+  if (torchTimeoutID) {
+    clearTimeout(torchTimeoutID)
+  }
   let gameBrd = document.querySelector(`.game`)
   document.body.style.backgroundImage = 'url(pics/darktower.gif)'
   gameBrd.style.backgroundImage = 'url()'
@@ -1044,7 +1051,7 @@ const ending = (endType) => {
     endP.append(endGood)
     winfx.play()
     setTimeout(playEndSong(), 2000)
-  } else if (endType === 'win' && parachute === false) {
+  } else if (endType === 'win' && mazzy.hasParachute === false) {
     resultH1.innerText = `Oh No!`
     const endBad =
       document.createTextNode(`Mazzy has reached the top of The Maze Tower!  He looks out over the landscape from the top of the massive 
@@ -1248,6 +1255,7 @@ const collisionDetector = (objectRect) => {
       // Collision detected
       console.log('collission!')
       mazzy.life -= 1
+      collissionFx1.play()
       const lifeInv = document.querySelector('.lf-count')
       // const lifeInv = document.getElementsByClassName('lf-count')
       console.log(mazzy.life)

@@ -225,8 +225,8 @@ div.game {
   width: 432px;
   color: rgb(0, 0, 0);
   text-align: center;
-  background-color: rgba(120, 120, 120, 0.446);
-  border: 1px solid white;
+  background-color: rgba(162, 162, 162, 0.841);
+  border: 1px solid rgb(251, 240, 223);
   display: grid;
   grid-template-rows: 10% 50% 20% 20%;
   grid-template-columns: 5% 90% 5%;
