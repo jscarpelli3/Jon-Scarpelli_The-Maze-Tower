@@ -614,7 +614,7 @@ const placeSprite = (spriteData) => {
   const gameBoard = document.getElementById('game-board');
   const sprite = document.createElement('img')
   sprite.classList.add('sprite')
-  sprite.setAttribute('src', 'pics/sprite.png')
+  sprite.setAttribute('src', 'pics/Sprite.gif')
   sprite.setAttribute('id', 'sprite1')
   gameBoard.appendChild(sprite)
 }
@@ -1101,30 +1101,30 @@ const ending = (endType) => {
 }
 
 
-///
-///
-// UTILITY FUNCTIONS FOR PLAYER PLACEMENT
-///
-///
+
 
           
-///
-///
-///Starting Game
- ///
- ///
+                        ///                     ///
+                        ///                     ///
+                        ///    START THE GAME   ///
+                        ///                     ///
+                        ///                     ///
           
 const mazzy = new Character(`Mazzy`, 0, 0)
 addUserLevels()
 curLvl++
 rexit(start=202)
 
-///
-///
-///GAMEPLAY
-///Moving around
-///
-///
+
+
+
+                        ///                     ///
+                        ///                     ///
+                        /// GAMEPLAY & MOVEMENT ///
+                        ///                     ///
+                        ///                     ///
+
+
 window.addEventListener(`keydown`, (event) => {
   if (mazzy.steps === 0) {
     backgroundMusic.play()
@@ -1237,14 +1237,14 @@ window.addEventListener(`keydown`, (event) => {
 
 
 
-///
-///
-/// BEHAVIORS AND REALTIME FUNCTIONALITY
-///
-///
+              ///                                           ///
+              ///                                           ///
+              /// UTILITIES, BEHAVIORS & REALTIME FUNCTIONS ///
+              ///                                           ///
+              ///                                           ///
 
 
-/// Basic Collission detection
+// Basic Collission detection
 const collisionDetector = (objectRect) => {
   if (
     objectRect.right > mazzy.location.left && 
@@ -1275,8 +1275,29 @@ const collisionDetector = (objectRect) => {
   }
 
 
+// check if a tile is unoccupied
+const isUnoccupied = (tile) => {
+    if(
+      !tile.classList.contains('wall') &&
+      !tile.classList.contains('hole') &&
+      !tile.classList.contains('coin') &&
+      !tile.classList.contains('plank') &&
+      !tile.classList.contains('ladder') &&
+      !tile.classList.contains('torch') &&
+      !tile.classList.contains('player') &&
+      !tile.classList.contains('para') &&
+      !tile.classList.contains('exit') &&
+      !tile.classList.contains('ent')
+    ) {
+      return true
+    } else {
+      return false
+    }
+}
 
-/// SPRITE 1 BEHAVIOR
+
+
+// SPRITE 1 BEHAVIOR
 
 // animation.onfinish = () => {
 //   // Pause for 1 second before moving back to the original position
@@ -1302,7 +1323,7 @@ const collisionDetector = (objectRect) => {
     //     easing: 'ease-out'
     // });
 
-
+///sprite movement
 const moveSprite = (spriteData) => {
   const sprite1 = document.getElementById('sprite1');
 
@@ -1328,7 +1349,7 @@ const moveSprite = (spriteData) => {
   }
 }
 
-/// Collission With Sprite
+// Collission With Sprite
 const spriteCollission = () => {
     //get the player element
     const player = document.getElementById('mazzy'); 
@@ -1341,51 +1362,53 @@ const spriteCollission = () => {
     collisionDetector(spriteLocation)
 }
 
+// spike behavior
 
-///CHECK FOR COLLISSION WITH SPRITE
+
+
+const spikeBehavior = () => {
+  let possibleSpikeLoc
+  for (const tile in tiles) {
+    possibleSpikeLoc = (Math.floor(Math.random()*210))
+    if (isUnoccupied(possibleSpikeLoc)) {
+      placeSpike(possibleSpikeLoc)
+      break;
+    } else {
+      continue;
+    }
+  
+  }
+}
+
+const placeSpike = () => {
+  tiles[possibleSpikeLoc].classList.add('spike')
+}
+
+
+
+const spikeCollission = () => {
+  console.log('collided with spike')
+}
+
+                      ///                         ///
+                      /// INITIATE all DETECTIONS /// 
+                      ///                         ///
+
+//CHECK FOR COLLISSION WITH SPRITE
 setInterval(spriteCollission ,17)
 
-///
-///
-///
-
-
-
-// FIND QUADRANT OF THE BOARD
-
-// const getQuadrant = (squareNumber) => {
-//   const totalSquares = 224;
-//   const quadrantSize = totalSquares / 4;
-//   const quadrant = Math.floor(squareNumber / quadrantSize);
-
-//   switch (quadrant) {
-//     case 0:
-//       return 1;
-//     case 1:
-//       return 2;
-//     case 2:
-//       return 3;
-//     case 3:
-//       return 4;
-//     default:
-//       return 5;
-//   }
-// }
-        
+//check for collission with spike
+setInterval(spikeCollission ,17)
 
 
 
 
-
-///
-/// THINGS TO DO AFTER DOM IS LOADED
-///
+            ///                                          ///
+            /// THINGS THAT HAVE TO WAIT FOR DOM TO LOAD ///
+            ///                                          ///
 
 document.addEventListener('DOMContentLoaded', function() {
   moveSprite(allLevels[curLvl].sprite)
 console.log('DOM Loaded')
 })
 
-///
-///
-///
