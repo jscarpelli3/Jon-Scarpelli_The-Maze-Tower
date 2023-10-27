@@ -1081,6 +1081,14 @@ const ending = (endType) => {
     fallfx.play()
     endDiv.append(resultH1)
     endP.append(endFell)
+  } else if (endType === 'spike') {
+    resultH1.innerText = `You Died!`
+    const endSpike = document.createTextNode(
+      `You got impaled by spikes.  Perhaps you needed pinchers of hell.`
+    )
+    fallfx.play()
+    endDiv.append(resultH1)
+    endP.append(endSpike)
   }
   endDiv.append(endP)
   endUl.innerHTML = `Ending Stats:`
@@ -1251,7 +1259,7 @@ window.addEventListener(`keydown`, (event) => {
 
 
 // Basic Collission detection
-const collisionDetector = (objectRect) => {
+const collisionDetector = (objectRect, withWhat) => {
   if (
     objectRect.right > mazzy.location.left && 
     objectRect.left < mazzy.location.right && 
@@ -1260,7 +1268,11 @@ const collisionDetector = (objectRect) => {
     ) {
       // Collision detected
       console.log('collission!')
-      mazzy.life -= 1
+      if(withWhat === 'sprite') {
+        mazzy.life -= 1
+      } else if (withWhat === 'spike') {
+        mazzy.life -= 100
+      }
       collissionFx1.play()
       const lifeInv = document.querySelector('.lf-count')
       // const lifeInv = document.getElementsByClassName('lf-count')
@@ -1270,7 +1282,7 @@ const collisionDetector = (objectRect) => {
         return true
       } else if (mazzy.life === 0) {
         clearBrd()
-        ending('sprite')
+        ending(withWhat)
         curLvl++
       }
     } else {
@@ -1365,7 +1377,7 @@ const spriteCollission = () => {
     const sprite = document.getElementById('sprite1'); 
     const spriteLocation = sprite.getBoundingClientRect();
 
-    collisionDetector(spriteLocation)
+    collisionDetector(spriteLocation, 'sprite')
 }
 
 // spike behavior
@@ -1387,8 +1399,11 @@ const spikeBehavior = () => {
   }
 }
 
+let spikeOn = false
+
 const spikeAttack = (spikeLoc) => {
   console.log('spike attack!')
+  spikeOn = true
   let spikeTile = document.createElement(`img`)
   spikeTile.src='pics/spike-export3.gif'
   spikeTile.id='spike'
@@ -1416,12 +1431,22 @@ const spikeAttackEnd = (loc) => {
   setTimeout(() => {
     const spike = document.getElementById('spike')
     tiles[loc].removeChild(spike)
+    spikeOn = true
   }, 500);
   
 }
 
+// Collission With Spike
 const spikeCollission = () => {
-  console.log('collided with spike')
+  //get the player element
+  const player = document.getElementById('mazzy'); 
+  //set the player element location data to the mazzy object/player class
+  mazzy.location = player.getBoundingClientRect();
+    //find sprite rectangle
+  const spike = document.querySelector('.spikeHit'); 
+  const spikeLocation = spike.getBoundingClientRect();
+
+  collisionDetector(spikeLocation, 'spike')
 }
 
 //start the spike if its in the level
@@ -1435,11 +1460,15 @@ if (allLevels[curLvl].spike){
                       ///                         ///
 
 //CHECK FOR COLLISSION WITH SPRITE
-setInterval(spriteCollission ,17)
+setInterval(spriteCollission, 17)
 
 // check for collission with spike
-setInterval(spikeCollission ,17)
 
+if (spikeOn){
+setInterval(spikeCollission, 17)
+} else {
+  console.log('no spike')
+}
 
 
 
