@@ -11,11 +11,15 @@ const getFx = new Audio(`sound/pickup.mp3`)
 const collissionFx1 = new Audio('sound/spriteHit.mp3')
       collissionFx1.volume = .2
 const spikeReady = new Audio('sound/spikeReady.mp3')
+      spikeReady.volume = .6
 const spikeHit = new Audio('sound/spikeHit.mp3')
       spikeHit.volume = .5
 const exitfx = new Audio(`sound/level.mp3`)
+      exitfx.volume = .6
 const endSong = new Audio(`sound/ending.mp3`)
+      endSong.volume = .7
 const paraGet = new Audio(`sound/para1.mp3`)
+      paraGet.volume = .6
 const denyFx = new Audio(`sound/deny.wav`)
 
 /// Global grabs & vars
