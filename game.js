@@ -1261,7 +1261,7 @@ window.addEventListener(`keydown`, (event) => {
 
               ///                                           ///
               ///                                           ///
-              /// UTILITIES, BEHAVIORS & REALTIME FUNCTIONS ///
+              ///       UTILITIES & REALTIME FUNCTIONS      ///
               ///                                           ///
               ///                                           ///
 
@@ -1289,9 +1289,11 @@ const collisionDetector = (objectRect, withWhat) => {
       if(mazzy.life >= 1 ) {
         return true
       } else if (mazzy.life <= 0) {
-        clearBrd()
-        ending(withWhat)
-        curLvl++
+        setTimeout(() => {
+          clearBrd()
+          ending(withWhat)
+          curLvl++
+        }, 3000)
       }
     } else {
       // No collision
@@ -1321,7 +1323,41 @@ const isUnoccupied = (tile) => {
     }
 }
 
+              ///                                           ///
+              ///                                           ///
+              ///                ANIMATION                  ///
+              ///                                           ///
+              ///                                           ///
 
+const animate = (elementString, animationArray, loop, frameRate, frameStart) => {
+  let currentFrame = frameStart
+  let element = document.querySelector(`.${elementString}`)    
+    element.src = animationArray[currentFrame]
+
+    const animate_advanceFrame = () =>{
+      setTimeout(() => {
+        if(currentFrame === animationArray.length-1){
+          frame=0
+          if(currentFrame === frameStart-1){
+            if(loop){
+              currentFrame++
+              animate_advanceFrame()
+            } else {
+              return
+            }
+          } 
+        }
+      }, frameRate)
+    }
+    
+}
+
+
+              ///                                           ///
+              ///                                           ///
+              ///                BEHAVIORS                  ///
+              ///                                           ///
+              ///                                           ///
 
 /// SPRITE 1 BEHAVIOR
 
