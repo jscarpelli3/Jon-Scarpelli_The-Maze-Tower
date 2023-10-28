@@ -1388,7 +1388,7 @@ let spikeOn = false
 const spikeAttack = (spikeLoc) => {
   console.log('spike attack!', spikeOn)
   let spikeTile = document.createElement(`img`)
-  spikeTile.src='pics/spike-export3.gif'
+  spikeTile.src='pics/spike-export2.gif'
   spikeTile.id='spike'
   tiles[spikeLoc].appendChild(spikeTile)
   spikeHitStart(spikeLoc)
