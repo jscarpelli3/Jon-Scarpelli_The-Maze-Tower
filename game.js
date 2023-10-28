@@ -1068,7 +1068,7 @@ const ending = (endType) => {
     resultH1.innerText = `Oh No!`
     const endBad =
       document.createTextNode(`Mazzy has reached the top of The Maze Tower!  He looks out over the landscape from the top of the massive 
-    tower(...well... it's only 2 floors up).  With the giant door to the tower closing behind him... he takes a deep breath. He decides to jump to freedom.... As he falls he 
+    tower.  With the giant door to the tower closing behind him... he takes a deep breath. He decides to jump to freedom.... As he falls he 
     realizes that he has no parachute to aid his fall... he grimmaces. He thinks of how dumb this all was... that he could have just walked out the door at the bottom level.  Then SPLAT!! He dies.`)
     endDiv.append(resultH1)
     endP.append(endBad)
@@ -1349,7 +1349,7 @@ const animate = (elementString, animationArray, loop, frameRate, frameStart) => 
         }
       }, frameRate)
     }
-    
+
 }
 
 
