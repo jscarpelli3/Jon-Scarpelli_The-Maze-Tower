@@ -22,6 +22,76 @@ const paraGet = new Audio(`sound/para1.mp3`)
       paraGet.volume = .6
 const denyFx = new Audio(`sound/deny.wav`)
 
+
+///Animations
+const spikeAnimation =  [
+  {
+    src: 'pics/spike_frames/spike1.png',
+    sfx: spikeReady,
+    frameMult: 2
+  },
+  {
+    src: 'pics/spike_frames/spike2.png',
+    sfx: null,
+    frameMult: 11
+  },
+  {
+    src: 'pics/spike_frames/spike3.png',
+    sfx: null,
+    frameMult: 1
+  },
+  {
+    src: 'pics/spike_frames/spike2.png',
+    sfx: null,
+    frameMult: 1
+  },
+  {
+    src: 'pics/spike_frames/spike3.png',
+    sfx: null,
+    frameMult: 1
+  },
+  {
+    src: 'pics/spike_frames/spike2.png',
+    sfx: null,
+    frameMult: 1
+  },
+  {
+    src: 'pics/spike_frames/spike3.png',
+    sfx: null,
+    frameMult: 1
+  },
+  {
+    src: 'pics/spike_frames/spike2.png',
+    sfx: null,
+    frameMult: 1
+  },
+  {
+    src: 'pics/spike_frames/spike5.png',
+    sfx: spikeHit,
+    frameMult: 10
+  },
+  {
+    src: 'pics/spike_frames/spike6.png',
+    sfx: null,
+    frameMult: 1
+  },
+  {
+    src: 'pics/spike_frames/spike7.png',
+    sfx: fallFloorfx,
+    frameMult: 1
+  },
+  {
+    src: 'pics/spike_frames/spike8.png',
+    sfx: null,
+    frameMult: 1
+  },
+  {
+    src: 'pics/spike_frames/spike1.png',
+    sfx: null,
+    frameMult: 2
+  }
+]
+
 /// Global grabs & vars
 const gamboard = document.querySelector(`.game`)
 const tiles = document.querySelectorAll(`.tile`)
@@ -1333,29 +1403,65 @@ const isUnoccupied = (tile) => {
               ///                                           ///
               ///                                           ///
 
-const animate = (elementString, animationArray, loop, frameRate, frameStart) => {
-  let currentFrame = frameStart
-  let element = document.querySelector(`.${elementString}`)    
-    element.src = animationArray[currentFrame]
 
-    const animate_advanceFrame = () =>{
-      setTimeout(() => {
-        if(currentFrame === animationArray.length-1){
-          frame=0
-          if(currentFrame === frameStart-1){
-            if(loop){
-              currentFrame++
-              animate_advanceFrame()
-            } else {
-              return
-            }
-          } 
-        }
-      }, frameRate)
+              // switch (event.key) {
+              //   case `ArrowUp`:
+              //     tileDifference = -15
+              //     lookAhead = playerLoc + tileDifference
+              //     break
+              //   case `ArrowRight`:
+              //     tileDifference = 1
+              //     lookAhead = playerLoc + tileDifference
+              //     break
+              //   case 'ArrowDown':
+              //     tileDifference = 15
+              //     lookAhead = playerLoc + tileDifference
+              //     break
+              //   case `ArrowLeft`:
+              //     tileDifference = -1
+              //     lookAhead = playerLoc + tileDifference
+              //     break
+              //   case `l`:
+              //     useLadder(lookAhead)
+              //     break
+              //   case `t`:
+              //     useTorch()
+              //     break
+              //   default:
+              //     break
+              // }
+
+
+const animate = (elementRef, animationArray, loop, frameRate) => {
+  let animationOn = true
+  console.log(animationOn, animationArray,elementRef)
+  let currentFrame = 0
+  const animate_advanceFrame = () =>{
+    // let element = document.querySelector(`.${elementString}`)    
+    if (!animationOn) {
+      console.log('Animation stopped');
+      return;
     }
-
-}
-
+    if(animationArray[currentFrame].sfx) {
+      animationArray[currentFrame].sfx.play()
+    }
+    
+    elementRef.src = animationArray[currentFrame].src
+    if(currentFrame === animationArray.length-1){
+      if(loop){
+        currentFrame=0
+      } else {
+        animationOn = false
+        console.log('animation ends')
+      }
+    } else {
+      currentFrame++
+    }   
+    setTimeout(animate_advanceFrame, frameRate * animationArray[currentFrame].frameMult)  
+  }
+  animate_advanceFrame()
+  }
+ 
 
               ///                                           ///
               ///                                           ///
@@ -1408,13 +1514,18 @@ const spriteCollission = () => {
 
 
 
+let spikeOn = false
+
 const spikeBehavior = () => {
   let possibleSpikeLoc
   for (const tile in tiles) {
     possibleSpikeLoc = (Math.floor(Math.random()*210))
     if (isUnoccupied(possibleSpikeLoc)) {
       spikeReady.play()
-      spikeAttack(possibleSpikeLoc)
+        let spikeTile = document.createElement(`img`)
+        tiles[possibleSpikeLoc].appendChild(spikeTile)
+        animate(spikeTile, spikeAnimation, false, 100)
+      // spikeAttack(possibleSpikeLoc)
       break;
     } else {
       continue;
@@ -1422,43 +1533,55 @@ const spikeBehavior = () => {
   
   }
 }
-
-let spikeOn = false
-
-const spikeAttack = (spikeLoc) => {
-  console.log('spike attack!', spikeOn)
-  let spikeTile = document.createElement(`img`)
-  spikeTile.src='pics/spike-export2.gif'
-  spikeTile.id='spike'
-  tiles[spikeLoc].appendChild(spikeTile)
-  spikeHitStart(spikeLoc)
-}
-
-const spikeHitStart = (locat) => {
-  setTimeout(() => {
-    spikeOn = true
-    spikeHit.play()
-    tiles[locat].classList.add('spikeHit')
-    spikeHitEnd(locat)
-  }, 1900);
-}
-
-const spikeHitEnd = (loca) => {
-  setTimeout(() => {
-    fallFloorfx.play()
-    tiles[loca].classList.remove('spikeHit')
-    spikeOn = false
-    spikeAttackEnd(loca)
-  }, 1400);
-}
-
-const spikeAttackEnd = (loc) => {
-  setTimeout(() => {
-    const spike = document.getElementById('spike')
-    tiles[loc].removeChild(spike)
-  }, 500);
+// const spikeBehavior = () => {
+//   let possibleSpikeLoc
+//   for (const tile in tiles) {
+//     possibleSpikeLoc = (Math.floor(Math.random()*210))
+//     if (isUnoccupied(possibleSpikeLoc)) {
+//       spikeReady.play()
+//       spikeAttack(possibleSpikeLoc)
+//       break;
+//     } else {
+//       continue;
+//     }
   
-}
+//   }
+// }
+
+// const spikeAttack = (spikeLoc) => {
+//   console.log('spike attack!', spikeOn)
+//   let spikeTile = document.createElement(`img`)
+//   spikeTile.src='pics/spike-export2.gif'
+//   spikeTile.id='spike'
+//   tiles[spikeLoc].appendChild(spikeTile)
+//   spikeHitStart(spikeLoc)
+// }
+
+// const spikeHitStart = (locat) => {
+//   setTimeout(() => {
+//     spikeOn = true
+//     spikeHit.play()
+//     tiles[locat].classList.add('spikeHit')
+//     spikeHitEnd(locat)
+//   }, 1900);
+// }
+
+// const spikeHitEnd = (loca) => {
+//   setTimeout(() => {
+//     fallFloorfx.play()
+//     tiles[loca].classList.remove('spikeHit')
+//     spikeOn = false
+//     spikeAttackEnd(loca)
+//   }, 1400);
+// }
+
+// const spikeAttackEnd = (loc) => {
+//   setTimeout(() => {
+//     const spike = document.getElementById('spike')
+//     tiles[loc].removeChild(spike)
+//   }, 500);
+  
+// }
 
 // Collission With Spike:
 //
@@ -1495,7 +1618,7 @@ const initiateEnemiesandCollisions = () => {
   spriteCollissionID = setInterval(spriteCollission, 17)
   
   if (allLevels[curLvl].spike){
-    spikeBehaviorID = setInterval(spikeBehavior, 7000)
+    spikeBehaviorID = setInterval(spikeBehavior, 3000)
     // check for collission with spike
     spikeCollissionID = setInterval(spikeCollission, 17)
   }
