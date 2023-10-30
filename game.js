@@ -63,7 +63,7 @@ const spikeAnimation = [
     src: "pics/spike_frames/spike2.png",
     sfx: null,
     frameMult: 1,
-    addClass: "spriteHit",
+    addClass: "spikeHit",
   },
   {
     src: "pics/spike_frames/spike5.png",
@@ -84,13 +84,19 @@ const spikeAnimation = [
     src: "pics/spike_frames/spike8.png",
     sfx: null,
     frameMult: 1,
-    removeClass: "spriteHit",
+    removeClass: "spikeHit",
   },
   {
     src: "pics/spike_frames/spike1.png",
     sfx: null,
     frameMult: 2,
-    removeElement: true,
+    function_A: () =>{
+      console.log('eh?')
+      const specificSpike = document.getElementById("spike");
+      specificSpike.remove()
+      spikeOn=false
+      clearTimeout(spikeCollissionID)
+    }
   },
 ];
 
@@ -1080,7 +1086,6 @@ const playEndSong = () => {
 };
 
 const ending = (endType) => {
-  console.log("this is the end");
   clearTimeout(pauseDarkID);
   if (torchTimeoutID) {
     clearTimeout(torchTimeoutID);
@@ -1330,11 +1335,10 @@ const collisionDetector = (objectRect, withWhat) => {
       mazzy.life -= 1;
     } else if (withWhat === "spike") {
       mazzy.life -= 100;
+      
     }
     collissionFx1.play();
     const lifeInv = document.querySelector(".lf-count");
-    // const lifeInv = document.getElementsByClassName('lf-count')
-    // console.log(mazzy.life)
     lifeInv.innerText = mazzy.life;
     if (mazzy.life >= 1) {
       return true;
@@ -1343,11 +1347,11 @@ const collisionDetector = (objectRect, withWhat) => {
         clearBrd();
         ending(withWhat);
         curLvl++;
-      }, 3000);
+      }, 1000);
     }
   } else {
     // No collision
-    // console.log('nope')
+    console.log('nope')
     return false;
   }
 };
@@ -1374,7 +1378,7 @@ const isUnoccupied = (tile) => {
 
 ///                                           ///
 ///                                           ///
-///                ANIMATION                  ///
+///            ANIMATION ENGINE               ///
 ///                                           ///
 ///                                           ///
 
@@ -1385,15 +1389,15 @@ const animate = (elementRef, animationArray, loop, frameRate) => {
   const animate_advanceFrame = () => {
     // let element = document.querySelector(`.${elementString}`)
     if (animationArray[currentFrame].addClass) {
-      elementRef.classList.remove(animationArray[currentFrame].addClass);
+      elementRef.classList.add(animationArray[currentFrame].addClass);
     }
     if (animationArray[currentFrame].removeClass) {
       elementRef.classList.remove(animationArray[currentFrame].removeClass);
     }
     if (!animationOn) {
       console.log(animationOn, "Animation stopped");
-      if (animationArray[currentFrame].removeElement) {
-        elementRef.remove();
+      if (animationArray[currentFrame].function_A) {
+        animationArray[currentFrame].function_A()
       }
       return;
     }
@@ -1485,67 +1489,27 @@ const spikeBehavior = () => {
   for (const tile in tiles) {
     possibleSpikeLoc = Math.floor(Math.random() * 210);
     if (isUnoccupied(possibleSpikeLoc)) {
-      // spikeReady.play()
       let spikeTile = document.createElement(`img`);
       spikeTile.id = "spike";
+      spikeTile.classList.add('spike')
       tiles[possibleSpikeLoc].appendChild(spikeTile);
       const specificSpike = document.getElementById("spike");
       animate(specificSpike, spikeAnimation, false, 100);
-      // spikeAttack(possibleSpikeLoc)
+      // start check for collission with spike
+      spikeOn=true
+      spikeCollissionID = setInterval(spikeCollission, 17);
       break;
     } else {
       continue;
     }
   }
 };
-// const spikeBehavior = () => {
-//   let possibleSpikeLoc
-//   for (const tile in tiles) {
-//     possibleSpikeLoc = (Math.floor(Math.random()*210))
-//     if (isUnoccupied(possibleSpikeLoc)) {
-//       spikeReady.play()
-//       spikeAttack(possibleSpikeLoc)
-//       break;
-//     } else {
-//       continue;
-//     }
 
-//   }
-// }
-
-// const spikeAttack = (spikeLoc) => {
-//   console.log('spike attack!', spikeOn)
-//   let spikeTile = document.createElement(`img`)
-//   spikeTile.src='pics/spike-export2.gif'
-//   spikeTile.id='spike'
-//   tiles[spikeLoc].appendChild(spikeTile)
-//   spikeHitStart(spikeLoc)
-// }
-
-// const spikeHitStart = (locat) => {
-//   setTimeout(() => {
-//     spikeOn = true
-//     spikeHit.play()
-//     tiles[locat].classList.add('spikeHit')
-//     spikeHitEnd(locat)
-//   }, 1900);
-// }
-
-// const spikeHitEnd = (loca) => {
-//   setTimeout(() => {
-//     fallFloorfx.play()
-//     tiles[loca].classList.remove('spikeHit')
-//     spikeOn = false
-//     spikeAttackEnd(loca)
-//   }, 1400);
-// }
-
-// const spikeAttackEnd = (loc) => {
-//   setTimeout(() => {
-//     const spike = document.getElementById('spike')
-//     tiles[loc].removeChild(spike)
-//   }, 500);
-
+// const spikeClear= () =>{
+//   const specificSpike = document.getElementById("spike");
+//   specificSpike.remove()
+//   spikeOn=false
+//   clearTimeout(spikeCollissionID)
 // }
 
 // Collission With Spike:
@@ -1555,6 +1519,7 @@ const spikeBehavior = () => {
 // "spikeOn" is flipped during the spike behavior sequence above. it's also declared just above that sequence.
 
 const spikeCollission = () => {
+  console.log('am i checking?')
   if (spikeOn) {
     //get the player element
     const player = document.getElementById("mazzy");
@@ -1563,18 +1528,20 @@ const spikeCollission = () => {
     //find sprite rectangle
     const spike = document.querySelector(".spikeHit");
     const spikeLocation = spike.getBoundingClientRect();
-
+    
     collisionDetector(spikeLocation, "spike");
   }
 };
 
-//start the spike if its in the level
 
 ///                         ///
 /// INITIATE all DETECTIONS ///
 ///                         ///
 
-///intervalIDs at the top
+
+///intervalIDs initiated at the top
+//start the spike if its in the level
+//start the sprite if its there
 
 const initiateEnemiesandCollisions = () => {
   //check for collission with sprite
@@ -1583,18 +1550,16 @@ const initiateEnemiesandCollisions = () => {
   }
   if (allLevels[curLvl].spike) {
     spikeBehaviorID = setInterval(spikeBehavior, 7000);
-    // check for collission with spike
-    spikeCollissionID = setInterval(spikeCollission, 17);
   }
 };
 
-initiateEnemiesandCollisions();
 
 ///                                          ///
 /// THINGS THAT HAVE TO WAIT FOR DOM TO LOAD ///
 ///                                          ///
 
 document.addEventListener("DOMContentLoaded", function () {
+  initiateEnemiesandCollisions();
   moveSprite(allLevels[curLvl].sprite);
   console.log("DOM Loaded");
 });
