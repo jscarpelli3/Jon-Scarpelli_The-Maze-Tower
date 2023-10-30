@@ -112,6 +112,7 @@ const outWalls = [
   134, 149, 164, 179, 194, 209, 211, 212, 213, 214, 215, 216, 217, 218, 219,
   220, 221, 222, 223, 224,
 ];
+
 ///variables to hold timers & intervals
 let torchTimeoutID;
 let pauseDarkID;
@@ -120,6 +121,8 @@ let spikeBehaviorID;
 let spikeCollissionID;
 ///
 
+//mazzy
+let mazzySprite 
 let curLvl = 0;
 let curLvlName = "";
 let playerLoc = 202;
@@ -339,12 +342,11 @@ const addUserLevels = () => {
   }
 };
 
-///
-/// Player Placement logic
-///
+                  ///
+                  /// Player Placement logic
+                  ///
 
 // PLACE PLAYER START INCLUSIVE OF POSSIBLY CHOOSING RANDOMLY WITHIN A 6 tile space
-
 const playerStartSquare = (startingLocation) => {
   if (startingLocation !== 202 && startingLocation !== 20) {
     return chooseWithinQuadrant(startingLocation);
@@ -354,7 +356,6 @@ const playerStartSquare = (startingLocation) => {
 };
 
 //  RANDOMLY CHOOSE A NON WALL TILE WITHIN A 9 tile area
-
 const chooseWithinQuadrant = (holeTile) => {
   const possibleTiles = [-16, -15, -14, -1, 0, +1, +14, +15, +16];
   let offsetSquare;
@@ -376,6 +377,8 @@ const chooseWithinQuadrant = (holeTile) => {
 ///
 ///
 ///
+
+
 
 const rsetBoard = (lvl, start) => {
   walls.length = 0;
@@ -429,11 +432,11 @@ const rsetBoard = (lvl, start) => {
   levelDsp.innerText = allLevels[curLvl].name;
 };
 
-///
-///
-///Place Everything
-///
-///
+                    ///                  /// 
+                    ///                  ///
+                    /// Place Everything ///
+                    ///                  /// 
+                    ///                  ///
 
 ///place walls
 const placeWalls = (levelWalls) => {
@@ -661,7 +664,12 @@ const placeItems = (ldrs, trchs, exit, holes, planks, cns) => {
 
 const placePlayer = () => {
   tiles[playerLoc].classList.add(`player`);
-  tiles[playerLoc].innerHTML = `<img id="mazzy" src=pics/mazzy.png>`;
+  tiles[playerLoc].appendChild(mazzySprite)
+  // tiles[playerLoc].innerHTML = `<img id="mazzy" src=pics/mazzy.png>`;
+  // const createdMazzy = document.createElement('img')
+  // createdMazzy.src='pics/mazzy.png'
+  // createdMazzy.id='mazzy'
+  // mazzySprite = createdMazzy
   if ((playerLoc !== 20) & (playerLoc !== 202)) {
     fallfx.play();
   }
@@ -1164,22 +1172,28 @@ const ending = (endType) => {
   });
 };
 
-///                     ///
-///                     ///
-///    START THE GAME   ///
-///                     ///
-///                     ///
+                                  ///                     ///
+                                  ///                     ///
+                                  ///    START THE GAME   ///
+                                  ///                     ///
+                                  ///                     ///
 
 const mazzy = new Character(`Mazzy`, 0, 0);
+//create mazzySprite
+const createdMazzy = document.createElement('img')
+createdMazzy.src='pics/mazzy.png'
+createdMazzy.id='mazzy'
+mazzySprite = createdMazzy
 addUserLevels();
 curLvl++;
 rexit((start = 202));
 
-///                     ///
-///                     ///
-/// GAMEPLAY & MOVEMENT ///
-///                     ///
-///                     ///
+
+                                    ///                     ///
+                                    ///                     ///
+                                    /// GAMEPLAY & MOVEMENT ///
+                                    ///                     ///
+                                    ///                     ///
 
 window.addEventListener(`keydown`, (event) => {
   if (mazzy.steps === 0) {
@@ -1258,15 +1272,19 @@ window.addEventListener(`keydown`, (event) => {
         ///removing player from current location
         tiles[playerLoc].classList.remove("player");
         // tiles[playerLoc].innerHTML = ``
-        const mazzyElement = tiles[playerLoc].querySelector("#mazzy");
-        if (mazzyElement) {
-          mazzyElement.remove();
-        }
+        // const mazzyElement = tiles[playerLoc].querySelector("#mazzy");
+        // if (mazzyElement) {
+        //   mazzyElement.remove();
+        // }
         playerLoc += tileDifference;
         ///setting new location
         ///adding player to that new location
 
-        tiles[playerLoc].innerHTML += `<img id="mazzy" src=pics/mazzy.png>`;
+        // tiles[playerLoc].innerHTML += `<img id="mazzy" src=pics/mazzy.png>`;
+        // const newMazzyLoc = document.createElement('img')
+        // newMazzyLoc.id = 'mazzy'
+        // tiles[playerLoc].appendChild(newMazzyLoc)
+        tiles[playerLoc].appendChild(mazzySprite)
         tiles[playerLoc].classList.add(`player`);
 
         mazzy.steps += 1;
