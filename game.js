@@ -1,3 +1,6 @@
+
+
+
 ///declare all audio
 const backgroundMusic = new Audio("sound/nano.mp3");
 const stepFx = new Audio(`sound/step.wav`);
@@ -1495,22 +1498,23 @@ let spikeOn = false;
 
 const spikeBehavior = () => {
   let possibleSpikeLoc;
-  for (const tile in tiles) {
-    possibleSpikeLoc = Math.floor(Math.random() * 210);
-    if (isUnoccupied(possibleSpikeLoc)) {
-      // spikeReady.play()
-      let spikeTile = document.createElement(`img`);
-      spikeTile.id = "spike";
-      tiles[possibleSpikeLoc].appendChild(spikeTile);
-      const specificSpike = document.getElementById("spike");
-      animate(specificSpike, spikeAnimation, false, 100);
-      // spikeAttack(possibleSpikeLoc)
-      break;
-    } else {
-      continue;
-    }
+for (const tile in tiles) {
+  possibleSpikeLoc = Math.floor(Math.random() * 210);
+  if (isUnoccupied(possibleSpikeLoc)) {
+    let spikeTile = document.createElement(`img`);
+    spikeTile.id = "spike";
+    spikeTile.classList.add('spike')
+    tiles[possibleSpikeLoc].appendChild(spikeTile);
+    const specificSpike = document.getElementById("spike");
+    animate(specificSpike, spikeAnimation, false, 100);
+    // start check for collission with spike
+    spikeOn=true
+    spikeCollissionID = setInterval(spikeCollission, 17);
+    break;
+  } else {
+    continue;
   }
-};
+}
 
 // Collission With Spike:
 //
@@ -1563,3 +1567,4 @@ initiateEnemiesandCollisions();
 document.addEventListener("DOMContentLoaded", function () {
   console.log("DOM Loaded");
 });
+
