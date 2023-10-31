@@ -18,12 +18,21 @@ const spikeReady = new Audio("sound/spikeReady.mp3");
 const spikeHit = new Audio("sound/spikeHit.mp3");
   spikeHit.volume = 0.3;
 const exitfx = new Audio(`sound/level.mp3`);
-  exitfx.volume = 0.6;
+exitfx.volume = 0.6;
 const endSong = new Audio(`sound/ending.mp3`);
-  endSong.volume = 0.7;
+endSong.volume = 0.7;
 const paraGet = new Audio(`sound/para1.mp3`);
-  paraGet.volume = 0.6;
+paraGet.volume = 0.6;
 const denyFx = new Audio(`sound/deny.wav`);
+
+///variables to hold timers & intervals
+let torchTimeoutID;
+let pauseDarkID;
+let spriteCollissionID;
+let spikeBehaviorID;
+let spikeCollissionID;
+///
+
 
 ///Important Animations Data
 
@@ -69,7 +78,7 @@ const spikeAnimation = [
     src: "pics/spike_frames/spike2.png",
     sfx: null,
     frameMult: 1,
-    addClass: "spriteHit",
+    addClass: "spikeHit",
   },
   {
     src: "pics/spike_frames/spike5.png",
@@ -89,15 +98,21 @@ const spikeAnimation = [
   {
     src: "pics/spike_frames/spike8.png",
     sfx: null,
-    frameMult: 1,
-    removeClass: "spriteHit",
+    frameMult: 2,
+    removeClass: "spikeHit",
   },
   {
     src: "pics/spike_frames/spike1.png",
     sfx: null,
     frameMult: 2,
-    removeElement: true,
-  },
+    endFunction: (spikeRef) => {
+      ///stop checking for collission
+      clearInterval(spikeCollissionID)
+      ///remove spike from dom
+      spikeRef.remove()
+      spikeOn=false
+      }
+    }
 ];
 
 /// Global grabs & vars
@@ -119,13 +134,6 @@ const outWalls = [
   220, 221, 222, 223, 224,
 ];
 
-///variables to hold timers & intervals
-let torchTimeoutID;
-let pauseDarkID;
-let spriteCollissionID;
-let spikeBehaviorID;
-let spikeCollissionID;
-///
 
 //mazzy
 let mazzySprite 
@@ -1331,11 +1339,13 @@ const collisionDetector = (objectRect, withWhat) => {
   ) {
     // Collision detected
     console.log("collission!");
+
     if (withWhat === "sprite") {
       mazzy.life -= 1;
     } else if (withWhat === "spike") {
       mazzy.life -= 100;
     }
+    console.log(mazzy.life)
     collissionFx1.play();
     const lifeInv = document.querySelector(".lf-count");
     lifeInv.innerText = mazzy.life;
@@ -1347,7 +1357,7 @@ const collisionDetector = (objectRect, withWhat) => {
         clearBrd();
         ending(withWhat);
         curLvl++;
-      }, 3000);
+      }, 1000);
     }
   } else {
     // No collision
@@ -1363,6 +1373,8 @@ const isUnoccupied = (tile) => {
     !tiles[tile].classList.contains("hole") &&
     !tiles[tile].classList.contains("coin") &&
     !tiles[tile].classList.contains("plank") &&
+    !tiles[tile].classList.contains("plk-appplied") &&
+    !tiles[tile].classList.contains("player-plk-appplied") &&
     !tiles[tile].classList.contains("ladder") &&
     !tiles[tile].classList.contains("torch") &&
     !tiles[tile].classList.contains("player") &&
@@ -1385,12 +1397,13 @@ const isUnoccupied = (tile) => {
 
 
 const animate = (elementRef, animationArray, loop, frameRate) => {
+  ///set antimationOn flag and start at frame 0
   let animationOn = true;
-  // console.log(animationOn, animationArray, elementRef);
   let currentFrame = 0;
+  
   const animate_advanceFrame = () => {
     if (animationArray[currentFrame].addClass) {
-      elementRef.classList.remove(animationArray[currentFrame].addClass);
+      elementRef.classList.add(animationArray[currentFrame].addClass);
     }
     if (animationArray[currentFrame].removeClass) {
       elementRef.classList.remove(animationArray[currentFrame].removeClass);
@@ -1417,12 +1430,21 @@ const animate = (elementRef, animationArray, loop, frameRate) => {
     } else {
       currentFrame++;
     }
-    setTimeout(
-      animate_advanceFrame,
-      frameRate * animationArray[currentFrame].frameMult
-    );
-  };
-  animate_advanceFrame();
+  
+    setTimeout(() =>{
+        if(animationOn){
+          animate_advanceFrame()
+        } else {
+          animationArray[currentFrame].endFunction(elementRef)
+        }
+      }, frameRate * animationArray[currentFrame].frameMult);
+    };
+
+  if(animationOn) {
+    animate_advanceFrame();
+  } else {
+    return
+  }
 };
 
 
@@ -1435,13 +1457,15 @@ const animate = (elementRef, animationArray, loop, frameRate) => {
 ///Mazzy Death Animation
 
 const mazzyDie = (withWhat) => {
-  console.log('here is the animation', withWhat)
   if (withWhat === 'spike') {
-    animate(mazzySprite, mazzyDieSpikeAnimation, false, 100);
+    // animate(mazzySprite, mazzyDieSpikeAnimation, false, 100);
+    console.log('here is the animation', withWhat)
   } else if (withWhat === 'sprite'){    
-    animate(mazzySprite, mazzyDieSpriteAnimation, false, 100);
+    // animate(mazzySprite, mazzyDieSpriteAnimation, false, 100);
+    console.log('here is the animation', withWhat)
   } else {
-    animate(mazzySprite, mazzyDieAnimation, false, 100);
+    console.log('here is the animation', withWhat)
+    // animate(mazzySprite, mazzyDieAnimation, false, 100);
   }
 }
 
@@ -1488,7 +1512,6 @@ const spriteCollission = () => {
   //find sprite rectangle
   const sprite = document.getElementById("sprite1");
   const spriteLocation = sprite.getBoundingClientRect();
-
   collisionDetector(spriteLocation, "sprite");
 };
 
@@ -1498,24 +1521,24 @@ let spikeOn = false;
 
 const spikeBehavior = () => {
   let possibleSpikeLoc;
-for (const tile in tiles) {
-  possibleSpikeLoc = Math.floor(Math.random() * 210);
-  if (isUnoccupied(possibleSpikeLoc)) {
-    let spikeTile = document.createElement(`img`);
-    spikeTile.id = "spike";
-    spikeTile.classList.add('spike')
-    tiles[possibleSpikeLoc].appendChild(spikeTile);
-    const specificSpike = document.getElementById("spike");
-    animate(specificSpike, spikeAnimation, false, 100);
-    // start check for collission with spike
-    spikeOn=true
-    spikeCollissionID = setInterval(spikeCollission, 17);
-    break;
-  } else {
-    continue;
+  for (const tile in tiles) {
+    possibleSpikeLoc = Math.floor(Math.random() * 210);
+    if (isUnoccupied(possibleSpikeLoc)) {
+      let spikeTile = document.createElement(`img`);
+      spikeTile.id = "spike";
+      spikeTile.classList.add('spike')
+      tiles[possibleSpikeLoc].appendChild(spikeTile);
+      const specificSpike = document.getElementById("spike");
+      // start check for collission with spike
+      spikeOn=true
+      spikeCollissionID = setInterval(spikeCollission, 17);
+      animate(specificSpike, spikeAnimation, false, 100);
+      break;
+    } else {
+      continue;
+    }
   }
 }
-
 // Collission With Spike:
 //
 // Since the spike appears and disappears, the collission detection is triggered every 17ms BUT first checks
@@ -1523,7 +1546,6 @@ for (const tile in tiles) {
 // "spikeOn" is flipped during the spike behavior sequence above. it's also declared just above that sequence.
 
 const spikeCollission = () => {
-  console.log('Whu')
   if (spikeOn) {
     //get the player element
     const player = document.getElementById("mazzy");
@@ -1531,8 +1553,9 @@ const spikeCollission = () => {
     mazzy.location = player.getBoundingClientRect();
     //find sprite rectangle
     const spike = document.querySelector(".spikeHit");
+    console.log(spike)
     const spikeLocation = spike.getBoundingClientRect();
-
+    
     collisionDetector(spikeLocation, "spike");
   }
 };
@@ -1554,7 +1577,6 @@ const initiateEnemiesandCollisions = () => {
   if (allLevels[curLvl].spike) {
     spikeBehaviorID = setInterval(spikeBehavior, 7000);
     // check for collission with spike
-    spikeCollissionID = setInterval(spikeCollission, 17);
   }
 };
 
