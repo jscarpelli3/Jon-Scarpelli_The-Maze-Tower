@@ -1535,9 +1535,9 @@ const spikeCollission = () => {
 
 //start the spike if its in the level
 
-///                         ///
-/// INITIATE all DETECTIONS ///
-///                         ///
+                  ///                         ///
+                  /// INITIATE all DETECTIONS ///
+                  ///                         ///
 
 ///intervalIDs at the top
 
@@ -1556,9 +1556,9 @@ const initiateEnemiesandCollisions = () => {
 
 initiateEnemiesandCollisions();
 
-///                                          ///
-/// THINGS THAT HAVE TO WAIT FOR DOM TO LOAD ///
-///                                          ///
+                  ///                                          ///
+                  /// THINGS THAT HAVE TO WAIT FOR DOM TO LOAD ///
+                  ///                                          ///
 
 document.addEventListener("DOMContentLoaded", function () {
   console.log("DOM Loaded");
