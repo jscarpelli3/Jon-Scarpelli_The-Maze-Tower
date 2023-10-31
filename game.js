@@ -1339,12 +1339,11 @@ const collisionDetector = (objectRect, withWhat) => {
   ) {
     // Collision detected
     console.log("collission!");
-
-    if (withWhat === "sprite") {
-      mazzy.life -= 1;
-    } else if (withWhat === "spike") {
-      mazzy.life -= 100;
-    }
+      if (withWhat === "sprite") {
+        mazzy.life -= 1;
+      } else if (withWhat === "spike") {
+        mazzy.life -= 100;
+      }
     console.log(mazzy.life)
     collissionFx1.play();
     const lifeInv = document.querySelector(".lf-count");
