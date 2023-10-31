@@ -11,18 +11,21 @@ const getFx = new Audio(`sound/pickup.mp3`);
 const collissionFx1 = new Audio("sound/spriteHit.mp3");
 collissionFx1.volume = 0.2;
 const spikeReady = new Audio("sound/spikeReady.mp3");
-spikeReady.volume = 0.6;
+  spikeReady.volume = 0.6;
 const spikeHit = new Audio("sound/spikeHit.mp3");
-spikeHit.volume = 0.5;
+  spikeHit.volume = 0.3;
 const exitfx = new Audio(`sound/level.mp3`);
-exitfx.volume = 0.6;
+  exitfx.volume = 0.6;
 const endSong = new Audio(`sound/ending.mp3`);
-endSong.volume = 0.7;
+  endSong.volume = 0.7;
 const paraGet = new Audio(`sound/para1.mp3`);
-paraGet.volume = 0.6;
+  paraGet.volume = 0.6;
 const denyFx = new Audio(`sound/deny.wav`);
 
-///Animations
+///Important Animations Data
+
+// import { spikeAnimation } from './animations.js';
+
 const spikeAnimation = [
   {
     src: "pics/spike_frames/spike1.png",
@@ -63,7 +66,7 @@ const spikeAnimation = [
     src: "pics/spike_frames/spike2.png",
     sfx: null,
     frameMult: 1,
-    addClass: "spikeHit",
+    addClass: "spriteHit",
   },
   {
     src: "pics/spike_frames/spike5.png",
@@ -84,19 +87,13 @@ const spikeAnimation = [
     src: "pics/spike_frames/spike8.png",
     sfx: null,
     frameMult: 1,
-    removeClass: "spikeHit",
+    removeClass: "spriteHit",
   },
   {
     src: "pics/spike_frames/spike1.png",
     sfx: null,
     frameMult: 2,
-    function_A: () =>{
-      console.log('eh?')
-      const specificSpike = document.getElementById("spike");
-      specificSpike.remove()
-      spikeOn=false
-      clearTimeout(spikeCollissionID)
-    }
+    removeElement: true,
   },
 ];
 
@@ -1315,11 +1312,11 @@ window.addEventListener(`keydown`, (event) => {
   }
 });
 
-///                                           ///
-///                                           ///
-///       UTILITIES & REALTIME FUNCTIONS      ///
-///                                           ///
-///                                           ///
+                      ///                                           ///
+                      ///                                           ///
+                      ///       UTILITIES & REALTIME FUNCTIONS      ///
+                      ///                                           ///
+                      ///                                           ///
 
 // Basic Collission detection
 const collisionDetector = (objectRect, withWhat) => {
@@ -1335,7 +1332,6 @@ const collisionDetector = (objectRect, withWhat) => {
       mazzy.life -= 1;
     } else if (withWhat === "spike") {
       mazzy.life -= 100;
-      
     }
     collissionFx1.play();
     const lifeInv = document.querySelector(".lf-count");
@@ -1343,11 +1339,12 @@ const collisionDetector = (objectRect, withWhat) => {
     if (mazzy.life >= 1) {
       return true;
     } else if (mazzy.life <= 0) {
+      mazzyDie(withWhat)
       setTimeout(() => {
         clearBrd();
         ending(withWhat);
         curLvl++;
-      }, 1000);
+      }, 3000);
     }
   } else {
     // No collision
@@ -1376,28 +1373,29 @@ const isUnoccupied = (tile) => {
   }
 };
 
-///                                           ///
-///                                           ///
-///            ANIMATION ENGINE               ///
-///                                           ///
-///                                           ///
+                  ///                                           ///
+                  ///                                           ///
+                  ///                ANIMATION                  ///
+                  ///                                           ///
+                  ///                                           ///
+
+
 
 const animate = (elementRef, animationArray, loop, frameRate) => {
   let animationOn = true;
-  console.log(animationOn, animationArray, elementRef);
+  // console.log(animationOn, animationArray, elementRef);
   let currentFrame = 0;
   const animate_advanceFrame = () => {
-    // let element = document.querySelector(`.${elementString}`)
     if (animationArray[currentFrame].addClass) {
-      elementRef.classList.add(animationArray[currentFrame].addClass);
+      elementRef.classList.remove(animationArray[currentFrame].addClass);
     }
     if (animationArray[currentFrame].removeClass) {
       elementRef.classList.remove(animationArray[currentFrame].removeClass);
     }
     if (!animationOn) {
-      console.log(animationOn, "Animation stopped");
-      if (animationArray[currentFrame].function_A) {
-        animationArray[currentFrame].function_A()
+      console.log("Animation stopped");
+      if (animationArray[currentFrame].removeElement) {
+        elementRef.remove();
       }
       return;
     }
@@ -1406,15 +1404,12 @@ const animate = (elementRef, animationArray, loop, frameRate) => {
     }
 
     elementRef.src = animationArray[currentFrame].src;
-    console.log(currentFrame);
-
     if (currentFrame === animationArray.length - 1) {
-      console.log(currentFrame, animationArray.length);
       if (loop) {
         currentFrame = 0;
       } else {
         animationOn = false;
-        console.log("animation ends");
+        console.log("animation turned OFF");
       }
     } else {
       currentFrame++;
@@ -1427,14 +1422,28 @@ const animate = (elementRef, animationArray, loop, frameRate) => {
   animate_advanceFrame();
 };
 
-///                                           ///
-///                                           ///
-///                BEHAVIORS                  ///
-///                                           ///
-///                                           ///
+
+
+                  ///                                           ///
+                  ///                                           ///
+                  ///                BEHAVIORS                  ///
+                  ///                                           ///
+                  ///                                           ///
+///Mazzy Death Animation
+
+const mazzyDie = (withWhat) => {
+  console.log('here is the animation', withWhat)
+  if (withWhat === 'spike') {
+    animate(mazzySprite, mazzyDieSpikeAnimation, false, 100);
+  } else if (withWhat === 'sprite'){    
+    animate(mazzySprite, mazzyDieSpriteAnimation, false, 100);
+  } else {
+    animate(mazzySprite, mazzyDieAnimation, false, 100);
+  }
+}
+
 
 /// SPRITE 1 BEHAVIOR
-
 //sprite movement
 const moveSprite = (spriteData) => {
   const sprite1 = document.getElementById("sprite1");
@@ -1489,28 +1498,19 @@ const spikeBehavior = () => {
   for (const tile in tiles) {
     possibleSpikeLoc = Math.floor(Math.random() * 210);
     if (isUnoccupied(possibleSpikeLoc)) {
+      // spikeReady.play()
       let spikeTile = document.createElement(`img`);
       spikeTile.id = "spike";
-      spikeTile.classList.add('spike')
       tiles[possibleSpikeLoc].appendChild(spikeTile);
       const specificSpike = document.getElementById("spike");
       animate(specificSpike, spikeAnimation, false, 100);
-      // start check for collission with spike
-      spikeOn=true
-      spikeCollissionID = setInterval(spikeCollission, 17);
+      // spikeAttack(possibleSpikeLoc)
       break;
     } else {
       continue;
     }
   }
 };
-
-// const spikeClear= () =>{
-//   const specificSpike = document.getElementById("spike");
-//   specificSpike.remove()
-//   spikeOn=false
-//   clearTimeout(spikeCollissionID)
-// }
 
 // Collission With Spike:
 //
@@ -1519,7 +1519,7 @@ const spikeBehavior = () => {
 // "spikeOn" is flipped during the spike behavior sequence above. it's also declared just above that sequence.
 
 const spikeCollission = () => {
-  console.log('am i checking?')
+  console.log('Whu')
   if (spikeOn) {
     //get the player element
     const player = document.getElementById("mazzy");
@@ -1528,38 +1528,38 @@ const spikeCollission = () => {
     //find sprite rectangle
     const spike = document.querySelector(".spikeHit");
     const spikeLocation = spike.getBoundingClientRect();
-    
+
     collisionDetector(spikeLocation, "spike");
   }
 };
 
+//start the spike if its in the level
 
 ///                         ///
 /// INITIATE all DETECTIONS ///
 ///                         ///
 
-
-///intervalIDs initiated at the top
-//start the spike if its in the level
-//start the sprite if its there
+///intervalIDs at the top
 
 const initiateEnemiesandCollisions = () => {
   //check for collission with sprite
   if (allLevels[curLvl].sprite) {
+    moveSprite(allLevels[curLvl].sprite);
     spriteCollissionID = setInterval(spriteCollission, 17);
   }
   if (allLevels[curLvl].spike) {
     spikeBehaviorID = setInterval(spikeBehavior, 7000);
+    // check for collission with spike
+    spikeCollissionID = setInterval(spikeCollission, 17);
   }
 };
 
+initiateEnemiesandCollisions();
 
 ///                                          ///
 /// THINGS THAT HAVE TO WAIT FOR DOM TO LOAD ///
 ///                                          ///
 
 document.addEventListener("DOMContentLoaded", function () {
-  initiateEnemiesandCollisions();
-  moveSprite(allLevels[curLvl].sprite);
   console.log("DOM Loaded");
 });
