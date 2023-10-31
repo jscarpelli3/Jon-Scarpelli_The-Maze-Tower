@@ -1534,9 +1534,9 @@ const spikeCollission = () => {
 };
 
 
-///                         ///
-/// INITIATE all DETECTIONS ///
-///                         ///
+                  ///                         ///
+                  /// INITIATE all DETECTIONS ///
+                  ///                         ///
 
 
 ///intervalIDs initiated at the top
@@ -1554,9 +1554,9 @@ const initiateEnemiesandCollisions = () => {
 };
 
 
-///                                          ///
-/// THINGS THAT HAVE TO WAIT FOR DOM TO LOAD ///
-///                                          ///
+                  ///                                          ///
+                  /// THINGS THAT HAVE TO WAIT FOR DOM TO LOAD ///
+                  ///                                          ///
 
 document.addEventListener("DOMContentLoaded", function () {
   initiateEnemiesandCollisions();
