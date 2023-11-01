@@ -1294,41 +1294,51 @@ curLvl++;
 rexit((start = 202));
 
 
-                                    ///                     ///
-                                    ///                     ///
-                                    /// GAMEPLAY & MOVEMENT ///
-                                    ///                     ///
-                                    ///                     ///
+///                     ///
+///                     ///
+/// GAMEPLAY & MOVEMENT ///
+///                     ///
+///                     ///
+
+
 ///
 ///VEND
 ///
-const vendSelections=['exit', 'vend-ladder', 'vend-planks', 'vend-torch', 'vend-life']
+const vendSelections=['vend-exit', 'vend-ladder', 'vend-planks', 'vend-torch', 'vend-life']
 let vendIndex = 1
-const initVend = () =>{
+let whereWasVend
+
+const initVend = () => {
   vendOn=true
   lookAhead = playerLoc
   const vendingMachine = document.querySelector('#vend')
   vendingMachine.classList.add('vend-on')
   vendingMachine.classList.remove('vend-off')
-  console.log(vendOn, 'vend some shit')
 }
 
 const endVend = () => {
   vendOn=false
+  const nowSelection = document.getElementById(vendSelections[vendIndex])
+  nextVendSelection(nowSelection)
+  vendIndex = 1
   const vendingMachine = document.querySelector('#vend')
   vendingMachine.classList.add('vend-off')
   vendingMachine.classList.remove('vend-on')
-  vendIndex = 1
-  console.log('end vending')
 }
 
 const nextVendSelection = (nowSelection) => {
   const nextSelection = document.getElementById(vendSelections[vendIndex])
-  console.log(nextSelection)
   nextSelection.classList.add('selected')
   nowSelection.classList.remove('selected')
   // return nowSelection.id
 }
+
+const selectVendItem = () => {
+  console.log()
+}
+///
+///
+///
 
 
   window.addEventListener(`keydown`, (event) => {
@@ -1353,8 +1363,12 @@ const nextVendSelection = (nowSelection) => {
           if(!vendOn){
           tileDifference = -15;
           lookAhead = playerLoc + tileDifference;
-        } else {
-          console.log('vend up')
+        } else if (vendOn) {
+          const nowSelection = document.getElementById(vendSelections[vendIndex])
+          if(vendIndex === 0){
+            vendIndex=whereWasVend
+            nextVendSelection(nowSelection)
+          } 
         }
         break;
         case `ArrowRight`:
@@ -1375,6 +1389,13 @@ const nextVendSelection = (nowSelection) => {
             if(!vendOn) {
               tileDifference = 15;
               lookAhead = playerLoc + tileDifference;
+            } else if (vendOn){
+              const nowSelection = document.getElementById(vendSelections[vendIndex])
+              if(vendIndex!=0){
+                whereWasVend=vendIndex
+                vendIndex = 0
+                nextVendSelection(nowSelection)
+              }
             }
             break;
             case `ArrowLeft`:
