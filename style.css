@@ -431,3 +431,11 @@ button {
   font-size: 48px;
   margin: 0;
 }
+
+.choice-off {
+  display: none;
+}
+
+.choice-on {
+  display: block;
+}
