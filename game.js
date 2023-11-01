@@ -124,19 +124,11 @@ const trchCount = document.createElement(`span`);
 const ladderCount = document.createElement(`span`);
 const plankCount = document.createElement(`span`);
 const paraCount = document.createElement(`span`);
-let lookAhead = 0;
-let ended = 0;
-let torchOn = 0;
-let darkOn = 0;
 const outWalls = [
   0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 29, 44, 59, 74, 89, 104, 119,
   134, 149, 164, 179, 194, 209, 211, 212, 213, 214, 215, 216, 217, 218, 219,
   220, 221, 222, 223, 224,
 ];
-
-
-//mazzy
-let mazzySprite 
 let curLvl = 0;
 let curLvlName = "";
 let playerLoc = 202;
@@ -150,6 +142,15 @@ const plankLoc = [];
 const holeLoc = [];
 const coinLoc = [];
 const lstApdLdr = [];
+let lookAhead = 0;
+let ended = 0;
+let torchOn = 0;
+let darkOn = 0;
+let vendOn = false
+
+
+//mazzy
+let mazzySprite 
 
 ////
 ////
@@ -160,13 +161,8 @@ const lstApdLdr = [];
 ////////////
 let allLevels = [
   {
-    name: `zero`,
-    walls: [
-      0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 29, 30, 44, 45, 59, 60,
-      74, 75, 89, 90, 104, 105, 119, 120, 134, 135, 149, 150, 164, 165, 179,
-      180, 194, 195, 209, 210, 211, 212, 213, 214, 215, 216, 218, 219, 220, 221,
-      222, 223, 224,
-    ],
+    name: `dummy`,
+    walls: [],
     torches: [],
     ladders: [],
     holes: [],
@@ -180,7 +176,7 @@ let allLevels = [
     walls: [
       0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 29, 30, 44, 45, 59, 60,
       74, 75, 89, 90, 104, 105, 119, 120, 134, 135, 149, 150, 164, 165, 179,
-      180, 194, 195, 209, 210, 211, 212, 213, 214, 215, 216, 218, 219, 220, 221,
+      180, 194, 195, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221,
       222, 223, 224, 17, 19, 34, 35, 36, 37, 38, 39, 40, 41, 42, 47, 49, 62, 64,
       65, 66, 68, 69, 70, 71, 72, 73, 77, 79, 92, 94, 95, 96, 97, 98, 99, 100,
       107, 109, 117, 122, 124, 126, 128, 129, 130, 131, 132, 137, 139, 143, 147,
@@ -204,7 +200,12 @@ let allLevels = [
       e2Y: "4",
       time: 4557,
     },
-    spike: true,
+    spike: false,
+    parachute: {
+      thisLevel: false, 
+      //this level will never have the parachute
+      tileLocation: null
+      },
     exit: 5,
     darkTime: 60000,
   },
@@ -223,6 +224,23 @@ let allLevels = [
     holes: [17, 131],
     planks: [87],
     coins: [25, 193],
+    sprite: {
+      on: false,
+      s1X: "48",
+      s1Y: "96",
+      e1X: "0",
+      e1Y: "520",
+      s2X: "4",
+      s2Y: "4",
+      e2X: "4",
+      e2Y: "4",
+      time: 4557,
+    },
+    spike: true,
+    parachute: {
+      thisLevel: true, 
+      tileLocation: 27
+      },
     exit: 5,
     darkTime: 3000,
   },
@@ -239,6 +257,23 @@ let allLevels = [
     holes: [27, 42, 54, 73, 77, 82, 114, 111, 140, 146, 154, 108, 127, 122],
     planks: [96],
     coins: [98, 147],
+    spike: false,
+    sprite: {
+      on: false,
+      s1X: "48",
+      s1Y: "96",
+      e1X: "0",
+      e1Y: "520",
+      s2X: "4",
+      s2Y: "4",
+      e2X: "4",
+      e2Y: "4",
+      time: 4557,
+    },
+    parachute: {
+      thisLevel: false, 
+      tileLocation: 27
+      },
     exit: 5,
     darkTime: 4000,
   },
@@ -259,6 +294,23 @@ let allLevels = [
     holes: [28, 76, 81, 117, 123, 144],
     planks: [87],
     coins: [113, 147],
+    spike: false,
+    sprite: {
+      on: false,
+      s1X: "48",
+      s1Y: "96",
+      e1X: "0",
+      e1Y: "520",
+      s2X: "4",
+      s2Y: "4",
+      e2X: "4",
+      e2Y: "4",
+      time: 4557,
+    },
+    parachute: {
+      thisLevel: false, 
+      tileLocation: 27
+      },
     exit: 5,
     darkTime: 5000,
   },
@@ -277,6 +329,23 @@ let allLevels = [
     holes: [95, 97, 99, 110, 116, 125, 146, 176, 206],
     planks: [28],
     coins: [31, 49, 53, 57, 124, 158, 167, 183],
+    spike: false,
+    sprite: {
+      on: false,
+      s1X: "48",
+      s1Y: "96",
+      e1X: "0",
+      e1Y: "520",
+      s2X: "4",
+      s2Y: "4",
+      e2X: "4",
+      e2Y: "4",
+      time: 4557,
+    },
+    parachute: {
+      thisLevel: false, 
+      tileLocation: 27
+      },
     exit: 5,
     darkTime: 5000,
   },
@@ -295,6 +364,23 @@ let allLevels = [
     holes: [34, 118, 40, 28, 64, 182, 183],
     planks: [107],
     coins: [106, 138, 154, 166, 171],
+    spike: false,
+    sprite: {
+      on: false,
+      s1X: "48",
+      s1Y: "96",
+      e1X: "0",
+      e1Y: "520",
+      s2X: "4",
+      s2Y: "4",
+      e2X: "4",
+      e2Y: "4",
+      time: 4557,
+    },
+    parachute: {
+      thisLevel: false, 
+      tileLocation: 27
+      },
     exit: 5,
     darkTime: 5500,
   },
@@ -328,7 +414,8 @@ const startTorchLight = () => {
 const startPauseDark = (pausingDark) => {
   pauseDarkID = setTimeout(function () {
     pausingDark();
-  }, allLevels[curLvl].darkTime);
+    //the *10 is for TESTING ONLY. it keeps the level dark 10 * longer
+  }, allLevels[curLvl].darkTime*10);
 };
 
 ///
@@ -426,7 +513,7 @@ const rsetBoard = (lvl, start) => {
   getLadder();
   getPlanks();
   getHoles();
-  if (allLevels[lvl].sprite) {
+  if (allLevels[lvl].sprite.on) {
     placeSprite(allLevels[lvl].sprite);
   }
   playerLoc = playerStartSquare(start);
@@ -439,8 +526,11 @@ const rsetBoard = (lvl, start) => {
   //   pauseDark()
   // }, allLevels[curLvl].darkTime)
   startPauseDark(pauseDark);
-  if (curLvlName === `"Uh Oh, it's dark"`) {
-    tiles[paraLoc].classList.add(`para`);
+  // if (curLvlName === `"Uh Oh, it's dark"`) {
+  //   tiles[paraLoc].classList.add(`para`);
+  // }
+  if ( allLevels[lvl].parachute.thisLevel) {
+    tiles[allLevels[lvl].parachute.tileLocation].classList.add(`para`);
   }
   const levelDsp = document.querySelector(`.display-level`);
   levelDsp.innerText = allLevels[curLvl].name;
@@ -649,11 +739,13 @@ const placeWalls = (levelWalls) => {
   tiles[14].classList.add(`necorner`);
   tiles[210].classList.add(`swcorner`);
   tiles[224].classList.add(`secorner`);
-  tiles[exitLoc + 1].classList.add(`whor`);
-  tiles[exitLoc + 1].classList.remove(`wvert`);
+  tiles[195].classList.add(`vend`);
+  // tiles[exitLoc + 1].classList.add(`whor`);
+  // tiles[exitLoc + 1].classList.remove(`wvert`);
   tiles[entLoc].classList.add(`ent`);
-  tiles[entLoc + 1].classList.add(`whor`);
-  tiles[entLoc + 1].classList.remove(`wvert`);
+
+  // tiles[entLoc + 1].classList.add(`whor`);
+  // tiles[entLoc + 1].classList.remove(`wvert`);
 };
 
 ///place items
@@ -1207,121 +1299,161 @@ rexit((start = 202));
                                     /// GAMEPLAY & MOVEMENT ///
                                     ///                     ///
                                     ///                     ///
+const initVend = () =>{
+  vendOn=true
+  lookAhead = playerLoc
+  console.log(vendOn, 'vend some shit')
+}
 
-window.addEventListener(`keydown`, (event) => {
-  if (mazzy.steps === 0) {
-    backgroundMusic.play();
-    backgroundMusic.loop = true;
-    backgroundMusic.volume = 0.1;
-  }
+const endVend = () => {
+  vendOn=false
+  console.log('end vending')
+}
 
-  if (ended === 0) {
-    ///Grab steps h2 to count steps
-    let stepCnt = document.querySelector(`.steps`);
-    ///select div with player class
-    let plyr = document.querySelector(`.player`);
-    ///establish lookahead
 
-    ///establish a variable to track the difference between current location and proposed location
-    let tileDifference = 0;
-    ///for which ever arrow key, set the look ahead tiles as player+=appropriate value
-    switch (event.key) {
-      case `ArrowUp`:
-        tileDifference = -15;
-        lookAhead = playerLoc + tileDifference;
-        break;
-      case `ArrowRight`:
-        tileDifference = 1;
-        lookAhead = playerLoc + tileDifference;
-        break;
-      case "ArrowDown":
-        tileDifference = 15;
-        lookAhead = playerLoc + tileDifference;
-        break;
-      case `ArrowLeft`:
-        tileDifference = -1;
-        lookAhead = playerLoc + tileDifference;
-        break;
-      case `l`:
-        useLadder(lookAhead);
-        break;
-      case `t`:
-        useTorch();
-        break;
-      default:
-        break;
+  window.addEventListener(`keydown`, (event) => {
+    if (mazzy.steps === 0) {
+      backgroundMusic.play();
+      backgroundMusic.loop = true;
+      backgroundMusic.volume = 0.1;
     }
-    ///check if the lookahead is equal to a wall
-    let noGo = walls.some((wall) => {
-      return wall === lookAhead;
-    });
-    ///IF YOU CAN GO
-    if (noGo === false) {
-      if (lookAhead === exitLoc) {
-        curLvl++;
-        // place player at the start location
-        rexit((start = 202));
-      } else if (lookAhead === entLoc) {
-        curLvl--;
-        // place player at exit door
-        rexit((start = 20));
-      } else if (tiles[lookAhead].classList.contains(`hole`)) {
-        if (mazzy.planks === 0) {
-          if (curLvl > 1) {
-            curLvl--;
-            let holeLocationId = tiles[lookAhead].getAttribute("id");
-            let holeParsedId = parseInt(holeLocationId.substring(1));
-            fallFloorfx.play();
-            rexit((start = holeParsedId));
+
+    if (ended === 0) {
+      ///Grab steps h2 to count steps
+      let stepCnt = document.querySelector(`.steps`);
+      ///select div with player class
+      let plyr = document.querySelector(`.player`);
+      ///establish lookahead
+
+      ///establish a variable to track the difference between current location and proposed location
+      let tileDifference = 0;
+      ///for which ever arrow key, set the look ahead tiles as player+=appropriate value
+      switch (event.key) {
+        case `ArrowUp`:
+          if(!vendOn){
+          tileDifference = -15;
+          lookAhead = playerLoc + tileDifference;
           } else {
-            clearBrd();
-            ending("fell");
-            curLvl++;
+            console.log('vend up')
           }
+          break;
+          case `ArrowRight`:
+            if (!vendOn){
+              tileDifference = 1;
+              lookAhead = playerLoc + tileDifference;
+            } else {
+              console.log('vend right')
+          }
+          break;
+        case "ArrowDown":
+          tileDifference = 15;
+          lookAhead = playerLoc + tileDifference;
+          break;
+        case `ArrowLeft`:
+          tileDifference = -1;
+          lookAhead = playerLoc + tileDifference;
+          break;
+        case `l`:
+          useLadder(lookAhead);
+          break;
+        case `t`:
+          useTorch();
+          break;
+        case `v`:
+          if(vendOn) {
+            endVend()
+          }
+          break;
+        default:
+          break;
+      }
+      ///check if the lookahead is equal to a wall
+      let noGo = walls.some((wall) => {
+        return wall === lookAhead;
+      });
+      ///IF YOU CAN GO
+      if (noGo === false) {
+        if (lookAhead === exitLoc) {
+          curLvl++;
+          // place player at the start location
+          rexit((start = 202));
+        } else if (lookAhead === entLoc && curLvl > 1) {
+          curLvl--;
+          // place player at exit door
+          rexit((start = 20));
+        } else if (tiles[lookAhead].classList.contains(`hole`)) {
+          if (mazzy.planks === 0) {
+            if (curLvl > 1) {
+              curLvl--;
+              let holeLocationId = tiles[lookAhead].getAttribute("id");
+              let holeParsedId = parseInt(holeLocationId.substring(1));
+              fallFloorfx.play();
+              rexit((start = holeParsedId));
+            } else {
+              clearBrd();
+              ending("fell");
+              curLvl++;
+            }
+          } else {
+            usePlank(lookAhead);
+          }
+
         } else {
-          usePlank(lookAhead);
+          ///removing player from current location
+          tiles[playerLoc].classList.remove("player");
+          playerLoc += tileDifference;
+          ///setting new location
+          ///adding player to that new location
+          tiles[playerLoc].appendChild(mazzySprite)
+          tiles[playerLoc].classList.add(`player`);
+
+          mazzy.steps += 1;
+          stepFx.play();
+          stepCnt.innerHTML = mazzy.steps;
+          ///if you go to a torch spot or whatever
+          checkTorch();
+          checkLadder();
+          checkPlank();
+          checkPara();
+          checkCoin();
+          if (darkOn === 1) {
+            makeDark();
+            makeLight();
+          }
         }
-      } else {
-        ///removing player from current location
-        tiles[playerLoc].classList.remove("player");
-        // tiles[playerLoc].innerHTML = ``
-        // const mazzyElement = tiles[playerLoc].querySelector("#mazzy");
-        // if (mazzyElement) {
-        //   mazzyElement.remove();
-        // }
-        playerLoc += tileDifference;
-        ///setting new location
-        ///adding player to that new location
-
-        // tiles[playerLoc].innerHTML += `<img id="mazzy" src=pics/mazzy.png>`;
-        // const newMazzyLoc = document.createElement('img')
-        // newMazzyLoc.id = 'mazzy'
-        // tiles[playerLoc].appendChild(newMazzyLoc)
-        tiles[playerLoc].appendChild(mazzySprite)
+        ///you CANNOT go
+      } else if (noGo === true) {
+        plyr.classList.remove("player");
+        playerLoc += 0;
         tiles[playerLoc].classList.add(`player`);
-
-        mazzy.steps += 1;
-        stepFx.play();
-        stepCnt.innerHTML = mazzy.steps;
-        ///if you go to a torch spot or whatever
-        checkTorch();
-        checkLadder();
-        checkPlank();
-        checkPara();
-        checkCoin();
-        if (darkOn === 1) {
-          makeDark();
-          makeLight();
+        if(tiles[lookAhead].classList.contains('vend')){
+          initVend()
         }
       }
-      ///you CANNOT go
-    } else if (noGo === true) {
-      plyr.classList.remove("player");
-      playerLoc += 0;
-      tiles[playerLoc].classList.add(`player`);
     }
-  }
-});
+  });
+
+
+
+//   window.addEventListener(`keydown`, (event) => {
+
+//       switch (event.key) {
+//         case `Space`:
+//           console.log('buy a thing')
+//           endVend()
+//           break;
+//         case `ArrowRight`:
+//           // tileDifference = 1;
+//           // lookAhead = playerLoc + tileDifference;
+//           break;
+//         case `ArrowLeft`:
+//           // tileDifference = -1;
+//           // lookAhead = playerLoc + tileDifference;
+//           break;
+//         default:
+//           break;
+//       }
+// })
 
                       ///                                           ///
                       ///                                           ///

@@ -4,7 +4,7 @@ body {
   background-repeat: no-repeat;
   background-size: 100%;
   background-color: black;
-  background-position:top;
+  background-position: top;
   background-size: cover;
   display: grid;
   grid-template: 1fr 720px 1fr/1fr 720px 1fr;
@@ -37,7 +37,7 @@ h2 {
   display: flex;
   flex-direction: row;
   justify-content: center;
-  align-items: center; 
+  align-items: center;
   padding: 0px 26px;
   color: rgb(195, 195, 195);
   text-align: center;
@@ -57,7 +57,7 @@ div.game {
   display: grid;
   margin: 0 auto;
   padding: 0;
-  background-image: url('pics/floor5.png');
+  background-image: url("pics/floor5.png");
   width: 720px;
   height: 720px;
   grid-template: repeat(15, 1fr) / repeat(15, 1fr);
@@ -192,7 +192,6 @@ div.game {
 .ladder {
   background-image: url(pics/ladder.png);
 }
-
 
 .plank {
   background-image: url(pics/planks.png);
@@ -353,8 +352,6 @@ button {
   font-size: 12px;
 }
 
-
-
 /*Sprite*/
 
 .sprite {
@@ -364,11 +361,24 @@ button {
   position: absolute;
   top: 96px;
   left: 48px;
+  opacity: 0.5;
 }
 
 /*Spike*/
 
 #spike {
-z-index: 2;
+  z-index: 2;
 }
 
+
+.vendOff {
+  display:none
+}
+
+.vendOn {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
