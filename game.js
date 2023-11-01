@@ -739,7 +739,7 @@ const placeWalls = (levelWalls) => {
   tiles[14].classList.add(`necorner`);
   tiles[210].classList.add(`swcorner`);
   tiles[224].classList.add(`secorner`);
-  tiles[195].classList.add(`vend`);
+  tiles[216].classList.add(`vend`);
   // tiles[exitLoc + 1].classList.add(`whor`);
   // tiles[exitLoc + 1].classList.remove(`wvert`);
   tiles[entLoc].classList.add(`ent`);
@@ -1352,22 +1352,37 @@ const endVend = () => {
           }
           break;
         case "ArrowDown":
-          tileDifference = 15;
-          lookAhead = playerLoc + tileDifference;
+          if(!vendOn) {
+            tileDifference = 15;
+            lookAhead = playerLoc + tileDifference;
+          }
           break;
         case `ArrowLeft`:
-          tileDifference = -1;
-          lookAhead = playerLoc + tileDifference;
+          if(!vendOn) {
+            tileDifference = -1;
+            lookAhead = playerLoc + tileDifference;
+          } else {
+            console.log('vend left')
+        }
           break;
         case `l`:
-          useLadder(lookAhead);
+          if(!vendOn) {
+            useLadder(lookAhead);
+          }
           break;
         case `t`:
-          useTorch();
+          if(!vendOn) {
+            useTorch();
+          }
           break;
         case `v`:
           if(vendOn) {
             endVend()
+          }
+          case ` `:
+            if(vendOn) {
+            endVend()
+            vendSelect()
           }
           break;
         default:
