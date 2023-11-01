@@ -370,15 +370,64 @@ button {
   z-index: 2;
 }
 
-
-.vendOff {
+.vend-off {
   display:none
 }
 
-.vendOn {
-  position: absolute;
+.vend-on, .vend-item {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
+  border-color: whitesmoke;
+  border-style: ridge;
+  border: 2px double rgb(217, 217, 217);
+}
+
+.vend-on {
+  padding: 0 48px;
+  position: absolute;
+  justify-content: center;
+  left: 10%;
+  top: 25%;
+  width: 80vw;
+  height: 50vh;
+  background-color: black;
+}
+
+.vend-item {
+  padding: 24px 12px;
+  background-color: rgb(57, 96, 96);
+  justify-content: flex-end;
+  width: 140px;
+}
+.vend-choice {
+  padding: 24px 12px;
+  /* background-color: rgb(57, 96, 96); */
+  justify-content: flex-end;
+  align-items: center;
+  width: 140px;
+  height: 32px;
+}
+
+.vend-list {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.vend-item-name {
+  color: rgb(254, 255, 178);
+  margin: 12px 0 0;
+}
+
+.vend-item-name span {
+  color: rgb(255, 255, 255);
+}
+
+.vend-choice-arrow {
+  text-align: center;
+  color: rgb(254, 255, 178);
+  font-size: 48px;
+  margin: 0;
 }

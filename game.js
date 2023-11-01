@@ -1302,11 +1302,17 @@ rexit((start = 202));
 const initVend = () =>{
   vendOn=true
   lookAhead = playerLoc
+  const vendingMachine = document.querySelector('#vend')
+  vendingMachine.classList.add('vend-on')
+  vendingMachine.classList.remove('vend-off')
   console.log(vendOn, 'vend some shit')
 }
 
 const endVend = () => {
   vendOn=false
+  const vendingMachine = document.querySelector('#vend')
+  vendingMachine.classList.add('vend-off')
+  vendingMachine.classList.remove('vend-on')
   console.log('end vending')
 }
 
