@@ -124,6 +124,7 @@ const trchCount = document.createElement(`span`);
 const ladderCount = document.createElement(`span`);
 const plankCount = document.createElement(`span`);
 const paraCount = document.createElement(`span`);
+const lifeInv = document.querySelector(".lf-count");
 const outWalls = [
   0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 29, 44, 59, 74, 89, 104, 119,
   134, 149, 164, 179, 194, 209, 211, 212, 213, 214, 215, 216, 217, 218, 219,
@@ -481,6 +482,283 @@ const chooseWithinQuadrant = (holeTile) => {
 
 
 
+
+
+                      ///                                           ///
+                      ///                                           ///
+                      ///       UTILITIES & REALTIME FUNCTIONS      ///
+                      ///                                           ///
+                      ///                                           ///
+
+// Basic Collission detection
+const collisionDetector = (objectRect, withWhat) => {
+  if (
+    objectRect.right > mazzy.location.left &&
+    objectRect.left < mazzy.location.right &&
+    objectRect.bottom > mazzy.location.top &&
+    objectRect.top < mazzy.location.bottom
+  ) {
+    // Collision detected
+    console.log("collission!");
+      if (withWhat === "sprite") {
+        mazzy.life -= 1;
+      } else if (withWhat === "spike") {
+        mazzy.life -= 100;
+      }
+    console.log(mazzy.life)
+    collissionFx1.play();
+    lifeInv.innerText = mazzy.life;
+    if (mazzy.life >= 1) {
+      return true;
+    } else if (mazzy.life <= 0) {
+      mazzyDie(withWhat)
+      setTimeout(() => {
+        clearBrd();
+        ending(withWhat);
+        curLvl++;
+      }, 1000);
+    }
+  } else {
+    // No collision
+    console.log('nope')
+    return false;
+  }
+};
+
+// check if a tile is unoccupied
+const isUnoccupied = (tile) => {
+  if (
+    !tiles[tile].classList.contains("wall") &&
+    !tiles[tile].classList.contains("hole") &&
+    !tiles[tile].classList.contains("coin") &&
+    !tiles[tile].classList.contains("plank") &&
+    !tiles[tile].classList.contains("plk-appplied") &&
+    !tiles[tile].classList.contains("player-plk-appplied") &&
+    !tiles[tile].classList.contains("ladder") &&
+    !tiles[tile].classList.contains("torch") &&
+    !tiles[tile].classList.contains("player") &&
+    !tiles[tile].classList.contains("para") &&
+    !tiles[tile].classList.contains("exit") &&
+    !tiles[tile].classList.contains("ent")
+  ) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
+                  ///                                           ///
+                  ///                                           ///
+                  ///                ANIMATION                  ///
+                  ///                                           ///
+                  ///                                           ///
+
+
+
+const animate = (elementRef, animationArray, loop, frameRate) => {
+  ///set antimationOn flag and start at frame 0
+  let animationOn = true;
+  let currentFrame = 0;
+  
+  const animate_advanceFrame = () => {
+    if (animationArray[currentFrame].addClass) {
+      elementRef.classList.add(animationArray[currentFrame].addClass);
+    }
+    if (animationArray[currentFrame].removeClass) {
+      elementRef.classList.remove(animationArray[currentFrame].removeClass);
+    }
+    if (!animationOn) {
+      console.log("Animation stopped");
+      if (animationArray[currentFrame].removeElement) {
+        elementRef.remove();
+      }
+      return;
+    }
+    if (animationArray[currentFrame].sfx) {
+      animationArray[currentFrame].sfx.play();
+    }
+
+    elementRef.src = animationArray[currentFrame].src;
+    if (currentFrame === animationArray.length - 1) {
+      if (loop) {
+        currentFrame = 0;
+      } else {
+        animationOn = false;
+        console.log("animation turned OFF");
+      }
+    } else {
+      currentFrame++;
+    }
+  
+    setTimeout(() =>{
+        if(animationOn){
+          animate_advanceFrame()
+        } else {
+          animationArray[currentFrame].endFunction(elementRef)
+        }
+      }, frameRate * animationArray[currentFrame].frameMult);
+    };
+
+  if(animationOn) {
+    animate_advanceFrame();
+  } else {
+    return
+  }
+};
+
+
+
+                  ///                                           ///
+                  ///                                           ///
+                  ///                BEHAVIORS                  ///
+                  ///                                           ///
+                  ///                                           ///
+///Mazzy Death Animation
+
+const mazzyDie = (withWhat) => {
+  if (withWhat === 'spike') {
+    // animate(mazzySprite, mazzyDieSpikeAnimation, false, 100);
+    console.log('here is the animation', withWhat)
+  } else if (withWhat === 'sprite'){    
+    // animate(mazzySprite, mazzyDieSpriteAnimation, false, 100);
+    console.log('here is the animation', withWhat)
+  } else {
+    console.log('here is the animation', withWhat)
+    // animate(mazzySprite, mazzyDieAnimation, false, 100);
+  }
+}
+
+
+/// SPRITE 1 BEHAVIOR
+//sprite movement
+const moveSprite = (spriteData) => {
+  const sprite1 = document.getElementById("sprite1");
+
+  const s1Start = sprite1.animate(
+    [
+      { transform: `translate(0, 0)` },
+      { transform: `translate(${spriteData.e1X}px, ${spriteData.e1Y}px)` },
+    ],
+    {
+      duration: spriteData.time,
+      easing: "ease-out",
+    }
+  );
+
+  s1Start.onfinish = () => {
+    const s1Return = sprite1.animate(
+      [
+        { transform: `translate(${spriteData.e1X}px, ${spriteData.e1Y}px)` },
+        { transform: `translate(0, 0)` },
+      ],
+      {
+        duration: spriteData.time,
+        easing: "ease-out",
+      }
+    );
+    s1Return.onfinish = () => {
+      moveSprite(spriteData);
+    };
+  };
+};
+
+// Collission With Sprite
+const spriteCollission = () => {
+  //get the player element
+  const player = document.getElementById("mazzy");
+  //set the player element location data to the mazzy object/player class
+  mazzy.location = player.getBoundingClientRect();
+  //find sprite rectangle
+  const sprite = document.getElementById("sprite1");
+  const spriteLocation = sprite.getBoundingClientRect();
+  collisionDetector(spriteLocation, "sprite");
+};
+
+// spike behavior
+
+let spikeOn = false;
+
+const spikeBehavior = () => {
+  let possibleSpikeLoc;
+  for (const tile in tiles) {
+    possibleSpikeLoc = Math.floor(Math.random() * 210);
+    if (isUnoccupied(possibleSpikeLoc)) {
+      let spikeTile = document.createElement(`img`);
+      spikeTile.id = "spike";
+      spikeTile.classList.add('spike')
+      tiles[possibleSpikeLoc].appendChild(spikeTile);
+      const specificSpike = document.getElementById("spike");
+      // start check for collission with spike
+      spikeOn=true
+      spikeCollissionID = setInterval(spikeCollission, 17);
+      animate(specificSpike, spikeAnimation, false, 100);
+      break;
+    } else {
+      continue;
+    }
+  }
+}
+// Collission With Spike:
+//
+// Since the spike appears and disappears, the collission detection is triggered every 17ms BUT first checks
+// for "spikeOn" so it's only going to go ahead and get the rectangles if that is true
+// "spikeOn" is flipped during the spike behavior sequence above. it's also declared just above that sequence.
+
+const spikeCollission = () => {
+  if (spikeOn) {
+    //get the player element
+    const player = document.getElementById("mazzy");
+    //set the player element location data to the mazzy object/player class
+    mazzy.location = player.getBoundingClientRect();
+    //find sprite rectangle
+    const spike = document.querySelector(".spikeHit");
+    console.log(spike)
+    const spikeLocation = spike.getBoundingClientRect();
+    
+    collisionDetector(spikeLocation, "spike");
+  }
+};
+
+//start the spike if its in the level
+
+                  ///                         ///
+                  /// INITIATE all DETECTIONS ///
+                  ///                         ///
+
+///intervalIDs at the top
+
+const initiateEnemiesandCollisions = () => {
+  //check for collission with sprite
+  if (allLevels[curLvl].sprite) {
+    moveSprite(allLevels[curLvl].sprite);
+    spriteCollissionID = setInterval(spriteCollission, 17);
+  }
+  if (allLevels[curLvl].spike) {
+    spikeBehaviorID = setInterval(spikeBehavior, 7000);
+    // check for collission with spike
+  }
+};
+
+// initiateEnemiesandCollisions();
+
+                  ///                                          ///
+                  /// THINGS THAT HAVE TO WAIT FOR DOM TO LOAD ///
+                  ///                                          ///
+
+document.addEventListener("DOMContentLoaded", function () {
+  console.log("DOM Loaded");
+});
+
+
+
+///
+///
+///
+///
+
+
+
+
 const rsetBoard = (lvl, start) => {
   walls.length = 0;
   torchLoc.length = 0;
@@ -534,6 +812,8 @@ const rsetBoard = (lvl, start) => {
   }
   const levelDsp = document.querySelector(`.display-level`);
   levelDsp.innerText = allLevels[curLvl].name;
+  initiateEnemiesandCollisions();
+
 };
 
                     ///                  /// 
@@ -947,6 +1227,19 @@ const checkPara = () => {
   }
 };
 
+
+///
+/// ADDING
+///
+///
+
+///addLife
+
+const addLife = (amountToAdd) => {
+  mazzy.life = mazzy.life+=amountToAdd
+  lifeInv.innerHTML = mazzy.life
+}
+
 ///adding torches to your inv
 const addTorch = () => {
   tiles[playerLoc].classList.remove(`torch`);
@@ -1319,8 +1612,8 @@ const initVend = () => {
 const endVend = () => {
   vendOn=false
   const nowSelection = document.getElementById(vendSelections[vendIndex])
-  nextVendSelection(nowSelection)
   vendIndex = 1
+  nextVendSelection(nowSelection)
   const vendingMachine = document.querySelector('#vend')
   vendingMachine.classList.add('vend-off')
   vendingMachine.classList.remove('vend-on')
@@ -1334,7 +1627,21 @@ const nextVendSelection = (nowSelection) => {
 }
 
 const selectVendItem = () => {
-  console.log()
+  if(vendIndex === 0){
+    endVend()
+  }
+  else if(vendIndex === 1){
+    addLadder()
+  }
+  else if(vendIndex === 2){
+    addPlank()
+  }
+  else if(vendIndex === 3){
+    addTorch()
+  }
+  else if(vendIndex === 4){
+    addLife(45)
+  }
 }
 ///
 ///
@@ -1428,8 +1735,7 @@ const selectVendItem = () => {
           }
           case ` `:
             if(vendOn) {
-            endVend()
-            vendSelect()
+              selectVendItem()
           }
           break;
         default:
@@ -1500,272 +1806,4 @@ const selectVendItem = () => {
       }
     }
   });
-
-
-
-                      ///                                           ///
-                      ///                                           ///
-                      ///       UTILITIES & REALTIME FUNCTIONS      ///
-                      ///                                           ///
-                      ///                                           ///
-
-// Basic Collission detection
-const collisionDetector = (objectRect, withWhat) => {
-  if (
-    objectRect.right > mazzy.location.left &&
-    objectRect.left < mazzy.location.right &&
-    objectRect.bottom > mazzy.location.top &&
-    objectRect.top < mazzy.location.bottom
-  ) {
-    // Collision detected
-    console.log("collission!");
-      if (withWhat === "sprite") {
-        mazzy.life -= 1;
-      } else if (withWhat === "spike") {
-        mazzy.life -= 100;
-      }
-    console.log(mazzy.life)
-    collissionFx1.play();
-    const lifeInv = document.querySelector(".lf-count");
-    lifeInv.innerText = mazzy.life;
-    if (mazzy.life >= 1) {
-      return true;
-    } else if (mazzy.life <= 0) {
-      mazzyDie(withWhat)
-      setTimeout(() => {
-        clearBrd();
-        ending(withWhat);
-        curLvl++;
-      }, 1000);
-    }
-  } else {
-    // No collision
-    console.log('nope')
-    return false;
-  }
-};
-
-// check if a tile is unoccupied
-const isUnoccupied = (tile) => {
-  if (
-    !tiles[tile].classList.contains("wall") &&
-    !tiles[tile].classList.contains("hole") &&
-    !tiles[tile].classList.contains("coin") &&
-    !tiles[tile].classList.contains("plank") &&
-    !tiles[tile].classList.contains("plk-appplied") &&
-    !tiles[tile].classList.contains("player-plk-appplied") &&
-    !tiles[tile].classList.contains("ladder") &&
-    !tiles[tile].classList.contains("torch") &&
-    !tiles[tile].classList.contains("player") &&
-    !tiles[tile].classList.contains("para") &&
-    !tiles[tile].classList.contains("exit") &&
-    !tiles[tile].classList.contains("ent")
-  ) {
-    return true;
-  } else {
-    return false;
-  }
-};
-
-                  ///                                           ///
-                  ///                                           ///
-                  ///                ANIMATION                  ///
-                  ///                                           ///
-                  ///                                           ///
-
-
-
-const animate = (elementRef, animationArray, loop, frameRate) => {
-  ///set antimationOn flag and start at frame 0
-  let animationOn = true;
-  let currentFrame = 0;
-  
-  const animate_advanceFrame = () => {
-    if (animationArray[currentFrame].addClass) {
-      elementRef.classList.add(animationArray[currentFrame].addClass);
-    }
-    if (animationArray[currentFrame].removeClass) {
-      elementRef.classList.remove(animationArray[currentFrame].removeClass);
-    }
-    if (!animationOn) {
-      console.log("Animation stopped");
-      if (animationArray[currentFrame].removeElement) {
-        elementRef.remove();
-      }
-      return;
-    }
-    if (animationArray[currentFrame].sfx) {
-      animationArray[currentFrame].sfx.play();
-    }
-
-    elementRef.src = animationArray[currentFrame].src;
-    if (currentFrame === animationArray.length - 1) {
-      if (loop) {
-        currentFrame = 0;
-      } else {
-        animationOn = false;
-        console.log("animation turned OFF");
-      }
-    } else {
-      currentFrame++;
-    }
-  
-    setTimeout(() =>{
-        if(animationOn){
-          animate_advanceFrame()
-        } else {
-          animationArray[currentFrame].endFunction(elementRef)
-        }
-      }, frameRate * animationArray[currentFrame].frameMult);
-    };
-
-  if(animationOn) {
-    animate_advanceFrame();
-  } else {
-    return
-  }
-};
-
-
-
-                  ///                                           ///
-                  ///                                           ///
-                  ///                BEHAVIORS                  ///
-                  ///                                           ///
-                  ///                                           ///
-///Mazzy Death Animation
-
-const mazzyDie = (withWhat) => {
-  if (withWhat === 'spike') {
-    // animate(mazzySprite, mazzyDieSpikeAnimation, false, 100);
-    console.log('here is the animation', withWhat)
-  } else if (withWhat === 'sprite'){    
-    // animate(mazzySprite, mazzyDieSpriteAnimation, false, 100);
-    console.log('here is the animation', withWhat)
-  } else {
-    console.log('here is the animation', withWhat)
-    // animate(mazzySprite, mazzyDieAnimation, false, 100);
-  }
-}
-
-
-/// SPRITE 1 BEHAVIOR
-//sprite movement
-const moveSprite = (spriteData) => {
-  const sprite1 = document.getElementById("sprite1");
-
-  const s1Start = sprite1.animate(
-    [
-      { transform: `translate(0, 0)` },
-      { transform: `translate(${spriteData.e1X}px, ${spriteData.e1Y}px)` },
-    ],
-    {
-      duration: spriteData.time,
-      easing: "ease-out",
-    }
-  );
-
-  s1Start.onfinish = () => {
-    const s1Return = sprite1.animate(
-      [
-        { transform: `translate(${spriteData.e1X}px, ${spriteData.e1Y}px)` },
-        { transform: `translate(0, 0)` },
-      ],
-      {
-        duration: spriteData.time,
-        easing: "ease-out",
-      }
-    );
-    s1Return.onfinish = () => {
-      moveSprite(spriteData);
-    };
-  };
-};
-
-// Collission With Sprite
-const spriteCollission = () => {
-  //get the player element
-  const player = document.getElementById("mazzy");
-  //set the player element location data to the mazzy object/player class
-  mazzy.location = player.getBoundingClientRect();
-  //find sprite rectangle
-  const sprite = document.getElementById("sprite1");
-  const spriteLocation = sprite.getBoundingClientRect();
-  collisionDetector(spriteLocation, "sprite");
-};
-
-// spike behavior
-
-let spikeOn = false;
-
-const spikeBehavior = () => {
-  let possibleSpikeLoc;
-  for (const tile in tiles) {
-    possibleSpikeLoc = Math.floor(Math.random() * 210);
-    if (isUnoccupied(possibleSpikeLoc)) {
-      let spikeTile = document.createElement(`img`);
-      spikeTile.id = "spike";
-      spikeTile.classList.add('spike')
-      tiles[possibleSpikeLoc].appendChild(spikeTile);
-      const specificSpike = document.getElementById("spike");
-      // start check for collission with spike
-      spikeOn=true
-      spikeCollissionID = setInterval(spikeCollission, 17);
-      animate(specificSpike, spikeAnimation, false, 100);
-      break;
-    } else {
-      continue;
-    }
-  }
-}
-// Collission With Spike:
-//
-// Since the spike appears and disappears, the collission detection is triggered every 17ms BUT first checks
-// for "spikeOn" so it's only going to go ahead and get the rectangles if that is true
-// "spikeOn" is flipped during the spike behavior sequence above. it's also declared just above that sequence.
-
-const spikeCollission = () => {
-  if (spikeOn) {
-    //get the player element
-    const player = document.getElementById("mazzy");
-    //set the player element location data to the mazzy object/player class
-    mazzy.location = player.getBoundingClientRect();
-    //find sprite rectangle
-    const spike = document.querySelector(".spikeHit");
-    console.log(spike)
-    const spikeLocation = spike.getBoundingClientRect();
-    
-    collisionDetector(spikeLocation, "spike");
-  }
-};
-
-//start the spike if its in the level
-
-                  ///                         ///
-                  /// INITIATE all DETECTIONS ///
-                  ///                         ///
-
-///intervalIDs at the top
-
-const initiateEnemiesandCollisions = () => {
-  //check for collission with sprite
-  if (allLevels[curLvl].sprite) {
-    moveSprite(allLevels[curLvl].sprite);
-    spriteCollissionID = setInterval(spriteCollission, 17);
-  }
-  if (allLevels[curLvl].spike) {
-    spikeBehaviorID = setInterval(spikeBehavior, 7000);
-    // check for collission with spike
-  }
-};
-
-initiateEnemiesandCollisions();
-
-                  ///                                          ///
-                  /// THINGS THAT HAVE TO WAIT FOR DOM TO LOAD ///
-                  ///                                          ///
-
-document.addEventListener("DOMContentLoaded", function () {
-  console.log("DOM Loaded");
-});
 
