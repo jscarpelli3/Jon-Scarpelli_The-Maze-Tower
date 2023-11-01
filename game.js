@@ -1299,6 +1299,11 @@ rexit((start = 202));
                                     /// GAMEPLAY & MOVEMENT ///
                                     ///                     ///
                                     ///                     ///
+///
+///VEND
+///
+const vendSelections=['exit', 'vend-ladder', 'vend-planks', 'vend-torch', 'vend-life']
+let vendIndex = 1
 const initVend = () =>{
   vendOn=true
   lookAhead = playerLoc
@@ -1313,7 +1318,16 @@ const endVend = () => {
   const vendingMachine = document.querySelector('#vend')
   vendingMachine.classList.add('vend-off')
   vendingMachine.classList.remove('vend-on')
+  vendIndex = 1
   console.log('end vending')
+}
+
+const nextVendSelection = (nowSelection) => {
+  const nextSelection = document.getElementById(vendSelections[vendIndex])
+  console.log(nextSelection)
+  nextSelection.classList.add('selected')
+  nowSelection.classList.remove('selected')
+  // return nowSelection.id
 }
 
 
@@ -1339,34 +1353,46 @@ const endVend = () => {
           if(!vendOn){
           tileDifference = -15;
           lookAhead = playerLoc + tileDifference;
-          } else {
-            console.log('vend up')
-          }
-          break;
-          case `ArrowRight`:
-            if (!vendOn){
-              tileDifference = 1;
-              lookAhead = playerLoc + tileDifference;
-            } else {
-              console.log('vend right')
-          }
-          break;
-        case "ArrowDown":
-          if(!vendOn) {
-            tileDifference = 15;
-            lookAhead = playerLoc + tileDifference;
-          }
-          break;
-        case `ArrowLeft`:
-          if(!vendOn) {
-            tileDifference = -1;
-            lookAhead = playerLoc + tileDifference;
-          } else {
-            console.log('vend left')
+        } else {
+          console.log('vend up')
         }
+        break;
+        case `ArrowRight`:
+          if (!vendOn){
+            tileDifference = 1;
+            lookAhead = playerLoc + tileDifference;
+          } else if (vendOn) {
+            const nowSelection = document.getElementById(vendSelections[vendIndex])
+            if(vendIndex === 4){
+              vendIndex=1
+            } else {
+              vendIndex++
+            }
+            nextVendSelection(nowSelection)
+          }
           break;
-        case `l`:
-          if(!vendOn) {
+          case "ArrowDown":
+            if(!vendOn) {
+              tileDifference = 15;
+              lookAhead = playerLoc + tileDifference;
+            }
+            break;
+            case `ArrowLeft`:
+              if(!vendOn) {
+                tileDifference = -1;
+                lookAhead = playerLoc + tileDifference;
+              } else if (vendOn) {
+                const nowSelection = document.getElementById(vendSelections[vendIndex])
+                if(vendIndex === 1){
+                  vendIndex = 4
+                } else {
+                  vendIndex--
+                }
+                nextVendSelection(nowSelection)
+              }
+              break;
+              case `l`:
+                if(!vendOn) {
             useLadder(lookAhead);
           }
           break;
@@ -1455,26 +1481,6 @@ const endVend = () => {
   });
 
 
-
-//   window.addEventListener(`keydown`, (event) => {
-
-//       switch (event.key) {
-//         case `Space`:
-//           console.log('buy a thing')
-//           endVend()
-//           break;
-//         case `ArrowRight`:
-//           // tileDifference = 1;
-//           // lookAhead = playerLoc + tileDifference;
-//           break;
-//         case `ArrowLeft`:
-//           // tileDifference = -1;
-//           // lookAhead = playerLoc + tileDifference;
-//           break;
-//         default:
-//           break;
-//       }
-// })
 
                       ///                                           ///
                       ///                                           ///

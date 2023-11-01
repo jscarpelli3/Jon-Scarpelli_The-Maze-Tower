@@ -420,7 +420,7 @@ button {
 } */
 
 .vend-list {
-  margin-top: 32px;
+  margin-top: 16px;
   width: 100%;
   display: flex;
   flex-direction: row;
@@ -437,15 +437,16 @@ button {
 
 .vend-item-price {
   color: rgb(255, 255, 255);
+  font-size: 26px;
   margin: 4px 0 0;
 }
 
-.vend-choice {
+/* .vend-choice {
   display: flex;
   flex-direction: row;
   justify-content: center;
   padding: 0;
-
+  
 }
 
 .vend-choice-arrow {
@@ -453,7 +454,7 @@ button {
   color: rgb(254, 255, 178);
   font-size: 48px;
   margin: 0;
-}
+} */
 
 .choice-off {
   display: none;
@@ -467,10 +468,14 @@ button {
   margin-bottom: 0;
 }
 
-.vend-subtitle {
+.vend-subtitle, .vend-sub-subtitle {
   text-align: center;
   color: rgb(207, 198, 147);
   margin: 0;
+}
+
+.vend-sub-subtitle {
+  font-size: 13px;
 }
 
 .vend-list h3 {
@@ -481,4 +486,25 @@ button {
   border-color: whitesmoke;
   border-style: ridge;
   border: 2px double rgba(217, 217, 217, 0.371);
+}
+
+.vend-coin-display {
+  position: absolute;
+  bottom: 24px;
+  right: 24px;
+}
+
+.vend-coin-display span {
+display: flex;
+flex-direction: row;
+justify-content: space-around;
+align-items: center;
+}
+
+.vend-coin-display span img,  
+.vend-coin-display span h5  {
+  display: inline;
+}
+.vend-coin-display span h5  {
+  margin-top: -19
 }
