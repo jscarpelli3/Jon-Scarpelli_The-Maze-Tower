@@ -24,6 +24,8 @@ endSong.volume = 0.7;
 const paraGet = new Audio(`sound/para1.mp3`);
 paraGet.volume = 0.6;
 const denyFx = new Audio(`sound/deny.wav`);
+const vendExit = new Audio(`sound/vendExit.mp3`);
+const vendAccept = new Audio(`sound/vendAccept.mp3`);
 
 ///variables to hold timers & intervals
 let torchTimeoutID;
@@ -124,6 +126,7 @@ const trchCount = document.createElement(`span`);
 const ladderCount = document.createElement(`span`);
 const plankCount = document.createElement(`span`);
 const paraCount = document.createElement(`span`);
+const lifeInv = document.querySelector(".lf-count");
 const outWalls = [
   0, 1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12, 13, 14, 29, 44, 59, 74, 89, 104, 119,
   134, 149, 164, 179, 194, 209, 211, 212, 213, 214, 215, 216, 217, 218, 219,
@@ -208,6 +211,7 @@ let allLevels = [
       },
     exit: 5,
     darkTime: 60000,
+    vend: [195,59]
   },
   {
     name: `"Uh Oh, it's dark"`,
@@ -240,9 +244,10 @@ let allLevels = [
     parachute: {
       thisLevel: true, 
       tileLocation: 27
-      },
+    },
     exit: 5,
     darkTime: 3000,
+    vend: [45,209]
   },
   {
     name: `"So many holes!"`,
@@ -273,9 +278,10 @@ let allLevels = [
     parachute: {
       thisLevel: false, 
       tileLocation: 27
-      },
+    },
     exit: 5,
     darkTime: 4000,
+    vend: [105,104]
   },
   {
     name: `"Dooozy!"`,
@@ -310,9 +316,10 @@ let allLevels = [
     parachute: {
       thisLevel: false, 
       tileLocation: 27
-      },
+    },
     exit: 5,
     darkTime: 5000,
+    vend: [165,44]
   },
   {
     name: `"Luqui's Level"`,
@@ -345,9 +352,10 @@ let allLevels = [
     parachute: {
       thisLevel: false, 
       tileLocation: 27
-      },
+    },
     exit: 5,
     darkTime: 5000,
+    vend: [130,164]
   },
   {
     name: `"This is odd..."`,
@@ -380,9 +388,10 @@ let allLevels = [
     parachute: {
       thisLevel: false, 
       tileLocation: 27
-      },
+    },
     exit: 5,
     darkTime: 5500,
+    vend: [135,104]
   },
 ];
 
@@ -421,11 +430,6 @@ const startPauseDark = (pausingDark) => {
 ///
 ///
 
-///
-///
-///SETUP GAME BOARD
-///
-///
 
 /// get user levels from local storage
 const addUserLevels = () => {
@@ -443,9 +447,9 @@ const addUserLevels = () => {
   }
 };
 
-                  ///
-                  /// Player Placement logic
-                  ///
+                  ///                         ///
+                  /// Player Placement logic  ///
+                  ///                         ///
 
 // PLACE PLAYER START INCLUSIVE OF POSSIBLY CHOOSING RANDOMLY WITHIN A 6 tile space
 const playerStartSquare = (startingLocation) => {
@@ -480,6 +484,296 @@ const chooseWithinQuadrant = (holeTile) => {
 ///
 
 
+
+
+
+                      ///                                           ///
+                      ///                                           ///
+                      ///       UTILITIES & REALTIME FUNCTIONS      ///
+                      ///                                           ///
+                      ///                                           ///
+
+// Basic Collission detection
+const collisionDetector = (objectRect, withWhat) => {
+  if (
+    objectRect.right > mazzy.location.left &&
+    objectRect.left < mazzy.location.right &&
+    objectRect.bottom > mazzy.location.top &&
+    objectRect.top < mazzy.location.bottom
+  ) {
+    // Collision detected
+    console.log("collission!");
+      if (withWhat === "sprite") {
+        mazzy.life -= 1;
+      } else if (withWhat === "spike") {
+        mazzy.life -= 100;
+      }
+    console.log(mazzy.life)
+    collissionFx1.play();
+    lifeInv.innerText = mazzy.life;
+    if (mazzy.life >= 1) {
+      return true;
+    } else if (mazzy.life <= 0) {
+      mazzyDie(withWhat)
+      setTimeout(() => {
+        clearBrd();
+        ending(withWhat);
+        curLvl++;
+      }, 1000);
+    }
+  } else {
+    // No collision
+    console.log('nope')
+    return false;
+  }
+};
+
+// check if a tile is unoccupied
+const isUnoccupied = (tile) => {
+  if (
+    !tiles[tile].classList.contains("wall") &&
+    !tiles[tile].classList.contains("hole") &&
+    !tiles[tile].classList.contains("coin") &&
+    !tiles[tile].classList.contains("plank") &&
+    !tiles[tile].classList.contains("plk-appplied") &&
+    !tiles[tile].classList.contains("player-plk-appplied") &&
+    !tiles[tile].classList.contains("ladder") &&
+    !tiles[tile].classList.contains("torch") &&
+    !tiles[tile].classList.contains("player") &&
+    !tiles[tile].classList.contains("para") &&
+    !tiles[tile].classList.contains("exit") &&
+    !tiles[tile].classList.contains("ent")
+  ) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
+                  ///                                           ///
+                  ///                                           ///
+                  ///                ANIMATION                  ///
+                  ///                                           ///
+                  ///                                           ///
+
+
+
+const animate = (elementRef, animationArray, loop, frameRate) => {
+  ///set antimationOn flag and start at frame 0
+  let animationOn = true;
+  let currentFrame = 0;
+  
+  const animate_advanceFrame = () => {
+    if (animationArray[currentFrame].addClass) {
+      elementRef.classList.add(animationArray[currentFrame].addClass);
+    }
+    if (animationArray[currentFrame].removeClass) {
+      elementRef.classList.remove(animationArray[currentFrame].removeClass);
+    }
+    if (!animationOn) {
+      console.log("Animation stopped");
+      if (animationArray[currentFrame].removeElement) {
+        elementRef.remove();
+      }
+      return;
+    }
+    if (animationArray[currentFrame].sfx) {
+      animationArray[currentFrame].sfx.play();
+    }
+
+    elementRef.src = animationArray[currentFrame].src;
+    if (currentFrame === animationArray.length - 1) {
+      if (loop) {
+        currentFrame = 0;
+      } else {
+        animationOn = false;
+        console.log("animation turned OFF");
+      }
+    } else {
+      currentFrame++;
+    }
+  
+    setTimeout(() =>{
+        if(animationOn){
+          animate_advanceFrame()
+        } else {
+          animationArray[currentFrame].endFunction(elementRef)
+        }
+      }, frameRate * animationArray[currentFrame].frameMult);
+    };
+
+  if(animationOn) {
+    animate_advanceFrame();
+  } else {
+    return
+  }
+};
+
+
+
+                  ///                                           ///
+                  ///                                           ///
+                  ///                BEHAVIORS                  ///
+                  ///                                           ///
+                  ///                                           ///
+
+///Mazzy Death Animation
+const mazzyDie = (withWhat) => {
+  if (withWhat === 'spike') {
+    // animate(mazzySprite, mazzyDieSpikeAnimation, false, 100);
+    console.log('here is the animation', withWhat)
+  } else if (withWhat === 'sprite'){    
+    // animate(mazzySprite, mazzyDieSpriteAnimation, false, 100);
+    console.log('here is the animation', withWhat)
+  } else {
+    console.log('here is the animation', withWhat)
+    // animate(mazzySprite, mazzyDieAnimation, false, 100);
+  }
+}
+
+
+/// SPRITE 1 BEHAVIOR
+//sprite movement
+const moveSprite = (spriteData) => {
+  const sprite1 = document.getElementById("sprite1");
+
+  const s1Start = sprite1.animate(
+    [
+      { transform: `translate(0, 0)` },
+      { transform: `translate(${spriteData.e1X}px, ${spriteData.e1Y}px)` },
+    ],
+    {
+      duration: spriteData.time,
+      easing: "ease-out",
+    }
+  );
+
+  s1Start.onfinish = () => {
+    const s1Return = sprite1.animate(
+      [
+        { transform: `translate(${spriteData.e1X}px, ${spriteData.e1Y}px)` },
+        { transform: `translate(0, 0)` },
+      ],
+      {
+        duration: spriteData.time,
+        easing: "ease-out",
+      }
+    );
+    s1Return.onfinish = () => {
+      moveSprite(spriteData);
+    };
+  };
+};
+
+// Collission With Sprite
+const spriteCollission = () => {
+  //get the player element
+  const player = document.getElementById("mazzy");
+  //set the player element location data to the mazzy object/player class
+  mazzy.location = player.getBoundingClientRect();
+  //find sprite rectangle
+  const sprite = document.getElementById("sprite1");
+  const spriteLocation = sprite.getBoundingClientRect();
+  collisionDetector(spriteLocation, "sprite");
+};
+
+// spike behavior
+
+let spikeOn = false;
+
+const spikeBehavior = () => {
+  let possibleSpikeLoc;
+  for (const tile in tiles) {
+    possibleSpikeLoc = Math.floor(Math.random() * 210);
+    if (isUnoccupied(possibleSpikeLoc)) {
+      let spikeTile = document.createElement(`img`);
+      spikeTile.id = "spike";
+      spikeTile.classList.add('spike')
+      tiles[possibleSpikeLoc].appendChild(spikeTile);
+      const specificSpike = document.getElementById("spike");
+      // start check for collission with spike
+      spikeOn=true
+      spikeCollissionID = setInterval(spikeCollission, 17);
+      animate(specificSpike, spikeAnimation, false, 100);
+      break;
+    } else {
+      continue;
+    }
+  }
+}
+// Collission With Spike:
+//
+// Since the spike appears and disappears, the collission detection is triggered every 17ms BUT first checks
+// for "spikeOn" so it's only going to go ahead and get the rectangles if that is true
+// "spikeOn" is flipped during the spike behavior sequence above. it's also declared just above that sequence.
+
+const spikeCollission = () => {
+  if (spikeOn) {
+    //get the player element
+    const player = document.getElementById("mazzy");
+    //set the player element location data to the mazzy object/player class
+    mazzy.location = player.getBoundingClientRect();
+    //find sprite rectangle
+    const spike = document.querySelector(".spikeHit");
+    console.log(spike)
+    const spikeLocation = spike.getBoundingClientRect();
+    
+    collisionDetector(spikeLocation, "spike");
+  }
+};
+
+//start the spike if its in the level
+
+                  ///                         ///
+                  /// INITIATE all DETECTIONS ///
+                  ///                         ///
+
+///intervalIDs at the top
+
+const initiateEnemiesandCollisions = () => {
+  //check for collission with sprite
+  if (allLevels[curLvl].sprite) {
+    moveSprite(allLevels[curLvl].sprite);
+    spriteCollissionID = setInterval(spriteCollission, 17);
+  }
+  if (allLevels[curLvl].spike) {
+    spikeBehaviorID = setInterval(spikeBehavior, 7000);
+    // check for collission with spike
+  }
+};
+
+// initiateEnemiesandCollisions();
+
+                  ///                                          ///
+                  /// THINGS THAT HAVE TO WAIT FOR DOM TO LOAD ///
+                  ///                                          ///
+
+document.addEventListener("DOMContentLoaded", function () {
+  console.log("DOM Loaded");
+});
+
+///
+///
+///
+///
+
+                        ///                      ///
+                        ///                      ///
+                        ///   SETUP GAME BOARD   ///
+                        ///                      /// 
+                        ///                      ///
+
+
+const randomVendGenerator = () => {
+  if(Math.ceil(Math.random()*12)===3){
+    return tiles[allLevels[curLvl].vend[0]].classList.add(`vend-left`)
+  } else if (Math.ceil(Math.random()*12)===10){
+    return tiles[allLevels[curLvl].vend[1]].classList.add(`vend-right`)
+  }
+}
+
+  
+  // if (i % 15 !== 14 || i % 15 !== 0) {
 
 const rsetBoard = (lvl, start) => {
   walls.length = 0;
@@ -534,6 +828,8 @@ const rsetBoard = (lvl, start) => {
   }
   const levelDsp = document.querySelector(`.display-level`);
   levelDsp.innerText = allLevels[curLvl].name;
+  initiateEnemiesandCollisions();
+
 };
 
                     ///                  /// 
@@ -739,7 +1035,9 @@ const placeWalls = (levelWalls) => {
   tiles[14].classList.add(`necorner`);
   tiles[210].classList.add(`swcorner`);
   tiles[224].classList.add(`secorner`);
-  tiles[195].classList.add(`vend`);
+  randomVendGenerator()
+
+
   // tiles[exitLoc + 1].classList.add(`whor`);
   // tiles[exitLoc + 1].classList.remove(`wvert`);
   tiles[entLoc].classList.add(`ent`);
@@ -947,14 +1245,29 @@ const checkPara = () => {
   }
 };
 
+
+///
+/// ADDING
+///
+///
+
+///addLife
+
+const addLife = (amountToAdd) => {
+  mazzy.life = mazzy.life+=amountToAdd
+  lifeInv.innerHTML = mazzy.life
+}
+
 ///adding torches to your inv
-const addTorch = () => {
-  tiles[playerLoc].classList.remove(`torch`);
-  torchLoc.forEach((tor, i) => {
-    if (tor === playerLoc) {
-      torchLoc.splice(i, 1);
-    }
-  });
+const addTorch = (vend) => {
+  if(!vend){
+    tiles[playerLoc].classList.remove(`torch`);
+    torchLoc.forEach((tor, i) => {
+      if (tor === playerLoc) {
+        torchLoc.splice(i, 1);
+      }
+    });
+  }
   if (mazzy.torches === 0) {
     let trchDiv = document.createElement(`div`);
     trchDiv.innerHTML = `<img src=pics/torch.png>`;
@@ -970,13 +1283,15 @@ const addTorch = () => {
 };
 
 ///adding ladders to your inv
-const addLadder = () => {
-  tiles[playerLoc].classList.remove(`ladder`);
-  ladderLoc.forEach((lad, i) => {
-    if (lad === playerLoc) {
-      ladderLoc.splice(i, 1);
-    }
-  });
+const addLadder = (vend) => {
+  if (!vend){
+    tiles[playerLoc].classList.remove(`ladder`);
+    ladderLoc.forEach((lad, i) => {
+      if (lad === playerLoc) {
+        ladderLoc.splice(i, 1);
+      }
+    });
+  }
   if (mazzy.ladders === 0) {
     let ladderDiv = document.createElement(`div`);
     // let trchCount = document.createElement(`span`)
@@ -994,14 +1309,16 @@ const addLadder = () => {
 };
 
 ///adding plank to your inv
-const addPlank = () => {
-  tiles[playerLoc].classList.remove(`plank`);
-  plankLoc.forEach((plk, i) => {
-    if (plk === playerLoc) {
-      plankLoc.splice(i, 1);
-    }
-  });
-  if (mazzy.planks === 0) {
+const addPlank = (vend) => {
+  if(!vend){
+    tiles[playerLoc].classList.remove(`plank`);
+    plankLoc.forEach((plk, i) => {
+      if (plk === playerLoc) {
+        plankLoc.splice(i, 1);
+      }
+    });
+  }
+    if (mazzy.planks === 0) {
     let plankDiv = document.createElement(`div`);
     // let trchCount = document.createElement(`span`)
     plankDiv.innerHTML = `<img src=pics/planks.png>`;
@@ -1014,7 +1331,7 @@ const addPlank = () => {
   getFx.volume = 0.3;
   mazzy.planks += 1;
   plankCount.innerText = mazzy.planks;
-};
+  };
 
 ///adding parachute to your inv
 const addPara = () => {
@@ -1032,17 +1349,22 @@ const addPara = () => {
 };
 
 ///adding a coin to your inv
-const addCoin = () => {
-  coinLoc.forEach((cn, i) => {
-    if (cn === playerLoc) {
-      coinLoc.splice(i, 1);
-    }
-  });
-
+const addCoin = (amt) => {
+  if(!amt) {
+    coinLoc.forEach((cn, i) => {
+      if (cn === playerLoc) {
+        coinLoc.splice(i, 1);
+      }
+    });
+  }
   coinfx.play();
   coinfx.volume = 0.3;
   tiles[playerLoc].classList.remove(`coin`);
-  mazzy.coins += 1;
+  if (amt) {
+    mazzy.coins += amt;
+  } else {
+    mazzy.coins += 1;
+  }
   let cnCnt = document.querySelector(`.cn-count`);
   cnCnt.innerText = mazzy.coins;
 };
@@ -1186,6 +1508,7 @@ const playEndSong = () => {
 };
 
 const ending = (endType) => {
+  endVend()
   clearTimeout(pauseDarkID);
   if (torchTimeoutID) {
     clearTimeout(torchTimeoutID);
@@ -1294,21 +1617,90 @@ curLvl++;
 rexit((start = 202));
 
 
-                                    ///                     ///
-                                    ///                     ///
-                                    /// GAMEPLAY & MOVEMENT ///
-                                    ///                     ///
-                                    ///                     ///
-const initVend = () =>{
+///                     ///
+///                     ///
+/// GAMEPLAY & MOVEMENT ///
+///                     ///
+///                     ///
+
+
+///
+///VEND
+///
+const vendSelections=['vend-exit', 'vend-ladder', 'vend-planks', 'vend-torch', 'vend-life']
+let vendIndex = 1
+let whereWasVend
+
+const initVend = () => {
   vendOn=true
   lookAhead = playerLoc
-  console.log(vendOn, 'vend some shit')
+  const vendingMachine = document.querySelector('#vend')
+  vendingMachine.classList.add('vend-on')
+  vendingMachine.classList.remove('vend-off')
 }
 
 const endVend = () => {
   vendOn=false
-  console.log('end vending')
+  const nowSelection = document.getElementById(vendSelections[vendIndex])
+  vendIndex = 1
+  nextVendSelection(nowSelection)
+  const vendingMachine = document.querySelector('#vend')
+  vendingMachine.classList.add('vend-off')
+  vendingMachine.classList.remove('vend-on')
 }
+
+const nextVendSelection = (nowSelection) => {
+  const nextSelection = document.getElementById(vendSelections[vendIndex])
+  nextSelection.classList.add('selected')
+  nowSelection.classList.remove('selected')
+  // return nowSelection.id
+}
+
+const selectVendItem = () => {
+  if(vendIndex === 0){
+    vendExit.play()
+    endVend()
+  }
+  else if(vendIndex === 1){
+    if(mazzy.coins >= 4){
+      vendAccept.play()
+      addCoin(-4)
+      addLadder(vend=true)
+    } else {
+      fallFloorfx.play()
+    }
+  }
+  else if(vendIndex === 2){
+    if(mazzy.coins >= 3){
+      vendAccept.play()
+      addCoin(-3)
+      addPlank(vend=true)
+    } else {
+      fallFloorfx.play()
+    }
+  }
+  else if(vendIndex === 3){
+    if(mazzy.coins >= 2){
+      vendAccept.play()
+      addCoin(-2)
+      addTorch(vend=true)
+    } else {
+      fallFloorfx.play()
+    }
+  }
+  else if(vendIndex === 4){
+    if(mazzy.coins >= 9){
+      vendAccept.play()
+      addCoin(-9)
+      addLife(45)
+    } else {
+    fallFloorfx.play()
+  }
+  }
+}
+///
+///
+///
 
 
   window.addEventListener(`keydown`, (event) => {
@@ -1333,35 +1725,72 @@ const endVend = () => {
           if(!vendOn){
           tileDifference = -15;
           lookAhead = playerLoc + tileDifference;
-          } else {
-            console.log('vend up')
-          }
-          break;
-          case `ArrowRight`:
-            if (!vendOn){
-              tileDifference = 1;
-              lookAhead = playerLoc + tileDifference;
+        } else if (vendOn) {
+          const nowSelection = document.getElementById(vendSelections[vendIndex])
+          if(vendIndex === 0){
+            vendIndex=whereWasVend
+            nextVendSelection(nowSelection)
+          } 
+        }
+        break;
+        case `ArrowRight`:
+          if (!vendOn){
+            tileDifference = 1;
+            lookAhead = playerLoc + tileDifference;
+          } else if (vendOn) {
+            const nowSelection = document.getElementById(vendSelections[vendIndex])
+            if(vendIndex === 4){
+              vendIndex=1
             } else {
-              console.log('vend right')
+              vendIndex++
+            }
+            nextVendSelection(nowSelection)
           }
           break;
-        case "ArrowDown":
-          tileDifference = 15;
-          lookAhead = playerLoc + tileDifference;
-          break;
-        case `ArrowLeft`:
-          tileDifference = -1;
-          lookAhead = playerLoc + tileDifference;
-          break;
-        case `l`:
-          useLadder(lookAhead);
+          case "ArrowDown":
+            if(!vendOn) {
+              tileDifference = 15;
+              lookAhead = playerLoc + tileDifference;
+            } else if (vendOn){
+              const nowSelection = document.getElementById(vendSelections[vendIndex])
+              if(vendIndex!=0){
+                whereWasVend=vendIndex
+                vendIndex = 0
+                nextVendSelection(nowSelection)
+              }
+            }
+            break;
+            case `ArrowLeft`:
+              if(!vendOn) {
+                tileDifference = -1;
+                lookAhead = playerLoc + tileDifference;
+              } else if (vendOn) {
+                const nowSelection = document.getElementById(vendSelections[vendIndex])
+                if(vendIndex === 1){
+                  vendIndex = 4
+                } else {
+                  vendIndex--
+                }
+                nextVendSelection(nowSelection)
+              }
+              break;
+              case `l`:
+                if(!vendOn) {
+            useLadder(lookAhead);
+          }
           break;
         case `t`:
-          useTorch();
+          if(!vendOn) {
+            useTorch();
+          }
           break;
         case `v`:
           if(vendOn) {
             endVend()
+          }
+          case ` `:
+            if(vendOn) {
+              selectVendItem()
           }
           break;
         default:
@@ -1399,26 +1828,28 @@ const endVend = () => {
           }
 
         } else {
-          ///removing player from current location
-          tiles[playerLoc].classList.remove("player");
-          playerLoc += tileDifference;
-          ///setting new location
-          ///adding player to that new location
-          tiles[playerLoc].appendChild(mazzySprite)
-          tiles[playerLoc].classList.add(`player`);
-
-          mazzy.steps += 1;
-          stepFx.play();
-          stepCnt.innerHTML = mazzy.steps;
-          ///if you go to a torch spot or whatever
-          checkTorch();
-          checkLadder();
-          checkPlank();
-          checkPara();
-          checkCoin();
-          if (darkOn === 1) {
-            makeDark();
-            makeLight();
+          if(!vendOn) {
+            ///removing player from current location
+            tiles[playerLoc].classList.remove("player");
+            playerLoc += tileDifference;
+            ///setting new location
+            ///adding player to that new location
+            tiles[playerLoc].appendChild(mazzySprite)
+            tiles[playerLoc].classList.add(`player`);
+            
+            mazzy.steps += 1;
+            stepFx.play();
+            stepCnt.innerHTML = mazzy.steps;
+            ///if you go to a torch spot or whatever
+            checkTorch();
+            checkLadder();
+            checkPlank();
+            checkPara();
+            checkCoin();
+            if (darkOn === 1) {
+              makeDark();
+              makeLight();
+            }
           }
         }
         ///you CANNOT go
@@ -1426,298 +1857,10 @@ const endVend = () => {
         plyr.classList.remove("player");
         playerLoc += 0;
         tiles[playerLoc].classList.add(`player`);
-        if(tiles[lookAhead].classList.contains('vend')){
+        if(tiles[lookAhead].classList.contains('vend-right') || tiles[lookAhead].classList.contains('vend-left')){
           initVend()
         }
       }
     }
   });
-
-
-
-//   window.addEventListener(`keydown`, (event) => {
-
-//       switch (event.key) {
-//         case `Space`:
-//           console.log('buy a thing')
-//           endVend()
-//           break;
-//         case `ArrowRight`:
-//           // tileDifference = 1;
-//           // lookAhead = playerLoc + tileDifference;
-//           break;
-//         case `ArrowLeft`:
-//           // tileDifference = -1;
-//           // lookAhead = playerLoc + tileDifference;
-//           break;
-//         default:
-//           break;
-//       }
-// })
-
-                      ///                                           ///
-                      ///                                           ///
-                      ///       UTILITIES & REALTIME FUNCTIONS      ///
-                      ///                                           ///
-                      ///                                           ///
-
-// Basic Collission detection
-const collisionDetector = (objectRect, withWhat) => {
-  if (
-    objectRect.right > mazzy.location.left &&
-    objectRect.left < mazzy.location.right &&
-    objectRect.bottom > mazzy.location.top &&
-    objectRect.top < mazzy.location.bottom
-  ) {
-    // Collision detected
-    console.log("collission!");
-      if (withWhat === "sprite") {
-        mazzy.life -= 1;
-      } else if (withWhat === "spike") {
-        mazzy.life -= 100;
-      }
-    console.log(mazzy.life)
-    collissionFx1.play();
-    const lifeInv = document.querySelector(".lf-count");
-    lifeInv.innerText = mazzy.life;
-    if (mazzy.life >= 1) {
-      return true;
-    } else if (mazzy.life <= 0) {
-      mazzyDie(withWhat)
-      setTimeout(() => {
-        clearBrd();
-        ending(withWhat);
-        curLvl++;
-      }, 1000);
-    }
-  } else {
-    // No collision
-    console.log('nope')
-    return false;
-  }
-};
-
-// check if a tile is unoccupied
-const isUnoccupied = (tile) => {
-  if (
-    !tiles[tile].classList.contains("wall") &&
-    !tiles[tile].classList.contains("hole") &&
-    !tiles[tile].classList.contains("coin") &&
-    !tiles[tile].classList.contains("plank") &&
-    !tiles[tile].classList.contains("plk-appplied") &&
-    !tiles[tile].classList.contains("player-plk-appplied") &&
-    !tiles[tile].classList.contains("ladder") &&
-    !tiles[tile].classList.contains("torch") &&
-    !tiles[tile].classList.contains("player") &&
-    !tiles[tile].classList.contains("para") &&
-    !tiles[tile].classList.contains("exit") &&
-    !tiles[tile].classList.contains("ent")
-  ) {
-    return true;
-  } else {
-    return false;
-  }
-};
-
-                  ///                                           ///
-                  ///                                           ///
-                  ///                ANIMATION                  ///
-                  ///                                           ///
-                  ///                                           ///
-
-
-
-const animate = (elementRef, animationArray, loop, frameRate) => {
-  ///set antimationOn flag and start at frame 0
-  let animationOn = true;
-  let currentFrame = 0;
-  
-  const animate_advanceFrame = () => {
-    if (animationArray[currentFrame].addClass) {
-      elementRef.classList.add(animationArray[currentFrame].addClass);
-    }
-    if (animationArray[currentFrame].removeClass) {
-      elementRef.classList.remove(animationArray[currentFrame].removeClass);
-    }
-    if (!animationOn) {
-      console.log("Animation stopped");
-      if (animationArray[currentFrame].removeElement) {
-        elementRef.remove();
-      }
-      return;
-    }
-    if (animationArray[currentFrame].sfx) {
-      animationArray[currentFrame].sfx.play();
-    }
-
-    elementRef.src = animationArray[currentFrame].src;
-    if (currentFrame === animationArray.length - 1) {
-      if (loop) {
-        currentFrame = 0;
-      } else {
-        animationOn = false;
-        console.log("animation turned OFF");
-      }
-    } else {
-      currentFrame++;
-    }
-  
-    setTimeout(() =>{
-        if(animationOn){
-          animate_advanceFrame()
-        } else {
-          animationArray[currentFrame].endFunction(elementRef)
-        }
-      }, frameRate * animationArray[currentFrame].frameMult);
-    };
-
-  if(animationOn) {
-    animate_advanceFrame();
-  } else {
-    return
-  }
-};
-
-
-
-                  ///                                           ///
-                  ///                                           ///
-                  ///                BEHAVIORS                  ///
-                  ///                                           ///
-                  ///                                           ///
-///Mazzy Death Animation
-
-const mazzyDie = (withWhat) => {
-  if (withWhat === 'spike') {
-    // animate(mazzySprite, mazzyDieSpikeAnimation, false, 100);
-    console.log('here is the animation', withWhat)
-  } else if (withWhat === 'sprite'){    
-    // animate(mazzySprite, mazzyDieSpriteAnimation, false, 100);
-    console.log('here is the animation', withWhat)
-  } else {
-    console.log('here is the animation', withWhat)
-    // animate(mazzySprite, mazzyDieAnimation, false, 100);
-  }
-}
-
-
-/// SPRITE 1 BEHAVIOR
-//sprite movement
-const moveSprite = (spriteData) => {
-  const sprite1 = document.getElementById("sprite1");
-
-  const s1Start = sprite1.animate(
-    [
-      { transform: `translate(0, 0)` },
-      { transform: `translate(${spriteData.e1X}px, ${spriteData.e1Y}px)` },
-    ],
-    {
-      duration: spriteData.time,
-      easing: "ease-out",
-    }
-  );
-
-  s1Start.onfinish = () => {
-    const s1Return = sprite1.animate(
-      [
-        { transform: `translate(${spriteData.e1X}px, ${spriteData.e1Y}px)` },
-        { transform: `translate(0, 0)` },
-      ],
-      {
-        duration: spriteData.time,
-        easing: "ease-out",
-      }
-    );
-    s1Return.onfinish = () => {
-      moveSprite(spriteData);
-    };
-  };
-};
-
-// Collission With Sprite
-const spriteCollission = () => {
-  //get the player element
-  const player = document.getElementById("mazzy");
-  //set the player element location data to the mazzy object/player class
-  mazzy.location = player.getBoundingClientRect();
-  //find sprite rectangle
-  const sprite = document.getElementById("sprite1");
-  const spriteLocation = sprite.getBoundingClientRect();
-  collisionDetector(spriteLocation, "sprite");
-};
-
-// spike behavior
-
-let spikeOn = false;
-
-const spikeBehavior = () => {
-  let possibleSpikeLoc;
-  for (const tile in tiles) {
-    possibleSpikeLoc = Math.floor(Math.random() * 210);
-    if (isUnoccupied(possibleSpikeLoc)) {
-      let spikeTile = document.createElement(`img`);
-      spikeTile.id = "spike";
-      spikeTile.classList.add('spike')
-      tiles[possibleSpikeLoc].appendChild(spikeTile);
-      const specificSpike = document.getElementById("spike");
-      // start check for collission with spike
-      spikeOn=true
-      spikeCollissionID = setInterval(spikeCollission, 17);
-      animate(specificSpike, spikeAnimation, false, 100);
-      break;
-    } else {
-      continue;
-    }
-  }
-}
-// Collission With Spike:
-//
-// Since the spike appears and disappears, the collission detection is triggered every 17ms BUT first checks
-// for "spikeOn" so it's only going to go ahead and get the rectangles if that is true
-// "spikeOn" is flipped during the spike behavior sequence above. it's also declared just above that sequence.
-
-const spikeCollission = () => {
-  if (spikeOn) {
-    //get the player element
-    const player = document.getElementById("mazzy");
-    //set the player element location data to the mazzy object/player class
-    mazzy.location = player.getBoundingClientRect();
-    //find sprite rectangle
-    const spike = document.querySelector(".spikeHit");
-    console.log(spike)
-    const spikeLocation = spike.getBoundingClientRect();
-    
-    collisionDetector(spikeLocation, "spike");
-  }
-};
-
-//start the spike if its in the level
-
-                  ///                         ///
-                  /// INITIATE all DETECTIONS ///
-                  ///                         ///
-
-///intervalIDs at the top
-
-const initiateEnemiesandCollisions = () => {
-  //check for collission with sprite
-  if (allLevels[curLvl].sprite) {
-    moveSprite(allLevels[curLvl].sprite);
-    spriteCollissionID = setInterval(spriteCollission, 17);
-  }
-  if (allLevels[curLvl].spike) {
-    spikeBehaviorID = setInterval(spikeBehavior, 7000);
-    // check for collission with spike
-  }
-};
-
-initiateEnemiesandCollisions();
-
-                  ///                                          ///
-                  /// THINGS THAT HAVE TO WAIT FOR DOM TO LOAD ///
-                  ///                                          ///
-
-document.addEventListener("DOMContentLoaded", function () {
-  console.log("DOM Loaded");
-});
 
