@@ -246,7 +246,7 @@ let allLevels = [
       tileLocation: 27
     },
     exit: 5,
-    darkTime: 8000,
+    darkTime: 22000,
     vend: [45,209]
   },
   {
@@ -264,7 +264,7 @@ let allLevels = [
     coins: [98, 147],
     spike: false,
     sprite: {
-      on: false,
+      on: true,
       s1X: "48",
       s1Y: "96",
       e1X: "0",
@@ -302,7 +302,7 @@ let allLevels = [
     coins: [113, 147],
     spike: true,
     sprite: {
-      on: false,
+      on: true,
       s1X: "48",
       s1Y: "96",
       e1X: "0",
@@ -338,7 +338,7 @@ let allLevels = [
     coins: [31, 49, 53, 57, 124, 158, 167, 183],
     spike: true,
     sprite: {
-      on: false,
+      on: true,
       s1X: "48",
       s1Y: "96",
       e1X: "0",
@@ -372,7 +372,7 @@ let allLevels = [
     holes: [34, 118, 40, 28, 64, 182, 183],
     planks: [107],
     coins: [106, 138, 154, 166, 171],
-    spike: false,
+    spike: true,
     sprite: {
       on: false,
       s1X: "48",
@@ -682,6 +682,7 @@ const spriteCollission = () => {
 let spikeOn = false;
 
 const spikeBehavior = () => {
+
   let possibleSpikeLoc;
   for (const tile in tiles) {
     possibleSpikeLoc = Math.floor(Math.random() * 210);
@@ -715,10 +716,10 @@ const spikeCollission = () => {
     mazzy.location = player.getBoundingClientRect();
     //find sprite rectangle
     const spike = document.querySelector(".spikeHit");
-    console.log(spike)
-    const spikeLocation = spike.getBoundingClientRect();
-    
-    collisionDetector(spikeLocation, "spike");
+    if(spike){
+      const spikeLocation = spike.getBoundingClientRect();
+      collisionDetector(spikeLocation, "spike");
+    }
   }
 };
 
@@ -731,13 +732,15 @@ const spikeCollission = () => {
 ///intervalIDs at the top
 
 const initiateEnemiesandCollisions = () => {
+  console.log('sprite is on', allLevels[curLvl].sprite)
+  console.log('spike is on', allLevels[curLvl].spike)
   //check for collission with sprite
-  if (allLevels[curLvl].sprite) {
+  if (allLevels[curLvl].sprite.on) {
     moveSprite(allLevels[curLvl].sprite);
     spriteCollissionID = setInterval(spriteCollission, 17);
   }
-  if (allLevels[curLvl].spike) {
-    spikeBehaviorID = setInterval(spikeBehavior, 7000);
+  if (allLevels[curLvl].spike===true) {
+    spikeBehaviorID = setInterval(spikeBehavior, 6000);
     // check for collission with spike
   }
 };
