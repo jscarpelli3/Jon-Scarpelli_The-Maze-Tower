@@ -1662,7 +1662,7 @@ const selectVendItem = () => {
   }
   else if(vendIndex === 1){
     if(mazzy.coins >= 4){
-      vendAccept()
+      vendAccept.play()
       addCoin(-4)
       addLadder(vend=true)
     } else {
@@ -1680,7 +1680,7 @@ const selectVendItem = () => {
   }
   else if(vendIndex === 3){
     if(mazzy.coins >= 2){
-      vendAccept()
+      vendAccept.play()
       addCoin(-2)
       addTorch(vend=true)
     } else {
@@ -1689,7 +1689,7 @@ const selectVendItem = () => {
   }
   else if(vendIndex === 4){
     if(mazzy.coins >= 9){
-      vendAccept()
+      vendAccept.play()
       addCoin(-9)
       addLife(45)
     } else {
