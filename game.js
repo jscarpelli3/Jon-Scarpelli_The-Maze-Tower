@@ -246,7 +246,7 @@ let allLevels = [
       tileLocation: 27
     },
     exit: 5,
-    darkTime: 3000,
+    darkTime: 8000,
     vend: [45,209]
   },
   {
@@ -280,7 +280,7 @@ let allLevels = [
       tileLocation: 27
     },
     exit: 5,
-    darkTime: 4000,
+    darkTime: 2000,
     vend: [105,104]
   },
   {
@@ -300,7 +300,7 @@ let allLevels = [
     holes: [28, 76, 81, 117, 123, 144],
     planks: [87],
     coins: [113, 147],
-    spike: false,
+    spike: true,
     sprite: {
       on: false,
       s1X: "48",
@@ -336,7 +336,7 @@ let allLevels = [
     holes: [95, 97, 99, 110, 116, 125, 146, 176, 206],
     planks: [28],
     coins: [31, 49, 53, 57, 124, 158, 167, 183],
-    spike: false,
+    spike: true,
     sprite: {
       on: false,
       s1X: "48",
@@ -354,7 +354,7 @@ let allLevels = [
       tileLocation: 27
     },
     exit: 5,
-    darkTime: 5000,
+    darkTime: 7000,
     vend: [130,164]
   },
   {
@@ -390,7 +390,7 @@ let allLevels = [
       tileLocation: 27
     },
     exit: 5,
-    darkTime: 5500,
+    darkTime: 4500,
     vend: [135,104]
   },
 ];
@@ -424,7 +424,7 @@ const startPauseDark = (pausingDark) => {
   pauseDarkID = setTimeout(function () {
     pausingDark();
     //the *10 is for TESTING ONLY. it keeps the level dark 10 * longer
-  }, allLevels[curLvl].darkTime*10);
+  }, allLevels[curLvl].darkTime);
 };
 
 ///
