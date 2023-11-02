@@ -1508,6 +1508,7 @@ const playEndSong = () => {
 };
 
 const ending = (endType) => {
+  endVend()
   clearTimeout(pauseDarkID);
   if (torchTimeoutID) {
     clearTimeout(torchTimeoutID);
