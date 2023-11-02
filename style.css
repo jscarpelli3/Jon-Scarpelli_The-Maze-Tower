@@ -153,6 +153,14 @@ div.game {
   background-image: url(pics/tright.png);
 }
 
+.vend-right {
+  background-image: url(pics/vend-right.png);
+}
+
+.vend-left {
+  background-image: url(pics/vend-left.png);
+}
+
 /* .exit {
   background-image: url(pics/exithor.png);
 } */

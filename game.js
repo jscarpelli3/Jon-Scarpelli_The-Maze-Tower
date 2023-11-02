@@ -24,6 +24,8 @@ endSong.volume = 0.7;
 const paraGet = new Audio(`sound/para1.mp3`);
 paraGet.volume = 0.6;
 const denyFx = new Audio(`sound/deny.wav`);
+const vendExit = new Audio(`sound/vendExit.mp3`);
+const vendAccept = new Audio(`sound/vendAccept.mp3`);
 
 ///variables to hold timers & intervals
 let torchTimeoutID;
@@ -209,6 +211,7 @@ let allLevels = [
       },
     exit: 5,
     darkTime: 60000,
+    vend: [195,59]
   },
   {
     name: `"Uh Oh, it's dark"`,
@@ -241,9 +244,10 @@ let allLevels = [
     parachute: {
       thisLevel: true, 
       tileLocation: 27
-      },
+    },
     exit: 5,
     darkTime: 3000,
+    vend: [45,209]
   },
   {
     name: `"So many holes!"`,
@@ -274,9 +278,10 @@ let allLevels = [
     parachute: {
       thisLevel: false, 
       tileLocation: 27
-      },
+    },
     exit: 5,
     darkTime: 4000,
+    vend: [105,104]
   },
   {
     name: `"Dooozy!"`,
@@ -311,9 +316,10 @@ let allLevels = [
     parachute: {
       thisLevel: false, 
       tileLocation: 27
-      },
+    },
     exit: 5,
     darkTime: 5000,
+    vend: [165,44]
   },
   {
     name: `"Luqui's Level"`,
@@ -346,9 +352,10 @@ let allLevels = [
     parachute: {
       thisLevel: false, 
       tileLocation: 27
-      },
+    },
     exit: 5,
     darkTime: 5000,
+    vend: [130,164]
   },
   {
     name: `"This is odd..."`,
@@ -381,9 +388,10 @@ let allLevels = [
     parachute: {
       thisLevel: false, 
       tileLocation: 27
-      },
+    },
     exit: 5,
     darkTime: 5500,
+    vend: [135,104]
   },
 ];
 
@@ -422,11 +430,6 @@ const startPauseDark = (pausingDark) => {
 ///
 ///
 
-///
-///
-///SETUP GAME BOARD
-///
-///
 
 /// get user levels from local storage
 const addUserLevels = () => {
@@ -444,9 +447,9 @@ const addUserLevels = () => {
   }
 };
 
-                  ///
-                  /// Player Placement logic
-                  ///
+                  ///                         ///
+                  /// Player Placement logic  ///
+                  ///                         ///
 
 // PLACE PLAYER START INCLUSIVE OF POSSIBLY CHOOSING RANDOMLY WITHIN A 6 tile space
 const playerStartSquare = (startingLocation) => {
@@ -613,8 +616,8 @@ const animate = (elementRef, animationArray, loop, frameRate) => {
                   ///                BEHAVIORS                  ///
                   ///                                           ///
                   ///                                           ///
-///Mazzy Death Animation
 
+///Mazzy Death Animation
 const mazzyDie = (withWhat) => {
   if (withWhat === 'spike') {
     // animate(mazzySprite, mazzyDieSpikeAnimation, false, 100);
@@ -749,15 +752,28 @@ document.addEventListener("DOMContentLoaded", function () {
   console.log("DOM Loaded");
 });
 
-
-
 ///
 ///
 ///
 ///
 
+                        ///                      ///
+                        ///                      ///
+                        ///   SETUP GAME BOARD   ///
+                        ///                      /// 
+                        ///                      ///
 
 
+const randomVendGenerator = () => {
+  if(Math.ceil(Math.random()*12)===3){
+    return tiles[allLevels[curLvl].vend[0]].classList.add(`vend-left`)
+  } else if (Math.ceil(Math.random()*12)===10){
+    return tiles[allLevels[curLvl].vend[1]].classList.add(`vend-right`)
+  }
+}
+
+  
+  // if (i % 15 !== 14 || i % 15 !== 0) {
 
 const rsetBoard = (lvl, start) => {
   walls.length = 0;
@@ -1019,7 +1035,9 @@ const placeWalls = (levelWalls) => {
   tiles[14].classList.add(`necorner`);
   tiles[210].classList.add(`swcorner`);
   tiles[224].classList.add(`secorner`);
-  tiles[216].classList.add(`vend`);
+  randomVendGenerator()
+
+
   // tiles[exitLoc + 1].classList.add(`whor`);
   // tiles[exitLoc + 1].classList.remove(`wvert`);
   tiles[entLoc].classList.add(`ent`);
@@ -1241,13 +1259,15 @@ const addLife = (amountToAdd) => {
 }
 
 ///adding torches to your inv
-const addTorch = () => {
-  tiles[playerLoc].classList.remove(`torch`);
-  torchLoc.forEach((tor, i) => {
-    if (tor === playerLoc) {
-      torchLoc.splice(i, 1);
-    }
-  });
+const addTorch = (vend) => {
+  if(!vend){
+    tiles[playerLoc].classList.remove(`torch`);
+    torchLoc.forEach((tor, i) => {
+      if (tor === playerLoc) {
+        torchLoc.splice(i, 1);
+      }
+    });
+  }
   if (mazzy.torches === 0) {
     let trchDiv = document.createElement(`div`);
     trchDiv.innerHTML = `<img src=pics/torch.png>`;
@@ -1263,13 +1283,15 @@ const addTorch = () => {
 };
 
 ///adding ladders to your inv
-const addLadder = () => {
-  tiles[playerLoc].classList.remove(`ladder`);
-  ladderLoc.forEach((lad, i) => {
-    if (lad === playerLoc) {
-      ladderLoc.splice(i, 1);
-    }
-  });
+const addLadder = (vend) => {
+  if (!vend){
+    tiles[playerLoc].classList.remove(`ladder`);
+    ladderLoc.forEach((lad, i) => {
+      if (lad === playerLoc) {
+        ladderLoc.splice(i, 1);
+      }
+    });
+  }
   if (mazzy.ladders === 0) {
     let ladderDiv = document.createElement(`div`);
     // let trchCount = document.createElement(`span`)
@@ -1287,14 +1309,16 @@ const addLadder = () => {
 };
 
 ///adding plank to your inv
-const addPlank = () => {
-  tiles[playerLoc].classList.remove(`plank`);
-  plankLoc.forEach((plk, i) => {
-    if (plk === playerLoc) {
-      plankLoc.splice(i, 1);
-    }
-  });
-  if (mazzy.planks === 0) {
+const addPlank = (vend) => {
+  if(!vend){
+    tiles[playerLoc].classList.remove(`plank`);
+    plankLoc.forEach((plk, i) => {
+      if (plk === playerLoc) {
+        plankLoc.splice(i, 1);
+      }
+    });
+  }
+    if (mazzy.planks === 0) {
     let plankDiv = document.createElement(`div`);
     // let trchCount = document.createElement(`span`)
     plankDiv.innerHTML = `<img src=pics/planks.png>`;
@@ -1307,7 +1331,7 @@ const addPlank = () => {
   getFx.volume = 0.3;
   mazzy.planks += 1;
   plankCount.innerText = mazzy.planks;
-};
+  };
 
 ///adding parachute to your inv
 const addPara = () => {
@@ -1325,17 +1349,22 @@ const addPara = () => {
 };
 
 ///adding a coin to your inv
-const addCoin = () => {
-  coinLoc.forEach((cn, i) => {
-    if (cn === playerLoc) {
-      coinLoc.splice(i, 1);
-    }
-  });
-
+const addCoin = (amt) => {
+  if(!amt) {
+    coinLoc.forEach((cn, i) => {
+      if (cn === playerLoc) {
+        coinLoc.splice(i, 1);
+      }
+    });
+  }
   coinfx.play();
   coinfx.volume = 0.3;
   tiles[playerLoc].classList.remove(`coin`);
-  mazzy.coins += 1;
+  if (amt) {
+    mazzy.coins += amt;
+  } else {
+    mazzy.coins += 1;
+  }
   let cnCnt = document.querySelector(`.cn-count`);
   cnCnt.innerText = mazzy.coins;
 };
@@ -1628,19 +1657,44 @@ const nextVendSelection = (nowSelection) => {
 
 const selectVendItem = () => {
   if(vendIndex === 0){
+    vendExit.play()
     endVend()
   }
   else if(vendIndex === 1){
-    addLadder()
+    if(mazzy.coins >= 4){
+      vendAccept()
+      addCoin(-4)
+      addLadder(vend=true)
+    } else {
+      fallFloorfx.play()
+    }
   }
   else if(vendIndex === 2){
-    addPlank()
+    if(mazzy.coins >= 3){
+      vendAccept.play()
+      addCoin(-3)
+      addPlank(vend=true)
+    } else {
+      fallFloorfx.play()
+    }
   }
   else if(vendIndex === 3){
-    addTorch()
+    if(mazzy.coins >= 2){
+      vendAccept()
+      addCoin(-2)
+      addTorch(vend=true)
+    } else {
+      fallFloorfx.play()
+    }
   }
   else if(vendIndex === 4){
-    addLife(45)
+    if(mazzy.coins >= 9){
+      vendAccept()
+      addCoin(-9)
+      addLife(45)
+    } else {
+    fallFloorfx.play()
+  }
   }
 }
 ///
@@ -1773,26 +1827,28 @@ const selectVendItem = () => {
           }
 
         } else {
-          ///removing player from current location
-          tiles[playerLoc].classList.remove("player");
-          playerLoc += tileDifference;
-          ///setting new location
-          ///adding player to that new location
-          tiles[playerLoc].appendChild(mazzySprite)
-          tiles[playerLoc].classList.add(`player`);
-
-          mazzy.steps += 1;
-          stepFx.play();
-          stepCnt.innerHTML = mazzy.steps;
-          ///if you go to a torch spot or whatever
-          checkTorch();
-          checkLadder();
-          checkPlank();
-          checkPara();
-          checkCoin();
-          if (darkOn === 1) {
-            makeDark();
-            makeLight();
+          if(!vendOn) {
+            ///removing player from current location
+            tiles[playerLoc].classList.remove("player");
+            playerLoc += tileDifference;
+            ///setting new location
+            ///adding player to that new location
+            tiles[playerLoc].appendChild(mazzySprite)
+            tiles[playerLoc].classList.add(`player`);
+            
+            mazzy.steps += 1;
+            stepFx.play();
+            stepCnt.innerHTML = mazzy.steps;
+            ///if you go to a torch spot or whatever
+            checkTorch();
+            checkLadder();
+            checkPlank();
+            checkPara();
+            checkCoin();
+            if (darkOn === 1) {
+              makeDark();
+              makeLight();
+            }
           }
         }
         ///you CANNOT go
@@ -1800,7 +1856,7 @@ const selectVendItem = () => {
         plyr.classList.remove("player");
         playerLoc += 0;
         tiles[playerLoc].classList.add(`player`);
-        if(tiles[lookAhead].classList.contains('vend')){
+        if(tiles[lookAhead].classList.contains('vend-right') || tiles[lookAhead].classList.contains('vend-left')){
           initVend()
         }
       }
