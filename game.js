@@ -26,6 +26,8 @@ paraGet.volume = 0.6;
 const denyFx = new Audio(`sound/deny.wav`);
 const vendExit = new Audio(`sound/vendExit.mp3`);
 const vendAccept = new Audio(`sound/vendAccept.mp3`);
+const spriteMove = new Audio(`sound/spriteMove.mp3`);
+  spriteMove.volume=.5
 
 ///variables to hold timers & intervals
 let torchTimeoutID;
@@ -229,11 +231,11 @@ let allLevels = [
     planks: [87],
     coins: [25, 193],
     sprite: {
-      on: false,
-      s1X: "48",
-      s1Y: "96",
-      e1X: "0",
-      e1Y: "520",
+      on: true,
+      s1X: "432",
+      s1Y: "48",
+      e1X: "624",
+      e1Y: "0",
       s2X: "4",
       s2Y: "4",
       e2X: "4",
@@ -424,7 +426,7 @@ const startPauseDark = (pausingDark) => {
   pauseDarkID = setTimeout(function () {
     pausingDark();
     //the *10 is for TESTING ONLY. it keeps the level dark 10 * longer
-  }, allLevels[curLvl].darkTime);
+  }, allLevels[curLvl].darkTime*20);
 };
 
 ///
@@ -493,6 +495,8 @@ const chooseWithinQuadrant = (holeTile) => {
                       ///                                           ///
                       ///                                           ///
 
+
+
 // Basic Collission detection
 const collisionDetector = (objectRect, withWhat) => {
   if (
@@ -549,6 +553,8 @@ const isUnoccupied = (tile) => {
     return false;
   }
 };
+
+
 
                   ///                                           ///
                   ///                                           ///
@@ -634,37 +640,45 @@ const mazzyDie = (withWhat) => {
 
 /// SPRITE 1 BEHAVIOR
 //sprite movement
+let spriteOn = false
 const moveSprite = (spriteData) => {
-  const sprite1 = document.getElementById("sprite1");
+  if(spriteOn){
 
-  const s1Start = sprite1.animate(
-    [
-      { transform: `translate(0, 0)` },
-      { transform: `translate(${spriteData.e1X}px, ${spriteData.e1Y}px)` },
-    ],
-    {
-      duration: spriteData.time,
-      easing: "ease-out",
-    }
-  );
-
-  s1Start.onfinish = () => {
-    const s1Return = sprite1.animate(
+    const sprite1 = document.getElementById("sprite1");
+    
+    spriteMove.play()
+    const s1Start = sprite1.animate(
       [
-        { transform: `translate(${spriteData.e1X}px, ${spriteData.e1Y}px)` },
         { transform: `translate(0, 0)` },
+        { transform: `translate(${spriteData.e1X}px, ${spriteData.e1Y}px)` },
       ],
       {
         duration: spriteData.time,
         easing: "ease-out",
       }
-    );
-    s1Return.onfinish = () => {
-      moveSprite(spriteData);
-    };
-  };
+      );
+      
+      s1Start.onfinish = () => {
+        spriteMove.play()
+        const s1Return = sprite1.animate(
+          [
+            { transform: `translate(${spriteData.e1X}px, ${spriteData.e1Y}px)` },
+            { transform: `translate(0, 0)` },
+          ],
+          {
+            duration: spriteData.time,
+            easing: "ease-out",
+          }
+          );
+          s1Return.onfinish = () => {
+            if(spriteOn) {
+            moveSprite(spriteData);
+            }
+          };
+        };
+  }
 };
-
+      
 // Collission With Sprite
 const spriteCollission = () => {
   //get the player element
@@ -736,6 +750,7 @@ const initiateEnemiesandCollisions = () => {
   console.log('spike is on', allLevels[curLvl].spike)
   //check for collission with sprite
   if (allLevels[curLvl].sprite.on) {
+    spriteOn=true
     moveSprite(allLevels[curLvl].sprite);
     spriteCollissionID = setInterval(spriteCollission, 17);
   }
@@ -790,6 +805,8 @@ const rsetBoard = (lvl, start) => {
   clearInterval(spriteCollissionID);
   clearInterval(spikeCollissionID);
   clearInterval(spikeBehaviorID);
+  spikeOn = false
+  spriteOn = false
   // start ? playerLoc = 202 : playerLoc = 20
 
   entLoc = 217;
@@ -1088,6 +1105,9 @@ const placeSprite = (spriteData) => {
   sprite.classList.add("sprite");
   sprite.setAttribute("src", "pics/Sprite.gif");
   sprite.setAttribute("id", "sprite1");
+  console.log(spriteData)
+  sprite.style.left = spriteData.s1X+"px"; // Replace with your desired value
+  sprite.style.top = spriteData.s1Y+"px";   // Replace with your desired value
   gameBoard.appendChild(sprite);
 };
 
@@ -1169,7 +1189,9 @@ const makeDark = () => {
       tile.classList.contains(`player`) ||
       tile.classList.contains(`plank`) ||
       tile.classList.contains(`ldr-applied`) ||
-      tile.classList.contains(`plk-applied`)
+      tile.classList.contains(`plk-applied`) ||
+      tile.classList.contains(`spike`)
+
     ) {
     } else {
       tile.innerHTML = `<img id="black" src="pics/ctrBlack.png">`;

@@ -369,8 +369,8 @@ button {
   width: 48px;
   z-index: 0;
   position: absolute;
-  top: 96px;
-  left: 48px;
+  /* top: 96px;
+  left: 48px; */
   opacity: 0.5;
 }
 
