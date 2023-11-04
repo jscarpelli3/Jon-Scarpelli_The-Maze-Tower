@@ -722,16 +722,22 @@ const moveSprite = (spriteData, spriteID) => {
   }
 };
       
-// Collission With Sprite
+// Sprite Collission
 const spriteCollission = () => {
   //get the player element
   const player = document.getElementById("mazzy");
   //set the player element location data to the mazzy object/player class
   mazzy.location = player.getBoundingClientRect();
   //find sprite rectangle
-  const sprite = document.getElementById("sprite1");
-  const spriteLocation = sprite.getBoundingClientRect();
-  collisionDetector(spriteLocation, "sprite");
+  // const sprite = document.getElementById("sprite1");
+  const sprites = document.querySelectorAll(".sprite");
+  // const spriteLocation = sprite.getBoundingClientRect();
+  // collisionDetector(spriteLocation, "sprite");
+  sprites.forEach((sprite, index) => {
+    const spriteLocation = sprite.getBoundingClientRect();
+    collisionDetector(spriteLocation, "sprite"); // You can use index to identify which sprite collided
+  });
+
 };
 
 // spike behavior
@@ -798,8 +804,8 @@ const initiateEnemiesandCollisions = () => {
     currentSprites.forEach((instance, i) => {
       console.log(instance)
       moveSprite(instance, i);
-      spriteCollissionID = setInterval(spriteCollission, 17);
     })
+    spriteCollissionID = setInterval(spriteCollission, 17);
   }
   if (allLevels[curLvl].spike===true) {
     spikeBehaviorID = setInterval(spikeBehavior, 6000);
