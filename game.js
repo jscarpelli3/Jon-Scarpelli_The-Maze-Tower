@@ -152,6 +152,12 @@ let ended = 0;
 let torchOn = 0;
 let darkOn = 0;
 let vendOn = false
+let currentSprites = [{
+                        start: [0,0],
+                        end: [0,0],
+                        time: 6000
+                        }
+                      ]
 
 
 //mazzy
@@ -195,6 +201,18 @@ let allLevels = [
     coins: [16, 142],
     sprite: {
       on: true,
+      sprites: [
+        {
+          start: 31,
+          end: 196,
+          time: 4557
+        },
+        {
+          start: 18, 
+          end: 123,
+          time: 3760
+        }
+      ],
       s1X: "48",
       s1Y: "96",
       e1X: "0",
@@ -234,7 +252,7 @@ let allLevels = [
       on: true,
       s1X: "432",
       s1Y: "48",
-      e1X: "624"
+      e1X: "624",
       e1Y: "0",
       s2X: "4",
       s2Y: "4",
@@ -641,12 +659,11 @@ const mazzyDie = (withWhat) => {
 /// SPRITE 1 BEHAVIOR
 
 //spriteCoordinateGenerator
-const setSpriteCoordinates = (tile, isEnd) => {
-
+const setSpriteCoordinates = (tile) => {
   const spriteCoordinateGenerator = () => {
     const getXandY = () => {
-      let xCoord = Math.floor((tile*48)%15)*48 
-      let yCoord = Math.floor((tile*48)/15)*48 
+      let xCoord = Math.floor(tile%15)*48 
+      let yCoord = Math.floor(tile/15)*48 
       return [xCoord, yCoord]
     }
     let x
@@ -655,40 +672,28 @@ const setSpriteCoordinates = (tile, isEnd) => {
     if (tile > 14) {
       [x,y] = getXandY(tile)
     } else {
-      y = tile*48
-      x = 48
+      y = 48
+      x = tile*48
     }
-    
-    if (isEnd) {
-      return [x-allLevels[curLvl].sprite.s1X, y-allLevels[curLvl].sprite.s1Y-y]
-    } else {
       return [x,y]
-    }
   }
-  if(isEnd){
-    [allLevels[curLvl].sprite.e1X , allLevels[curLvl].sprite.e1Y] = spriteCoordinateGenerator()
-  } else {
-    [allLevels[curLvl].sprite.s1X , allLevels[curLvl].sprite.s1Y] = spriteCoordinateGenerator()
-  }
-
+    return spriteCoordinateGenerator()
 }
 
 
-
-  const [xStart, yStart] = getQuotient(spriteData)
-
 //sprite movement
 let spriteOn = false
-const moveSprite = (spriteData) => {
+const moveSprite = (spriteData, spriteID) => {
+  console.log(spriteData)
   if(spriteOn){
 
-    const sprite1 = document.getElementById("sprite1");
+    const sprite1 = document.getElementById(`sprite${spriteID}`);
     
     spriteMove.play()
     const s1Start = sprite1.animate(
       [
         { transform: `translate(0, 0)` },
-        { transform: `translate(${spriteData.e1X}px, ${spriteData.e1Y}px)` },
+        { transform: `translate(${spriteData.end[0]}px, ${spriteData.end[1]}px)` },
       ],
       {
         duration: spriteData.time,
@@ -700,7 +705,7 @@ const moveSprite = (spriteData) => {
         spriteMove.play()
         const s1Return = sprite1.animate(
           [
-            { transform: `translate(${spriteData.e1X}px, ${spriteData.e1Y}px)` },
+            { transform: `translate(${spriteData.end[0]}px, ${spriteData.end[1]}px)` },
             { transform: `translate(0, 0)` },
           ],
           {
@@ -710,7 +715,7 @@ const moveSprite = (spriteData) => {
           );
           s1Return.onfinish = () => {
             if(spriteOn) {
-            moveSprite(spriteData);
+            moveSprite(spriteData, spriteID);
             }
           };
         };
@@ -789,8 +794,12 @@ const initiateEnemiesandCollisions = () => {
   //check for collission with sprite
   if (allLevels[curLvl].sprite.on) {
     spriteOn=true
-    moveSprite(allLevels[curLvl].sprite);
-    spriteCollissionID = setInterval(spriteCollission, 17);
+    // allLevels[curLvl].sprite.sprites.forEach((instance, i) => {
+    currentSprites.forEach((instance, i) => {
+      console.log(instance)
+      moveSprite(instance, i);
+      spriteCollissionID = setInterval(spriteCollission, 17);
+    })
   }
   if (allLevels[curLvl].spike===true) {
     spikeBehaviorID = setInterval(spikeBehavior, 6000);
@@ -845,6 +854,8 @@ const rsetBoard = (lvl, start) => {
   clearInterval(spikeBehaviorID);
   spikeOn = false
   spriteOn = false
+  //clearout current sprites
+  currentSprites.length=0
   // start ? playerLoc = 202 : playerLoc = 20
 
   entLoc = 217;
@@ -1137,17 +1148,29 @@ const placePlayer = () => {
   }
 };
 
-const placeSprite = (spriteData) => {
+const placeSprite = () => {
   const gameBoard = document.getElementById("game-board");
-  const sprite = document.createElement("img");
-  sprite.classList.add("sprite");
-  sprite.setAttribute("src", "pics/Sprite.gif");
-  sprite.setAttribute("id", "sprite1");
-  console.log(spriteData)
-  sprite.style.left = spriteData.s1X+"px"; // Replace with your desired value
-  sprite.style.top = spriteData.s1Y+"px";   // Replace with your desired value
-  
-  gameBoard.appendChild(sprite);
+  let startCoords =[]
+  let endCoordsUnmodified
+  let endCoordsModified = []
+  // console.log(allLevels[curLvl].sprite.sprites)
+  allLevels[curLvl].sprite.sprites.forEach((sprte, i) =>{
+    //feed in start and end tiles that setSpriteCoordinates will translate to 
+    ///coordinates and then add them to the sprites array to be used later
+    startCoords = setSpriteCoordinates(sprte.start)
+    endCoordsUnmodified = setSpriteCoordinates(sprte.end)
+    endCoordsModified = [endCoordsUnmodified[0]-startCoords[0], endCoordsUnmodified[1]-startCoords[1]]
+    console.log(startCoords)
+    console.log(endCoordsUnmodified,endCoordsModified)
+    currentSprites.push({start: startCoords, end: endCoordsModified, time: allLevels[curLvl].sprite.sprites[i].time})
+    const sprite = document.createElement("img");
+    sprite.classList.add("sprite");
+    sprite.setAttribute("src", "pics/Sprite.gif");
+    sprite.setAttribute("id", `sprite${i}`);
+    sprite.style.left = startCoords[0]+"px"; // Replace with your desired value
+    sprite.style.top = startCoords[1]+"px";   // Replace with your desired value
+    gameBoard.appendChild(sprite);
+  })
 };
 
 ///
