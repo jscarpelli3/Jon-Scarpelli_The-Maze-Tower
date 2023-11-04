@@ -234,7 +234,7 @@ let allLevels = [
       on: true,
       s1X: "432",
       s1Y: "48",
-      e1X: "624",
+      e1X: "624"
       e1Y: "0",
       s2X: "4",
       s2Y: "4",
@@ -639,6 +639,44 @@ const mazzyDie = (withWhat) => {
 
 
 /// SPRITE 1 BEHAVIOR
+
+//spriteCoordinateGenerator
+const setSpriteCoordinates = (tile, isEnd) => {
+
+  const spriteCoordinateGenerator = () => {
+    const getXandY = () => {
+      let xCoord = Math.floor((tile*48)%15)*48 
+      let yCoord = Math.floor((tile*48)/15)*48 
+      return [xCoord, yCoord]
+    }
+    let x
+    let y
+    
+    if (tile > 14) {
+      [x,y] = getXandY(tile)
+    } else {
+      y = tile*48
+      x = 48
+    }
+    
+    if (isEnd) {
+      return [x-allLevels[curLvl].sprite.s1X, y-allLevels[curLvl].sprite.s1Y-y]
+    } else {
+      return [x,y]
+    }
+  }
+  if(isEnd){
+    [allLevels[curLvl].sprite.e1X , allLevels[curLvl].sprite.e1Y] = spriteCoordinateGenerator()
+  } else {
+    [allLevels[curLvl].sprite.s1X , allLevels[curLvl].sprite.s1Y] = spriteCoordinateGenerator()
+  }
+
+}
+
+
+
+  const [xStart, yStart] = getQuotient(spriteData)
+
 //sprite movement
 let spriteOn = false
 const moveSprite = (spriteData) => {
@@ -1108,6 +1146,7 @@ const placeSprite = (spriteData) => {
   console.log(spriteData)
   sprite.style.left = spriteData.s1X+"px"; // Replace with your desired value
   sprite.style.top = spriteData.s1Y+"px";   // Replace with your desired value
+  
   gameBoard.appendChild(sprite);
 };
 
