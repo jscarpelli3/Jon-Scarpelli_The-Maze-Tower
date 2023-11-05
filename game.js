@@ -952,7 +952,7 @@ const placeWalls = (levelWalls) => {
       if (i % 15 === 0) {
         if (tiles[rt].classList.contains("wall")) {
           if (i > 0 && i < 210) {
-            tiles[i].classList.add(`tleft`);
+            tiles[i].classList.add(`tright`);
           }
         } else {
           tiles[i].classList.add(`wvert`);
