@@ -365,8 +365,8 @@ button {
 /*Sprite*/
 
 .sprite {
-  height: 48px;
-  width: 48px;
+  /* height: 48px;
+  width: 48px; */
   z-index: 0;
   position: absolute;
   /* top: 96px;

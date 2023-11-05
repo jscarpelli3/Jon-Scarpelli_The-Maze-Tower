@@ -13,6 +13,8 @@ let newLevels = []
 let light = 60
 let lvlOrder = 1
 let lvlName=''
+
+
 const setLevelName = () => {
   lvlName = document.getElementById("level-name").value
   console.log(lvlName)

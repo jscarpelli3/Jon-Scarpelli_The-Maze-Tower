@@ -250,6 +250,13 @@ let allLevels = [
     coins: [25, 193],
     sprite: {
       on: true,
+      sprites: [
+        {
+          start: 24,
+          end: 28,
+          time: 2000
+        },
+      ],
       s1X: "432",
       s1Y: "48",
       e1X: "624",
@@ -284,7 +291,7 @@ let allLevels = [
     coins: [98, 147],
     spike: false,
     sprite: {
-      on: true,
+      on: false,
       s1X: "48",
       s1Y: "96",
       e1X: "0",
@@ -322,7 +329,7 @@ let allLevels = [
     coins: [113, 147],
     spike: true,
     sprite: {
-      on: true,
+      on: false,
       s1X: "48",
       s1Y: "96",
       e1X: "0",
@@ -358,7 +365,7 @@ let allLevels = [
     coins: [31, 49, 53, 57, 124, 158, 167, 183],
     spike: true,
     sprite: {
-      on: true,
+      on: false,
       s1X: "48",
       s1Y: "96",
       e1X: "0",
@@ -530,7 +537,7 @@ const collisionDetector = (objectRect, withWhat) => {
       } else if (withWhat === "spike") {
         mazzy.life -= 100;
       }
-    console.log(mazzy.life)
+    // console.log(mazzy.life)
     collissionFx1.play();
     lifeInv.innerText = mazzy.life;
     if (mazzy.life >= 1) {
@@ -595,7 +602,7 @@ const animate = (elementRef, animationArray, loop, frameRate) => {
       elementRef.classList.remove(animationArray[currentFrame].removeClass);
     }
     if (!animationOn) {
-      console.log("Animation stopped");
+      // console.log("Animation stopped");
       if (animationArray[currentFrame].removeElement) {
         elementRef.remove();
       }
@@ -611,7 +618,7 @@ const animate = (elementRef, animationArray, loop, frameRate) => {
         currentFrame = 0;
       } else {
         animationOn = false;
-        console.log("animation turned OFF");
+        // console.log("animation turned OFF");
       }
     } else {
       currentFrame++;
@@ -684,11 +691,13 @@ const setSpriteCoordinates = (tile) => {
 //sprite movement
 let spriteOn = false
 const moveSprite = (spriteData, spriteID) => {
-  console.log(spriteData)
+  // console.log('sprimoveSpriteStarted', spriteData)
   if(spriteOn){
 
     const sprite1 = document.getElementById(`sprite${spriteID}`);
     
+    
+
     spriteMove.play()
     const s1Start = sprite1.animate(
       [
@@ -795,8 +804,8 @@ const spikeCollission = () => {
 ///intervalIDs at the top
 
 const initiateEnemiesandCollisions = () => {
-  console.log('sprite is on', allLevels[curLvl].sprite)
-  console.log('spike is on', allLevels[curLvl].spike)
+  // console.log('sprite is on', allLevels[curLvl].sprite)
+  // console.log('spike is on', allLevels[curLvl].spike)
   //check for collission with sprite
   if (allLevels[curLvl].sprite.on) {
     spriteOn=true
@@ -854,14 +863,7 @@ const rsetBoard = (lvl, start) => {
   ladderLoc.length = 0;
   plankLoc.length = 0;
   coinLoc.length = 0;
-  clearTimeout(pauseDarkID);
-  clearInterval(spriteCollissionID);
-  clearInterval(spikeCollissionID);
-  clearInterval(spikeBehaviorID);
-  spikeOn = false
-  spriteOn = false
-  //clearout current sprites
-  currentSprites.length=0
+
   // start ? playerLoc = 202 : playerLoc = 20
 
   entLoc = 217;
@@ -891,13 +893,9 @@ const rsetBoard = (lvl, start) => {
     makeDark();
     makeLight();
   };
-  // setTimeout(() => {
-  //   pauseDark()
-  // }, allLevels[curLvl].darkTime)
+
   startPauseDark(pauseDark);
-  // if (curLvlName === `"Uh Oh, it's dark"`) {
-  //   tiles[paraLoc].classList.add(`para`);
-  // }
+
   if ( allLevels[lvl].parachute.thisLevel) {
     tiles[allLevels[lvl].parachute.tileLocation].classList.add(`para`);
   }
@@ -1166,8 +1164,8 @@ const placeSprite = () => {
     startCoords = setSpriteCoordinates(sprte.start)
     endCoordsUnmodified = setSpriteCoordinates(sprte.end)
     endCoordsModified = [endCoordsUnmodified[0]-startCoords[0], endCoordsUnmodified[1]-startCoords[1]]
-    console.log(startCoords)
-    console.log(endCoordsUnmodified,endCoordsModified)
+    // console.log(startCoords)
+    // console.log(endCoordsUnmodified,endCoordsModified)
     currentSprites.push({start: startCoords, end: endCoordsModified, time: allLevels[curLvl].sprite.sprites[i].time})
     const sprite = document.createElement("img");
     sprite.classList.add("sprite");
@@ -1583,13 +1581,26 @@ const rexit = (start) => {
 ///
 
 function clearBrd() {
+  clearTimeout(pauseDarkID);
+  clearInterval(spriteCollissionID);
+  clearInterval(spikeCollissionID);
+  clearInterval(spikeBehaviorID);
+  spikeOn = false
+  spriteOn = false
+  //clearout current sprites
+  currentSprites.length=0
+  console.log('NODES', document.querySelectorAll('.sprite'))
+  const spritesToBeRemoved = document.querySelectorAll('.sprite')
+  // console.log(spritesToBeRemoved)
+  spritesToBeRemoved.forEach((sprte)=>{
+    const currentAnimation = sprte.getAnimations()[0];
+    console.log(currentAnimation)
+    currentAnimation.cancel();
+    sprte.remove()
+  })
   tiles.forEach((tile, i) => {
     tiles[i].className = `tile`;
     tiles[i].innerHTML = ``;
-    let allSprites = document.querySelectorAll(".sprite");
-    allSprites.forEach((one) => {
-      one.remove();
-    });
   });
 }
 
