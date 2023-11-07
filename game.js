@@ -255,7 +255,7 @@ let allLevels = [
       tileLocation: 27
     },
     exit: 5,
-    darkTime: 22000,
+    darkTime: 6000,
     vend: [45,209]
   },
   {
@@ -545,7 +545,6 @@ const collisionDetector = (objectRect, withWhat) => {
       } else if (withWhat === "spike") {
         mazzy.life -= 100;
       }
-    // console.log(mazzy.life)
     collissionFx1.play();
     lifeInv.innerText = mazzy.life;
     if (mazzy.life >= 1) {
@@ -610,7 +609,6 @@ const animate = (elementRef, animationArray, loop, frameRate) => {
       elementRef.classList.remove(animationArray[currentFrame].removeClass);
     }
     if (!animationOn) {
-      // console.log("Animation stopped");
       if (animationArray[currentFrame].removeElement) {
         elementRef.remove();
       }
@@ -626,7 +624,6 @@ const animate = (elementRef, animationArray, loop, frameRate) => {
         currentFrame = 0;
       } else {
         animationOn = false;
-        // console.log("animation turned OFF");
       }
     } else {
       currentFrame++;
@@ -699,7 +696,6 @@ const setSpriteCoordinates = (tile) => {
 //sprite movement
 let spriteOn = false
 const moveSprite = (spriteData, spriteID) => {
-  // console.log('sprimoveSpriteStarted', spriteData)
   if(spriteOn){
 
     const sprite1 = document.getElementById(`sprite${spriteID}`);
@@ -812,25 +808,21 @@ const spikeCollission = () => {
 ///intervalIDs at the top
 
 const initiateEnemiesandCollisions = () => {
-  // console.log('sprite is on', allLevels[curLvl].sprite)
-  // console.log('spike is on', allLevels[curLvl].spike)
   //check for collission with sprite
   if (allLevels[curLvl].sprite.on) {
     spriteOn=true
     // allLevels[curLvl].sprite.sprites.forEach((instance, i) => {
     currentSprites.forEach((instance, i) => {
-      console.log(instance)
       moveSprite(instance, i);
     })
     spriteCollissionID = setInterval(spriteCollission, 17);
   }
   if (allLevels[curLvl].spike===true) {
-    spikeBehaviorID = setInterval(spikeBehavior, 6000);
+    spikeBehaviorID = setInterval(spikeBehavior, 5000);
     // check for collission with spike
   }
 };
 
-// initiateEnemiesandCollisions();
 
                   ///                                          ///
                   /// THINGS THAT HAVE TO WAIT FOR DOM TO LOAD ///
@@ -1165,15 +1157,12 @@ const placeSprite = () => {
   let startCoords =[]
   let endCoordsUnmodified
   let endCoordsModified = []
-  // console.log(allLevels[curLvl].sprite.sprites)
   allLevels[curLvl].sprite.sprites.forEach((sprte, i) =>{
     //feed in start and end tiles that setSpriteCoordinates will translate to 
     ///coordinates and then add them to the sprites array to be used later
     startCoords = setSpriteCoordinates(sprte.start)
     endCoordsUnmodified = setSpriteCoordinates(sprte.end)
     endCoordsModified = [endCoordsUnmodified[0]-startCoords[0], endCoordsUnmodified[1]-startCoords[1]]
-    // console.log(startCoords)
-    // console.log(endCoordsUnmodified,endCoordsModified)
     currentSprites.push({start: startCoords, end: endCoordsModified, time: allLevels[curLvl].sprite.sprites[i].time})
     const sprite = document.createElement("img");
     sprite.classList.add("sprite");
@@ -1471,14 +1460,11 @@ const addCoin = (amt) => {
 ///USING a Torch
 
 const torchFail = (lvl) => {
-  if (curLvl === lvl) {
+    clearTimeout(torchTimeoutID)
     makeDark();
     torchOn = 0;
     makeLight();
     denyFx.play();
-  } else {
-    torchOn = 0;
-  }
 };
 
 const useTorch = () => {
@@ -1490,19 +1476,7 @@ const useTorch = () => {
     torchfx.volume = 0.3;
     makeLight();
     let lvlNow = curLvl;
-    ///function for torch turning off after an interval
-    // const torchFail = (lvl) => {
-    //   if (curLvl === lvl) {
-    //     makeDark()
-    //     torchOn = 0
-    //     makeLight()
-    //     denyFx.play()
-    //   } else {
-    //     torchOn = 0
-    //   }
-    // }
-    ///set interval fr torch turn off, call the above function(could i have just written the function right in there?)
-    setTimeout(() => {
+    torchTimeoutID = setTimeout(() => {
       torchFail(lvlNow);
     }, 4500);
     if (mazzy.torches === 0) {
@@ -1589,6 +1563,10 @@ const rexit = (start) => {
 ///
 
 function clearBrd() {
+    clearTimeout(torchTimeoutID);
+    torchTimeoutID = null
+    torchOn = 0
+  console.log(torchOn)
   clearTimeout(pauseDarkID);
   clearInterval(spriteCollissionID);
   clearInterval(spikeCollissionID);
@@ -1597,12 +1575,9 @@ function clearBrd() {
   spriteOn = false
   //clearout current sprites
   currentSprites.length=0
-  console.log('NODES', document.querySelectorAll('.sprite'))
   const spritesToBeRemoved = document.querySelectorAll('.sprite')
-  // console.log(spritesToBeRemoved)
   spritesToBeRemoved.forEach((sprte)=>{
     const currentAnimation = sprte.getAnimations()[0];
-    console.log(currentAnimation)
     currentAnimation.cancel();
     sprte.remove()
   })
@@ -1624,6 +1599,8 @@ const ending = (endType) => {
   clearTimeout(pauseDarkID);
   if (torchTimeoutID) {
     clearTimeout(torchTimeoutID);
+    torchTimeoutID = null
+    torchOn = 0
   }
   clearInterval(spriteCollissionID);
   clearInterval(spikeCollissionID);
