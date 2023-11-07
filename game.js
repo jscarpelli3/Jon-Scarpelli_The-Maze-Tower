@@ -459,7 +459,7 @@ const startPauseDark = (pausingDark) => {
   pauseDarkID = setTimeout(function () {
     pausingDark();
     //the *10 is for TESTING ONLY. it keeps the level dark 10 * longer
-  }, allLevels[curLvl].darkTime*20);
+  }, allLevels[curLvl].darkTime);
 };
 
 ///
