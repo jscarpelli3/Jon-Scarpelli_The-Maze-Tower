@@ -212,16 +212,7 @@ let allLevels = [
           end: 123,
           time: 3760
         }
-      ],
-      s1X: "48",
-      s1Y: "96",
-      e1X: "0",
-      e1Y: "520",
-      s2X: "4",
-      s2Y: "4",
-      e2X: "4",
-      e2Y: "4",
-      time: 4557,
+      ]
     },
     spike: false,
     parachute: {
@@ -256,16 +247,7 @@ let allLevels = [
           end: 28,
           time: 2000
         },
-      ],
-      s1X: "432",
-      s1Y: "48",
-      e1X: "624",
-      e1Y: "0",
-      s2X: "4",
-      s2Y: "4",
-      e2X: "4",
-      e2Y: "4",
-      time: 4557,
+      ]
     },
     spike: true,
     parachute: {
@@ -291,16 +273,19 @@ let allLevels = [
     coins: [98, 147],
     spike: false,
     sprite: {
-      on: false,
-      s1X: "48",
-      s1Y: "96",
-      e1X: "0",
-      e1Y: "520",
-      s2X: "4",
-      s2Y: "4",
-      e2X: "4",
-      e2Y: "4",
-      time: 4557,
+      on: true,
+      sprites: [
+        {
+          start: 91, 
+          end: 187,
+          time: 3000
+        },
+        {
+          start: 22, 
+          end: 103,
+          time: 5000
+        }
+      ]
     },
     parachute: {
       thisLevel: false, 
@@ -329,7 +314,24 @@ let allLevels = [
     coins: [113, 147],
     spike: true,
     sprite: {
-      on: false,
+      on: true,
+      sprites: [
+        {
+          start: 16,
+          end: 25,
+          time: 3500
+        },
+        {
+          start: 106, 
+          end: 112,
+          time: 3760
+        },
+        {
+          start: 141, 
+          end: 145,
+          time: 3000
+        },
+      ],
       s1X: "48",
       s1Y: "96",
       e1X: "0",
@@ -365,16 +367,19 @@ let allLevels = [
     coins: [31, 49, 53, 57, 124, 158, 167, 183],
     spike: true,
     sprite: {
-      on: false,
-      s1X: "48",
-      s1Y: "96",
-      e1X: "0",
-      e1Y: "520",
-      s2X: "4",
-      s2Y: "4",
-      e2X: "4",
-      e2Y: "4",
-      time: 4557,
+      on: true,
+      sprites: [
+        {
+          start: 91, 
+          end: 187,
+          time: 3000
+        },
+        {
+          start: 22, 
+          end: 103,
+          time: 5000
+        }
+      ]
     },
     parachute: {
       thisLevel: false, 
@@ -401,16 +406,19 @@ let allLevels = [
     coins: [106, 138, 154, 166, 171],
     spike: true,
     sprite: {
-      on: false,
-      s1X: "48",
-      s1Y: "96",
-      e1X: "0",
-      e1Y: "520",
-      s2X: "4",
-      s2Y: "4",
-      e2X: "4",
-      e2Y: "4",
-      time: 4557,
+      on: true,
+      sprites: [
+        {
+          start: 91, 
+          end: 187,
+          time: 3000
+        },
+        {
+          start: 22, 
+          end: 103,
+          time: 5000
+        }
+      ]
     },
     parachute: {
       thisLevel: false, 
