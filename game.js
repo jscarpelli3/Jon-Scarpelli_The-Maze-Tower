@@ -152,6 +152,7 @@ let ended = 0;
 let torchOn = 0;
 let darkOn = 0;
 let vendOn = false
+let vendsAvailable = 0
 let currentSprites = [{
                         start: [0,0],
                         end: [0,0],
@@ -221,8 +222,9 @@ let allLevels = [
       tileLocation: null
       },
     exit: 5,
-    darkTime: 60000,
-    vend: [195,59]
+    darkTime: 1000,
+    vend: [195,59],
+    vendChosen: null
   },
   {
     name: `"Uh Oh, it's dark"`,
@@ -256,7 +258,8 @@ let allLevels = [
     },
     exit: 5,
     darkTime: 6000,
-    vend: [45,209]
+    vend: [45,209],
+    vendChosen: null
   },
   {
     name: `"So many holes!"`,
@@ -293,7 +296,8 @@ let allLevels = [
     },
     exit: 5,
     darkTime: 2000,
-    vend: [105,104]
+    vend: [105,104],
+    vendChosen: null
   },
   {
     name: `"Dooozy!"`,
@@ -348,7 +352,8 @@ let allLevels = [
     },
     exit: 5,
     darkTime: 5000,
-    vend: [165,44]
+    vend: [165,44],
+    vendChosen: null
   },
   {
     name: `"Luqui's Level"`,
@@ -387,7 +392,8 @@ let allLevels = [
     },
     exit: 5,
     darkTime: 7000,
-    vend: [130,164]
+    vend: [130,164],
+    vendChosen: null
   },
   {
     name: `"This is odd..."`,
@@ -426,7 +432,8 @@ let allLevels = [
     },
     exit: 5,
     darkTime: 4500,
-    vend: [135,104]
+    vend: [135,104],
+    vendChosen: null
   },
 ];
 
@@ -845,9 +852,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 const randomVendGenerator = () => {
-  if(Math.ceil(Math.random()*12)===3){
+  if(Math.ceil(Math.random()*10)===3){
+    ///add to the vends available
+    vendsAvailable ++
+    allLevels[curLvl].vendChosen = 0
     return tiles[allLevels[curLvl].vend[0]].classList.add(`vend-left`)
   } else if (Math.ceil(Math.random()*12)===10){
+    ///add to the vends available
+    vendsAvailable ++
+    allLevels[curLvl].vendChosen = 1
     return tiles[allLevels[curLvl].vend[1]].classList.add(`vend-right`)
   }
 }
@@ -1108,7 +1121,18 @@ const placeWalls = (levelWalls) => {
   tiles[14].classList.add(`necorner`);
   tiles[210].classList.add(`swcorner`);
   tiles[224].classList.add(`secorner`);
-  randomVendGenerator()
+  ///check if 3 vending machines have already been dispersed]
+  if(allLevels[curLvl].vendChosen === null){
+    if(vendsAvailable < 4){
+      randomVendGenerator()
+    }
+  } else {
+    if(allLevels[curLvl].vendChosen === 0){
+      tiles[allLevels[curLvl].vend[0]].classList.add(`vend-left`)
+    } else if ((allLevels[curLvl].vendChosen === 1)) {
+      tiles[allLevels[curLvl].vend[1]].classList.add(`vend-right`)
+    }
+  }
 
 
   // tiles[exitLoc + 1].classList.add(`whor`);
@@ -1243,6 +1267,9 @@ const getCoins = () => {
 ///make the board dark
 const makeDark = () => {
   darkOn = 1;
+  const blackImg = document.createElement('img')
+  blackImg.src='pics/ctrBlack2.png'
+  blackImg.classList.add('black')
   tiles.forEach((tile) => {
     if (
       tile.classList.contains(`torch`) ||
@@ -1254,10 +1281,15 @@ const makeDark = () => {
       tile.classList.contains(`ldr-applied`) ||
       tile.classList.contains(`plk-applied`) ||
       tile.classList.contains(`spike`)
-
     ) {
     } else {
-      tile.innerHTML = `<img id="black" src="pics/ctrBlack.png">`;
+      const blackElement = tile && tile.querySelector('.black');
+      if (!blackElement){
+      const blackImg = document.createElement('img')
+      blackImg.src='pics/ctrBlack2.png'
+      blackImg.classList.add('black')
+      tile.appendChild(blackImg);
+      }
     }
   });
 };
@@ -1285,15 +1317,20 @@ const makeLight = () => {
   }
 
   lit.forEach((tile) => {
-    if (tiles[tile].classList.contains(`ldr-applied`)) {
-    } else {
-      const blackElement = tiles[tile].querySelector("#black");
+    const blackElement = tiles[tile] && tiles[tile].querySelector('.black');
       if (blackElement) {
         blackElement.remove();
       }
-    }
-  });
-};
+    })
+  }
+  //   if (tiles[tile].classList.contains(`ldr-applied`)) {
+  //   } else {
+  //     const blackElement = tiles[tile].querySelector(".black");
+  //     if (blackElement) {
+  //       blackElement.remove();
+  //     }
+  //   }
+  // });
 
 ////checking for torches at player
 const checkTorch = () => {
@@ -1704,6 +1741,14 @@ mazzySprite = createdMazzy
 addUserLevels();
 curLvl++;
 rexit((start = 202));
+// let spikeTile = document.createElement(`img`);
+// spikeTile.id = "spike";
+// spikeTile.classList.add('spike')
+// tiles[200].appendChild(spikeTile);
+// console.log('hello')
+// spikeOn=true
+// spikeCollissionID = setInterval(spikeCollission, 40);
+// animate(specificSpike, spikeAnimation, false, 100);
 
 
 ///                     ///
@@ -1726,7 +1771,7 @@ const initVend = () => {
   const vendingMachine = document.querySelector('#vend')
   vendingMachine.classList.add('vend-on')
   vendingMachine.classList.remove('vend-off')
-}
+} 
 
 const endVend = () => {
   vendOn=false
@@ -1801,7 +1846,7 @@ const selectVendItem = () => {
 
     if (ended === 0) {
       ///Grab steps h2 to count steps
-      let stepCnt = document.querySelector(`.steps`);
+      let stepCnt = document.querySelector(`.steps-count`);
       ///select div with player class
       let plyr = document.querySelector(`.player`);
       ///establish lookahead

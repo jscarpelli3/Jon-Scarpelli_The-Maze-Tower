@@ -71,6 +71,7 @@ div.game {
 /*  */
 
 .tile {
+  position: relative;
   width: 48px;
   height: 48px;
   display: flex;
@@ -246,7 +247,10 @@ div.game {
   color: blanchedalmond;
 }
 
-#black {
+.black {
+  position: absolute;
+  top: 0;
+  left: 0;
   z-index: 2;
 }
 
@@ -377,7 +381,10 @@ button {
 /*Spike*/
 
 #spike {
-  z-index: 2;
+  position: relative;
+  top: 0;
+  left: 0;
+  z-index: 1;
 }
 
 .vend-off {
