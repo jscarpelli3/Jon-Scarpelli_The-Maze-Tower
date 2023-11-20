@@ -831,18 +831,7 @@ const initiateEnemiesandCollisions = () => {
 };
 
 
-                  ///                                          ///
-                  /// THINGS THAT HAVE TO WAIT FOR DOM TO LOAD ///
-                  ///                                          ///
 
-document.addEventListener("DOMContentLoaded", function () {
-  console.log("DOM Loaded");
-});
-
-///
-///
-///
-///
 
                         ///                      ///
                         ///                      ///
@@ -1732,24 +1721,30 @@ const ending = (endType) => {
                                   ///                     ///
                                   ///                     ///
 
-const mazzy = new Character(`Mazzy`, 0, 0);
-//create mazzySprite
-const createdMazzy = document.createElement('img')
-createdMazzy.src='pics/mazzy.png'
-createdMazzy.id='mazzy'
-mazzySprite = createdMazzy
-addUserLevels();
-curLvl++;
-rexit((start = 202));
-// let spikeTile = document.createElement(`img`);
-// spikeTile.id = "spike";
-// spikeTile.classList.add('spike')
-// tiles[200].appendChild(spikeTile);
-// console.log('hello')
-// spikeOn=true
-// spikeCollissionID = setInterval(spikeCollission, 40);
-// animate(specificSpike, spikeAnimation, false, 100);
 
+                                  const mazzy = new Character(`Mazzy`, 0, 0);
+                                  //create mazzySprite
+                                  const createdMazzy = document.createElement('img')
+                                  createdMazzy.src='pics/mazzy.png'
+                                  createdMazzy.id='mazzy'
+                                  mazzySprite = createdMazzy
+                                  curLvl++;
+                                  addUserLevels();
+                                  
+                                  ///                                          ///
+                                  /// THINGS THAT HAVE TO WAIT FOR DOM TO LOAD ///
+                                  ///                                          ///
+                
+                document.addEventListener("DOMContentLoaded", function () {
+                  console.log("DOM Loaded");
+                  rexit((start = 202));
+                });
+                
+                ///
+                ///
+                ///
+                ///
+                                  
 
 ///                     ///
 ///                     ///
