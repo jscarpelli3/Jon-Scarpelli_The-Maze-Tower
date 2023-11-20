@@ -222,7 +222,7 @@ let allLevels = [
       tileLocation: null
       },
     exit: 5,
-    darkTime: 1000,
+    darkTime: 60000,
     vend: [195,59],
     vendChosen: null
   },
