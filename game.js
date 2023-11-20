@@ -901,10 +901,11 @@ const rsetBoard = (lvl, start) => {
   }
   const levelDsp = document.querySelector(`.display-level`);
   levelDsp.innerText = allLevels[curLvl].name;
-  initiateEnemiesandCollisions();
   if (allLevels[lvl].sprite.on) {
     placeSprite(allLevels[lvl].sprite);
   }
+  
+  initiateEnemiesandCollisions();
   
 };
 

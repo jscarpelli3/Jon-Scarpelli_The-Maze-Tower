@@ -6,6 +6,13 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="style.css" />
+  <script>
+    if (!('animate' in document.createElement('div'))) {
+      var script = document.createElement('script');
+      script.src = 'https://cdnjs.cloudflare.com/ajax/libs/web-animations/2.3.2/web-animations.min.js';
+      document.head.appendChild(script);
+    }
+  </script>
   <script defer src="game.js" charset="utf-8"></script>
   <!-- <script defer type='module' src="game.js" charset="utf-8"></script> -->
   <style>
