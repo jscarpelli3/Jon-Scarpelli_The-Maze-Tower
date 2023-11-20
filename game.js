@@ -886,25 +886,26 @@ const rsetBoard = (lvl, start) => {
   getLadder();
   getPlanks();
   getHoles();
-  if (allLevels[lvl].sprite.on) {
-    placeSprite(allLevels[lvl].sprite);
-  }
+  console.log(allLevels[lvl].sprite.on)
   playerLoc = playerStartSquare(start);
   placePlayer();
   const pauseDark = () => {
     makeDark();
     makeLight();
   };
-
+  
   startPauseDark(pauseDark);
-
+  
   if ( allLevels[lvl].parachute.thisLevel) {
     tiles[allLevels[lvl].parachute.tileLocation].classList.add(`para`);
   }
   const levelDsp = document.querySelector(`.display-level`);
   levelDsp.innerText = allLevels[curLvl].name;
   initiateEnemiesandCollisions();
-
+  if (allLevels[lvl].sprite.on) {
+    placeSprite(allLevels[lvl].sprite);
+  }
+  
 };
 
                     ///                  /// 
